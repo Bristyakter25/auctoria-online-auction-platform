@@ -23,6 +23,15 @@ const Login = () => {
     signInUser(email, password)
       .then((result) => {
         console.log(result.user);
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "User login successfully.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate("/");
+      
       })
       .catch((error) => {
         console.log(error);
@@ -36,7 +45,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center mt-10 min-h-screen bg-gray-100">
       <div className="flex w-full max-w-full min-h-screen bg-white px-10 overflow-hidden">
         {/* Left Side Image */}
         <div className="w-1/2">

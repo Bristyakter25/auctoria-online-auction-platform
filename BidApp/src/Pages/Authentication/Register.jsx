@@ -16,32 +16,84 @@ import SocialLogin from "./SocialLogin";
 const Register = () => {
   const navigate = useNavigate();
 
-  const {createUser} = useContext(AuthContext);
+  const {createUser,updateUserProfile} = useContext(AuthContext);
 
-  const handleRegister = e => {
+  const handleRegister = (e) => {
     e.preventDefault();
   
     const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
-    const photoURL = e.target.photoURL.value; // Corrected the name
+    const photoURL = e.target.photoURL.value;
   
     console.log(name, email, password, photoURL);
   
-    createUser(email, password, photoURL)
-      .then(result => {
-        console.log(result.user);
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "User created successfully.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        navigate("/login");
+    createUser(email, password)
+      .then((result) => {
+        const loggedUser = result.user;
+  
+        updateUserProfile(name, photoURL)
+          .then(() => {
+            console.log("User profile updated successfully");
+  
+            // Step 1: Prepare user data for MongoDB
+            const userData = {
+              name,
+              email,
+              photoURL,
+              uid: loggedUser.uid, 
+              createdAt: new Date(),
+            };
+  
+            // Step 2: Send user data to MongoDB
+            fetch("http://localhost:5000/users", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(userData),
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.message === "User already exists") {
+                  console.log("User already exists in MongoDB.");
+                } else {
+                  console.log("User stored in MongoDB:", data);
+                }
+  
+                // Step 3: Show success message and navigate
+                Swal.fire({
+                  position: "top-end",
+                  icon: "success",
+                  title: "User created successfully.",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                navigate("/login");
+              })
+              .catch((error) => {
+                console.error("Error storing user:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Failed to store user in database!",
+                });
+              });
+          })
+          .catch((error) => {
+            console.error("Error updating user profile:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Failed to update user profile!",
+            });
+          });
       })
-      .catch(error => {
-        console.log("error", error);
+      .catch((error) => {
+        console.error("Error creating user:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to create user!",
+        });
       });
   };
   

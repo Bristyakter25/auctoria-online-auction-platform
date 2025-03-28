@@ -2,7 +2,7 @@ import bannerImage from "../../assets/auction-banner.jpg";
 
 const Hero = () => {
   return (
-    <div>
+    <div className="">
       <div
         className="hero h-[700px]"
         style={{

@@ -5,13 +5,18 @@ import AdminNavbar from "../dasboardaNavbar/AdminNavbar";
 import BuyerNavbar from "../dasboardaNavbar/BuyerNavbar";
 import SellerNavbar from "../dasboardaNavbar/SellerNavbar";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
 
 const Sidebar = () => {
   const [isAdmin] = useAdmin();
   const [isSeller] = useSeller();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+ 
   return (
     <div>
-      <div className="w-full md:w-64">
+     <div className="flex h-screen">
+     <div className={`bg-blue-400 text-white w-64 lg:static fixed h-full transition-transform transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 z-40`}>
+      <div className="p-4 text-2xl font-bold border-b">Dashboard </div>
         <ul>
           {isAdmin ? (
             <AdminNavbar />
@@ -31,12 +36,17 @@ const Sidebar = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to={""}>
+            <NavLink to={"/profile"}>
               <FaUser /> Profile
             </NavLink>
           </li>
         </ul>
       </div>
+      <div>
+        
+      </div>
+     </div>
+     
     </div>
   );
 };

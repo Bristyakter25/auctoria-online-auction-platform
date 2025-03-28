@@ -1,4 +1,5 @@
-import { useContext } from "react";
+
+import { useContext, useState } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -6,6 +7,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleSignOut = () => {
     signOutUser()
@@ -24,7 +26,7 @@ const Navbar = () => {
       {/* Logo Section */}
       <div className="flex items-center space-x-2">
         <img
-          src="https://i.ibb.co/Js9CG21/361076432-c6ae963c-9e4b-48c4-9bda-f1b54e9f5bf4.jpg" // Replace with your logo
+          src="https://i.ibb.co/Js9CG21/361076432-c6ae963c-9e4b-48c4-9bda-f1b54e9f5bf4.jpg"
           alt="Logo"
           className="rounded-full w-10 h-10 object-cover"
         />
@@ -36,23 +38,59 @@ const Navbar = () => {
         <NavLink to="/" className="hover:text-blue-500">
           Home
         </NavLink>
+<<<<<<< HEAD
         <NavLink to="/addProduct" className="hover:text-blue-500">
           Add Product
         </NavLink>
         <NavLink to="/allAuctions" className="hover:text-blue-500">
           All Auctions
+=======
+
+
+        <NavLink to="/allAuctions" className="hover:text-blue-500">
+          View All Auctions</NavLink>
+        
+
+        <NavLink to="/addProduct" className="hover:text-blue-500">
+          Add Product
+>>>>>>> 985095dec90d411e067993f3169b099712f871a4
         </NavLink>
+        
+        <NavLink to="/addProduct" className="hover:text-blue-500">
+          Add Product
+          </NavLink>
 
         {user && (
-          <NavLink to="/dashboard" className="hover:text-blue-500">
+          <NavLink to="/dashboard/auctionChart" className="hover:text-blue-500">
             Dashboard
           </NavLink>
         )}
 
         {user ? (
-          <button onClick={handleSignOut} className="hover:text-blue-500">
-            Sign Out
-          </button>
+          <div className="relative">
+            <img
+              src={user.photoURL || "/default-profile.png"}
+              alt="Profile"
+              className="h-10 w-10 rounded-full cursor-pointer border-2 border-white"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            />
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-lg overflow-hidden">
+                <Link
+                  to="profile"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <div className="flex items-center gap-2">
             <Link to="/login">
@@ -67,18 +105,9 @@ const Navbar = () => {
 
       {/* Contact Icons & Button */}
       <div className="hidden md:flex items-center space-x-4">
-        <FaPhoneAlt
-          aria-label="Phone"
-          className="text-xl cursor-pointer hover:text-blue-500"
-        />
-        <FaEnvelope
-          aria-label="Email"
-          className="text-xl cursor-pointer hover:text-blue-500"
-        />
-        <FaMapMarkerAlt
-          aria-label="Location"
-          className="text-xl cursor-pointer hover:text-blue-500"
-        />
+        <FaPhoneAlt className="text-xl cursor-pointer hover:text-blue-500" />
+        <FaEnvelope className="text-xl cursor-pointer hover:text-blue-500" />
+        <FaMapMarkerAlt className="text-xl cursor-pointer hover:text-blue-500" />
         <Link to="/get-started">
           <button className="bg-teal-300 text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-teal-400 transition">
             Get Started

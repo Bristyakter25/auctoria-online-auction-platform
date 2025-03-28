@@ -11,13 +11,11 @@ const Question = () => {
         <div className="collapse collapse-plus bg-base-200">
           <input type="radio" name="my-accordion-3" defaultChecked />
           <div className="collapse-title text-xl font-medium">
+            {/* How does the bidding process work? */}
             How does the bidding process work?
           </div>
           <div className="collapse-content">
-            {/* <p>
-              Bidding is simple! Just place your bid and watch the excitement
-              unfold!
-            </p> */}
+            
             <p>
               Bidding is simple! Just place your bid and watch the excitement
               unfold!

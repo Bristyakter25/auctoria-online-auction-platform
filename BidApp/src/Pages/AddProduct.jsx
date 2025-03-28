@@ -5,12 +5,14 @@ import Swal from 'sweetalert2';
 const AddProduct = () => {
  
  const { user } = useContext(AuthContext);
+ console.log("inside add ",user?.email);
 
   const handleSubmitProduct = (e) => {
     e.preventDefault();
 
     const form = e.target;
     const productData = {
+      email:user?.email,
       productName: form.productName.value,
       category: form.category.value, // New field
       description: form.description.value,
@@ -27,7 +29,7 @@ const AddProduct = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'user-email': user.email,
+        // 'user-email': user?.email,
       },
       body: JSON.stringify(productData),
     })
@@ -68,6 +70,8 @@ const AddProduct = () => {
             <option value="Jewelry">Jewelry</option>
             <option value="Watches">Watches</option>
             <option value="Art">Art</option>
+            <option value="Luxury Bags">Luxury Bags</option>
+            <option value="Cars">Cars</option>
           </select>
         </div>
 
