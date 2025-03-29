@@ -3,75 +3,44 @@ import MainLayout from "../Layout/MainLayout";
 import Login from "../Pages/Authentication/Login";
 import Register from "../Pages/Authentication/Register";
 import Home from "../Pages/HomePage/Home";
-
-import AllAuctions from "../Pages/AllAuctions";
-import AddProduct from "../Pages/AddProduct";
-
 import PrivateRoutes from "../privateRoutes/PrivateRoutes";
 import Dashboard from "../Pages/Dashboard/Dashboard";
-
+import AddProduct from "../Pages/AddProduct";
+import AllAuctions from "../Pages/AllAuctions";
 import AuctionChart from "../Pages/Dashboard/AuctionChart";
-
 import Profile from "../components/HomeComponents/profile";
 import ManageUsers from "../Pages/Dashboard/ManageUsers";
-import Bid from "../Pages/BidTask/Bid";
+import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
+import Bid from "../Pages/BidTask/Bid";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout></MainLayout>,
+    element: <MainLayout />, 
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/signup",
-        element: <Register />,
-      },
-      {
-        path: "/profile",
-        element: <Profile></Profile>,
-      },
-      {
-        path: "/allAuctions",
-        element: <AllAuctions></AllAuctions>,
-      },
-      {
-        path: "/addProduct",
-        element: <AddProduct></AddProduct>,
-      },
-      {
-        path: "/bid/:id",
-        element: <Bid />,
-      },
+      { path: "/", element: <Home /> },
+      { path: "/login", element: <Login /> },
+      { path: "/signup", element: <Register /> },
+      { path: "/addProduct", element: <AddProduct /> },
+      { path: "/allAuctions", element: <AllAuctions /> },
+      { path: "/profile", element: <Profile /> },
+      { path: "/bid/:id", element: <Bid /> },
     ],
   },
   {
-    path: "dashboard",
+    path: "/dashboard",
     element: (
       <PrivateRoutes>
         <Dashboard />
       </PrivateRoutes>
     ),
     children: [
-      {
-        path: "auctionChart",
-        element: <AuctionChart></AuctionChart>,
-      },
-      {
-        path: "manageUsers",
-        element: <ManageUsers></ManageUsers>,
-      },
-      {
-        path:"updatedBidInfo",
-        element:<UpdateBid></UpdateBid>
-      }
+      { path: "auctionChart", element: <AuctionChart /> },
+      { path: "manageUsers", element: <ManageUsers /> },
+      { path: "wishList", element: <WishList /> },
+      { path: "profile", element: <Profile /> },
+      { path: "updatedBidInfo", element: <UpdateBid /> },
     ],
   },
 ]);

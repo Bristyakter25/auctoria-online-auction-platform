@@ -12,7 +12,17 @@ import Question from "../../components/HomeComponents/Question";
 import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
 import LatestAuctions from "../../components/HomeComponents/latestAuctions";
 import FeaturedProducts from "./FeaturedProducts";
+
+
+
 import GetInKnow from "./GetInKnow";
+
+
+
+
+import GetInKnow from "./GetInKnow";
+
+
 
 const Home = () => {
   return (
@@ -22,6 +32,11 @@ const Home = () => {
   <LatestAuctions></LatestAuctions>
       <Question />
       <FeaturedProducts></FeaturedProducts>
+
+
+
+
+     
       <GetInKnow></GetInKnow>
       <EidGreetingGenerator></EidGreetingGenerator>
       <EidCountdown></EidCountdown>
@@ -29,6 +44,11 @@ const Home = () => {
       <MeetUs></MeetUs>
       {/* <Partners /> */}
       <TrustedPartners></TrustedPartners>
+
+
+
+      <MeetCards />
+      <Partners />
       <BiddingMadness />
       <ContactForm />
   </div>

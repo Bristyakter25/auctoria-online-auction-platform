@@ -90,8 +90,8 @@ const AllAuctionCard = ({ auction }) => {
       transition={{ duration: 0.5 }}
       className="rounded-lg"
     >
-      <div className="w-full h-[450px] overflow-hidden bg-white rounded-lg shadow-lg">
-        <img className="object-fill object-center w-full h-44" src={productImage} alt="avatar" />
+      <div className=" h-full overflow-hidden mb-5 bg-white rounded-lg shadow-lg">
+        <img className="object-fill object-center w-full h-[350px]" src={productImage} alt="avatar" />
 
         <div className="flex items-center px-6 py-1 bg-teal-400">
           <p className="flex items-center gap-2 text-gray-600">
