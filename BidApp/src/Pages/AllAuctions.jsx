@@ -3,11 +3,18 @@ import AllAuctionCard from "./HomePage/AllAuctionCard";
 
 const AllAuctions = () => {
   const [allAuctions, setAllAuctions] = useState([]);
+<<<<<<< HEAD
+=======
   console.log("auction id", allAuctions);
+>>>>>>> 985095dec90d411e067993f3169b099712f871a4
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("All");
   const [filteredAuctions, setFilteredAuctions] = useState([]);
 
+<<<<<<< HEAD
+  // Fetch all auctions from the server
+=======
+>>>>>>> 985095dec90d411e067993f3169b099712f871a4
   useEffect(() => {
     fetch("http://localhost:5000/addProducts")
       .then((res) => res.json())
@@ -20,9 +27,16 @@ const AllAuctions = () => {
       });
   }, []);
 
+<<<<<<< HEAD
+  // Filter auctions based on search term and category
+  useEffect(() => {
+    let results = allAuctions.filter(auction =>
+      auction?.productName?.toLowerCase().includes(searchTerm.toLowerCase()) // Prevent undefined error
+=======
   useEffect(() => {
     let results = allAuctions.filter(auction =>
       auction?.productName?.toLowerCase().includes(searchTerm.toLowerCase()) // ✅ Prevent undefined error
+>>>>>>> 985095dec90d411e067993f3169b099712f871a4
     );
 
     if (category !== "All") {
