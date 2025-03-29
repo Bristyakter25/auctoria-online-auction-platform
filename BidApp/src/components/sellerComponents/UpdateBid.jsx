@@ -1,29 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import useAxiosSecure from '../../useHooks/useAxiosSecure';
+import { AuthContext } from '../../providers/AuthProvider';
+import UpdateSingeleBid from './UpdateSingeleBid';
 
 const UpdateBid = () => {
+    const axiosSecure = useAxiosSecure()
+    const {user} = useContext(AuthContext)
+    console.log(user?.email);
+
     const [allBids, setAllBids] = useState([]);
-      useEffect(() => {
-        fetch(`http://localhost:5000/addProducts`)
-          .then((res) => res.json())
-          .then((data) => {
-            setAllBids(data);
-          })
-          .catch((error) => {
-            console.error("Error fetching auctions:", error);
-          });
-      }, []);
-    //   const { data: bids = [], refetch } = useQuery({
-    //     queryKey: ["bids", search],
-    //     queryFn: async () => {
-    //       const res = await axios.get(`http://localhost:5000/addProducts`);
-    //       return res.data;
-    //     },
-    //   });
+   
+      const { data: bids = [], refetch } = useQuery({
+        queryKey: ["bids"],
+        queryFn: async () => {
+          const res = await axiosSecure(`/addProducts/${user?.email}`);
+          return res.data;
+        },
+      });
+      console.log(bids);
     return (
         <div>
-            update bid
+            {
+                bids.map(bid=> <UpdateSingeleBid key={bid._id} bid={bid}></UpdateSingeleBid>)
+            }
 
         </div>
     );
