@@ -12,7 +12,6 @@ import Profile from "../components/HomeComponents/profile";
 import ManageUsers from "../Pages/Dashboard/ManageUsers";
 import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
-import Bid from "../Pages/Bid"; // Assuming you have a Bid component for auction
 
 export const router = createBrowserRouter([
   {
@@ -40,13 +39,10 @@ export const router = createBrowserRouter([
         element: <AllAuctions />,
       },
       {
-        path: "/profile",  // Added missing route for profile
+        path: "/profile",  
         element: <Profile />,
       },
-      {
-        path: "/bid/:id", // Assuming there's a Bid component for viewing an auction by id
-        element: <Bid />,
-      },
+      
     ],
   },
   {
