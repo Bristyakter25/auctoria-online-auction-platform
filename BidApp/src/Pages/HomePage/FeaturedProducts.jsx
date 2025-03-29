@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import FeaturedProductCard from "./FeaturedProductCard";
+import React, { useEffect, useState } from 'react';
+import FeaturedProductCard from './FeaturedProductCard';
 
 const FeaturedProducts = () => {
     const [featuredAuctions, setFeaturedAuctions] = useState([]);
@@ -18,12 +18,12 @@ const FeaturedProducts = () => {
     }, []);
 
     useEffect(() => {
-        let results = featuredAuctions.filter((auction) =>
+        let results = featuredAuctions.filter(auction =>
             auction?.productName?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
         if (category !== "All") {
-            results = results.filter((auction) => auction.category === category);
+            results = results.filter(auction => auction.category === category);
         }
 
         setFilteredAuctions(results);
@@ -32,7 +32,7 @@ const FeaturedProducts = () => {
     return (
         <div>
             <h2 className="text-5xl text-black mt-10 font-bold text-center mb-4">Featured Products</h2>
-
+            
             <div className="text-center my-5 flex flex-wrap justify-center gap-4">
                 <input
                     type="text"
@@ -41,7 +41,7 @@ const FeaturedProducts = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="border w-[500px] p-2 rounded"
                 />
-
+                
                 <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}

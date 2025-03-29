@@ -12,37 +12,20 @@ import Profile from "../components/HomeComponents/profile";
 import ManageUsers from "../Pages/Dashboard/ManageUsers";
 import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
+import Bid from "../Pages/BidTask/Bid";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />, // Make sure to close the component properly
+    element: <MainLayout />, 
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/signup",
-        element: <Register />,
-      },
-      {
-        path: "/addProduct",
-        element: <AddProduct />,
-      },
-      {
-        path: "/allAuctions",
-        element: <AllAuctions />,
-      },
-      {
-        path: "/profile",  
-        element: <Profile />,
-      },
-      
+      { path: "/", element: <Home /> },
+      { path: "/login", element: <Login /> },
+      { path: "/signup", element: <Register /> },
+      { path: "/addProduct", element: <AddProduct /> },
+      { path: "/allAuctions", element: <AllAuctions /> },
+      { path: "/profile", element: <Profile /> },
+      { path: "/bid/:id", element: <Bid /> },
     ],
   },
   {
@@ -53,26 +36,11 @@ export const router = createBrowserRouter([
       </PrivateRoutes>
     ),
     children: [
-      {
-        path: "auctionChart",
-        element: <AuctionChart />,
-      },
-      {
-        path: "manageUsers",
-        element: <ManageUsers />,
-      },
-      {
-        path: "wishList",
-        element: <WishList />,
-      },
-      {
-        path: "profile",
-        element: <Profile />,
-      },
-      {
-        path: "updatedBidInfo",
-        element: <UpdateBid />,
-      },
+      { path: "auctionChart", element: <AuctionChart /> },
+      { path: "manageUsers", element: <ManageUsers /> },
+      { path: "wishList", element: <WishList /> },
+      { path: "profile", element: <Profile /> },
+      { path: "updatedBidInfo", element: <UpdateBid /> },
     ],
   },
 ]);

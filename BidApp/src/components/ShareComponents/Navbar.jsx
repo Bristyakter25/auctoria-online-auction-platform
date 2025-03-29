@@ -39,7 +39,9 @@ const Navbar = () => {
           Home
         </NavLink>
 
+
         
+
 
 
         <NavLink to="/allAuctions" className="hover:text-blue-500">
@@ -51,7 +53,8 @@ const Navbar = () => {
 
         </NavLink>
         
-       
+ 
+
 
         {user && (
           <NavLink to="/dashboard/auctionChart" className="hover:text-blue-500">

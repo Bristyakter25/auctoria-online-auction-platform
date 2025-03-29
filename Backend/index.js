@@ -10,10 +10,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const server = http.createServer(app);
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://bidapp-81c51.web.app",
-];
+const allowedOrigins = ["http://localhost:5173", "https://bidapp-81c51.web.app"];
 
 app.use(
   cors({
@@ -69,24 +66,20 @@ async function run() {
     // 🛠 Get Recent Products (Limited to 4)
     app.get("/recentProducts", async (req, res) => {
       try {
-        const cursor = productsCollection.find().sort({ _id: -1 }).limit(4);
-        const result = await cursor.toArray();
-        res.send(result);
+        const result = await productsCollection.find().sort({ _id: -1 }).limit(4).toArray();
+        res.json(result);
       } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: "Failed to fetch recent products" });
+        res.status(500).json({ error: "Failed to fetch recent products" });
       }
     });
 
     // 🛠 Get Featured Products
     app.get("/featuredProducts", async (req, res) => {
       try {
-        const cursor = productsCollection.find({ status: "Active" }).sort({ startingBid: -1 });
-        const result = await cursor.toArray();
-        res.send(result);
+        const result = await productsCollection.find({ status: "Active" }).sort({ startingBid: -1 }).toArray();
+        res.json(result);
       } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: "Failed to fetch featured products" });
+        res.status(500).json({ error: "Failed to fetch featured products" });
       }
     });
 
@@ -106,7 +99,6 @@ async function run() {
         const result = await productsCollection.insertOne(productData);
         res.status(201).json({ message: "Product added successfully", result });
       } catch (error) {
-        console.error(error);
         res.status(500).json({ message: "Error adding product", error });
       }
     });
@@ -134,9 +126,9 @@ async function run() {
           return res.json({ message: "Wishlist is empty", wishlist: [] });
         }
 
-        const wishListedProducts = await productsCollection.find({
-          _id: { $in: user.wishlist.map((id) => new ObjectId(id)) },
-        }).toArray();
+        const wishListedProducts = await productsCollection
+          .find({ _id: { $in: user.wishlist.map((id) => new ObjectId(id)) } })
+          .toArray();
 
         res.json({ wishlist: wishListedProducts });
       } catch (error) {
@@ -171,21 +163,21 @@ async function run() {
       const user = req.body;
       try {
         const token = jwt.sign(user, process.env.JWT_ACCESS_TOKEN, { expiresIn: "5h" });
-        res.send({ token });
-      } catch (err) {
-        res.status(500).json({ message: "Error generating JWT token", error: err });
+        res.json({ token });
+      } catch (error) {
+        res.status(500).json({ message: "Error generating JWT token", error });
       }
     });
 
     // 🛠 Middleware to Verify JWT Token
     const verifyToken = (req, res, next) => {
       if (!req.headers.authorization) {
-        return res.status(401).send({ message: "Forbidden access" });
+        return res.status(401).json({ message: "Forbidden access" });
       }
       const token = req.headers.authorization.split(" ")[1];
       jwt.verify(token, process.env.JWT_ACCESS_TOKEN, (err, decoded) => {
         if (err) {
-          return res.status(401).send({ message: "Forbidden access" });
+          return res.status(401).json({ message: "Forbidden access" });
         }
         req.decoded = decoded;
         next();
@@ -202,28 +194,12 @@ async function run() {
       }
     });
 
-    // 🛠 Register a New User
-    app.post("/users", async (req, res) => {
-      const { name, email, photoURL, uid } = req.body;
-      try {
-        const existingUser = await usersCollection.findOne({ email });
-        if (existingUser) {
-          return res.status(400).json({ message: "User already exists" });
-        }
-        const newUser = { name, email, photoURL, uid, createdAt: new Date() };
-        const result = await usersCollection.insertOne(newUser);
-        res.status(201).json({ message: "User registered successfully", user: result });
-      } catch (error) {
-        res.status(500).json({ message: "Server error" });
-      }
-    });
-
   } finally {
-    // Not closing client here so the server keeps running
+    // Not closing client to keep the server running
   }
 }
 
-run().catch(console.dir);
+run().catch(console.error);
 
 // 🛠 Start the Server
 server.listen(port, () => {
