@@ -13,14 +13,6 @@ import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
 import LatestAuctions from "../../components/HomeComponents/latestAuctions";
 import Countdown from "../../components/NewFeatures/Countdown";
 import FeaturedProducts from "./FeaturedProducts";
-
-
-
-
-
-
-
-
 import GetInKnow from "./GetInKnow";
 
 
