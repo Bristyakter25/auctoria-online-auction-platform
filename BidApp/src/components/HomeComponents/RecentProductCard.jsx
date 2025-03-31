@@ -74,7 +74,7 @@ const RecentProductCard = ({ recentProduct }) => {
     }
   };
   return (
-    <div className="card dark:bg-purple-700 card-compact bg-base-100 w-[320px] mx-auto shadow-xl">
+    <div className="card  card-compact bg-base-100 w-[320px] mx-auto shadow-xl">
       <figure>
         <img className="w-full h-[250px]" src={productImage} alt="product" />
       </figure>
