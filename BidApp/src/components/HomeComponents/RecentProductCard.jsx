@@ -6,7 +6,7 @@ import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 const RecentProductCard = ({ recentProduct }) => {
   const { productName, description, productImage, startingBid, auctionStartDate, _id } = recentProduct;
   const { user } = useContext(AuthContext);
-  const [isWishlisted, setIsWishlisted] = useState(false); // Corrected state name
+  const [isWishListed, setIsWishListed] = useState(false); // Corrected state name
 
   // Check if the product is already in the wishlist on component mount
   useEffect(() => {
@@ -16,7 +16,7 @@ const RecentProductCard = ({ recentProduct }) => {
     // Check if the product is in localStorage
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     if (wishlist.includes(_id)) {
-      setIsWishlisted(true); // If product is in localStorage, mark it as added
+      setIsWishListed(true); // If product is in localStorage, mark it as added
     } else {
       // If not in localStorage, fetch wishlist from backend
       const fetchWishlist = async () => {
@@ -26,7 +26,7 @@ const RecentProductCard = ({ recentProduct }) => {
           
           if (response.ok) {
             const isProductInWishlist = data.wishlist.some((product) => product._id === _id);
-            setIsWishlisted(isProductInWishlist); // Set state based on backend response
+            setIsWishListed(isProductInWishlist); // Set state based on backend response
           } else {
             console.error("Failed to fetch wishlist");
           }
@@ -62,7 +62,7 @@ const RecentProductCard = ({ recentProduct }) => {
       });
 
       if (response.ok) {
-        setIsWishlisted(true); // Update UI immediately
+        setIsWishListed(true); // Update UI immediately
         alert("Product added to wishlist!");
 
         // Store the updated wishlist in localStorage
@@ -95,7 +95,7 @@ const RecentProductCard = ({ recentProduct }) => {
         </p>
         <div className="flex justify-between p-3">
           <button className="btn text-white" onClick={handleAddToWishlist} disabled={isWishlisted}>
-            {isWishlisted ? (
+            {isWishListed ? (
               <IoMdHeart size={28} className="text-red-600" />
             ) : (
               <IoMdHeartEmpty size={28} className="text-gray-600" />

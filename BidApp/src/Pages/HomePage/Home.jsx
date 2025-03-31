@@ -15,7 +15,7 @@ import FeaturedProducts from "./FeaturedProducts";
 
 
 
-import GetInKnow from "./GetInKnow";
+
 
 
 
@@ -44,7 +44,6 @@ const Home = () => {
       <MeetUs></MeetUs>
       {/* <Partners /> */}
       <TrustedPartners></TrustedPartners>
-
 
 
       <MeetCards />
