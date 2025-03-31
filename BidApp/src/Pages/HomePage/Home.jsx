@@ -11,6 +11,7 @@ import Partners from "../../components/HomeComponents/Partners";
 import Question from "../../components/HomeComponents/Question";
 import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
 import LatestAuctions from "../../components/HomeComponents/latestAuctions";
+import Countdown from "../../components/NewFeatures/Countdown";
 import FeaturedProducts from "./FeaturedProducts";
 
 
@@ -45,7 +46,7 @@ const Home = () => {
       {/* <Partners /> */}
       <TrustedPartners></TrustedPartners>
 
-
+<Countdown></Countdown>
       <MeetCards />
       <Partners />
       <BiddingMadness />
