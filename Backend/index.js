@@ -10,10 +10,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const server = http.createServer(app);
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://bidapp-81c51.web.app",
-];
+const allowedOrigins = ["http://localhost:5173", "https://bidapp-81c51.web.app"];
 
 app.use(
   cors({
@@ -58,26 +55,54 @@ async function run() {
     const productsCollection = db.collection("addProducts");
     const usersCollection = db.collection("users");
 
-    // 🛠 Add Product API
-    app.post("/addProducts", async (req, res) => {
-      const productData = req.body;
+    // 🛠 Get All Products
+    app.get("/addProducts", async (req, res) => {
       try {
-        if (productData.auctionStartDate) {
-          const startTime = new Date(productData.auctionStartDate);
-          startTime.setDate(startTime.getDate() + 7);
-          productData.auctionEndTime = startTime.toISOString();
-        }
-        const result = await productsCollection.insertOne(productData);
-        res.status(201).json({ message: "Product added successfully", result });
-      } catch (err) {
-        res.status(500).json({ message: "Error adding product", error: err });
+        const result = await productsCollection.find().toArray();
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching products", error });
       }
     });
 
-    // 🛠 Get All Products
-    app.get("/addProducts", async (req, res) => {
-      const result = await productsCollection.find().toArray();
-      res.json(result);
+    // 🛠 Get Recent Products (Limited to 4)
+    app.get("/recentProducts", async (req, res) => {
+      try {
+        const result = await productsCollection.find().sort({ _id: -1 }).limit(4).toArray();
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch recent products" });
+      }
+    });
+
+    // 🛠 Get Featured Products
+    app.get("/featuredProducts", async (req, res) => {
+      try {
+        const result = await productsCollection.find({ status: "Active" }).sort({ startingBid: -1 }).toArray();
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch featured products" });
+      }
+    });
+
+    // 🛠 Add Product
+    app.post("/addProducts", async (req, res) => {
+      const productData = req.body;
+      try {
+        if (!productData.auctionStartDate) {
+          return res.status(400).json({ message: "Auction start date is required" });
+        }
+
+        const startTime = new Date(productData.auctionStartDate);
+        const auctionEndTime = new Date(startTime);
+        auctionEndTime.setDate(auctionEndTime.getDate() + 7);
+        productData.auctionEndTime = auctionEndTime.toISOString();
+
+        const result = await productsCollection.insertOne(productData);
+        res.status(201).json({ message: "Product added successfully", result });
+      } catch (error) {
+        res.status(500).json({ message: "Error adding product", error });
+      }
     });
 
     // 🛠 Get Single Product by ID
@@ -89,16 +114,6 @@ async function run() {
         res.json(product);
       } catch (error) {
         res.status(500).json({ error: "Invalid product ID" });
-      }
-    });
-
-    // 🛠 Get Featured Products
-    app.get("/featuredProducts", async (req, res) => {
-      try {
-        const result = await productsCollection.find({ status: "Active" }).sort({ startingBid: -1 }).toArray();
-        res.json(result);
-      } catch (error) {
-        res.status(500).json({ error: "Failed to fetch featured products" });
       }
     });
 
@@ -163,22 +178,28 @@ app.get("/wishlist/:userId", async (req, res) => {
     
     
     
+    
 
     // 🛠 JWT Authentication
     app.post("/jwt", async (req, res) => {
       const user = req.body;
-      const token = jwt.sign(user, process.env.JWT_ACCESS_TOKEN, { expiresIn: "5h" });
-      res.send({ token });
+      try {
+        const token = jwt.sign(user, process.env.JWT_ACCESS_TOKEN, { expiresIn: "5h" });
+        res.json({ token });
+      } catch (error) {
+        res.status(500).json({ message: "Error generating JWT token", error });
+      }
     });
 
+    // 🛠 Middleware to Verify JWT Token
     const verifyToken = (req, res, next) => {
       if (!req.headers.authorization) {
-        return res.status(401).send({ message: "forbidden access" });
+        return res.status(401).json({ message: "Forbidden access" });
       }
       const token = req.headers.authorization.split(" ")[1];
       jwt.verify(token, process.env.JWT_ACCESS_TOKEN, (err, decoded) => {
         if (err) {
-          return res.status(401).send({ message: "forbidden access" });
+          return res.status(401).json({ message: "Forbidden access" });
         }
         req.decoded = decoded;
         next();
@@ -195,29 +216,18 @@ app.get("/wishlist/:userId", async (req, res) => {
       }
     });
 
-    // 🛠 Register a New User
-    app.post("/users", async (req, res) => {
-      try {
-        const { name, email, photoURL, uid } = req.body;
-        const existingUser = await usersCollection.findOne({ email });
-        if (existingUser) {
-          return res.status(400).json({ message: "User already exists" });
-        }
-        const newUser = { name, email, photoURL, uid, createdAt: new Date() };
-        const result = await usersCollection.insertOne(newUser);
-        res.status(201).json({ message: "User registered successfully", user: result });
-      } catch (error) {
-        res.status(500).json({ message: "Server error" });
-      }
-    });
-
   } finally {
+
     // Ensures that the client will close when you finish/error
     // await client.close();
+
+    // Not closing client to keep the server running
+
   }
 }
 
-run().catch(console.dir);
+
+run().catch(console.error);
 
 app.get("/", (req, res) => {
   res.send("Auctoria is waiting for an exclusive bid!");
