@@ -18,30 +18,24 @@ const AllAuctionCard = ({ auction }) => {
   useEffect(() => {
     if (!userId) return;
 
-    // Check if the product is in localStorage (persistent across reloads)
-    const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    if (wishlist.includes(_id)) {
-      setIsWishlisted(true); // Set the wishlist state if the product is in localStorage
-    } else {
-      // If not in localStorage, fetch from backend
-      const fetchWishlist = async () => {
-        try {
-          const response = await fetch(`http://localhost:5000/wishlist/${userId}`);
-          const data = await response.json();
+    // Fetch wishlist from backend to ensure it's for the logged-in user
+    const fetchWishlist = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/wishlist/${userId}`);
+        const data = await response.json();
 
-          if (response.ok) {
-            const isProductInWishlist = data.wishlist.some(product => product._id === _id);
-            setIsWishlisted(isProductInWishlist); // Update state based on backend data
-          } else {
-            console.error("Failed to fetch wishlist");
-          }
-        } catch (error) {
-          console.error("Error fetching wishlist:", error);
+        if (response.ok) {
+          const isProductInWishlist = data.wishlist.some(product => product._id === _id);
+          setIsWishlisted(isProductInWishlist); // Update state based on backend data
+        } else {
+          console.error("Failed to fetch wishlist");
         }
-      };
+      } catch (error) {
+        console.error("Error fetching wishlist:", error);
+      }
+    };
 
-      fetchWishlist();
-    }
+    fetchWishlist();
   }, [userId, _id]); // Re-run effect when userId or _id changes
 
   const handleAddToWishlist = async () => {
@@ -66,13 +60,13 @@ const AllAuctionCard = ({ auction }) => {
 
       if (response.ok) {
         setIsWishlisted(true); // Update state immediately
-
-        // Update localStorage with new wishlist
-        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-        wishlist.push(_id);
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-
         alert("Product added to wishlist!");
+
+        // Re-fetch wishlist to ensure state consistency
+        const updatedWishlistResponse = await fetch(`http://localhost:5000/wishlist/${userId}`);
+        const updatedData = await updatedWishlistResponse.json();
+        const isProductInWishlist = updatedData.wishlist.some(product => product._id === _id);
+        setIsWishlisted(isProductInWishlist);
       } else {
         const errorData = await response.json();
         alert(`Failed to add to wishlist: ${errorData.message}`);
@@ -90,7 +84,7 @@ const AllAuctionCard = ({ auction }) => {
       transition={{ duration: 0.5 }}
       className="rounded-lg"
     >
-      <div className=" h-full overflow-hidden mb-5 bg-white rounded-lg shadow-lg">
+      <div className="h-full overflow-hidden mb-5 bg-white rounded-lg shadow-lg">
         <img className="object-fill object-center w-full h-[350px]" src={productImage} alt="avatar" />
 
         <div className="flex items-center px-6 py-1 bg-teal-400">
