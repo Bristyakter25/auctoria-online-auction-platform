@@ -11,7 +11,7 @@ const MainLayout = () => {
       <div className="fixed top-0 left-0 w-full z-50 bg-slate-200 shadow-md">
         <Navbar />
       </div>
-     <div className="lg:max-w-7xl mx-auto">
+     <div >
      <Outlet />
      </div>
       <Footer />
