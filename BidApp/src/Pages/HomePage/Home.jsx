@@ -19,11 +19,6 @@ import GetInKnow from "./GetInKnow";
 
 
 
-
-import GetInKnow from "./GetInKnow";
-
-
-
 const Home = () => {
   return (
     <div className="w-full">
