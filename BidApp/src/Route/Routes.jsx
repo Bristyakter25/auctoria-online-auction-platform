@@ -40,6 +40,7 @@ export const router = createBrowserRouter([
       { path: "manageUsers", element: <ManageUsers /> },
       { path: "wishList", element: <WishList /> },
       { path: "profile", element: <Profile /> },
+      // { path: "updatedBidInfo", element: <UpdateBid /> },
       { path: "updatedBidInfo", element: <UpdateBid /> },
     ],
   },
