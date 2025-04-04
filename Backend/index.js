@@ -105,17 +105,59 @@ async function run() {
       }
     });
 
-    // 🛠 Get Single Product by ID
+  
+
     app.get("/addProducts/:id", async (req, res) => {
       const { id } = req.params;
+      
       try {
         const product = await productsCollection.findOne({ _id: new ObjectId(id) });
-        if (!product) return res.status(404).json({ message: "Product not found" });
+    
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+    
+        // 🛠 Fix bid structure: Ensure `_id` exists in each bid
+        if (product.bids) {
+          product.bids = product.bids.map((bid) => ({
+            ...bid,
+            _id: bid._id ? bid._id.toString() : new ObjectId().toString(),
+          }));
+        }
+    
         res.json(product);
       } catch (error) {
         res.status(500).json({ error: "Invalid product ID" });
       }
     });
+    
+
+    // 🛠 Get Single Product by delete
+    app.delete("/bid/:productId/:bidId", async (req, res) => {
+      const { productId, bidId } = req.params;
+    
+      if (!ObjectId.isValid(productId) || !ObjectId.isValid(bidId)) {
+        return res.status(400).json({ message: "Invalid productId or bidId" });
+      }
+    
+      try {
+        const result = await productsCollection.deleteOne(
+          { _id: new ObjectId(productId) },
+          { $pull: { bids: { _id: new ObjectId(bidId) } } }
+        );
+    
+        if (result.deletedCount > 0) {
+          io.emit("bidDeleted", { productId, bidId });
+          res.json({ message: "Bid deleted successfully" });
+        } else {
+          res.status(404).json({ message: "Bid not found" });
+        }
+      } catch (error) {
+        res.status(500).json({ message: "Error deleting bid", error });
+      }
+    });
+    
+    
 
     // 🛠 Get User Wishlist
     const { ObjectId } = require("mongodb"); // Ensure ObjectId is imported from MongoDB
