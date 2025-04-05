@@ -8,6 +8,7 @@ import { RiAuctionLine } from "react-icons/ri";
 import { GrHome } from "react-icons/gr";
 import { MdOutlineAddToQueue } from "react-icons/md";
 import { FaChartBar } from "react-icons/fa";
+import { FaHouseMedicalFlag } from "react-icons/fa6";
 
 
 const Dashboard = () => {
