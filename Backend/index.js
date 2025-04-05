@@ -105,6 +105,25 @@ async function run() {
       }
     });
 
+    app.post("/bid/:id", async (req, res) => {
+      const { id } = req.params;
+      const { amount, user } = req.body;
+      try {
+        if (!ObjectId.isValid(id)) {
+          return res.status(400).send({ error: "Invalid product ID format" });
+        }
+        const objectId = new ObjectId(id);
+        const result = await productsCollection.updateOne(
+          { _id: objectId },
+          { $push: { bids: { amount, user, time: new Date() } } }
+        );
+        io.emit("newBid", { id, amount, user });
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to place bid" });
+      }
+    });
+
     // 🛠 Get Single Product by ID
     app.get("/addProducts/:id", async (req, res) => {
       const { id } = req.params;
@@ -118,7 +137,7 @@ async function run() {
     });
 
     // 🛠 Get User Wishlist
-    const { ObjectId } = require("mongodb"); // Ensure ObjectId is imported from MongoDB
+    // Ensure ObjectId is imported from MongoDB
 
 app.get("/wishlist/:userId", async (req, res) => {
   const { userId } = req.params;
