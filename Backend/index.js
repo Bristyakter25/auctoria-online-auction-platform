@@ -31,7 +31,10 @@ app.use(express.json());
 
 io.on("connection", (socket) => {
   console.log("A user connected", socket.id);
-
+  // // ইউজার আইডি রেজিস্টার করা
+  // socket.on("register", (userId) => {
+  //   users[userId] = socket.id;
+  // });
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
@@ -69,6 +72,9 @@ async function run() {
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    const notificationsCollection = client
+      .db("Auctoria")
+      .collection("notifications");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -93,18 +99,6 @@ async function run() {
         next();
       });
     };
-
-    //jwt apis rumman's code ends here
-
-    // app.get("/addProducts", async (req, res) => {
-    //   const productsCollection = client
-    //     .db("Auctoria")
-    //     .collection("addProducts");
-    //   const usersCollection = client.db("Auctoria").collection("users");
-    // });
-    //jwt apis rumman's code starts here
-
-    //jwt apis rumman's code ends here
 
     app.get("/users", async (req, res) => {
       try {
@@ -143,17 +137,6 @@ async function run() {
       }
     });
 
-    // app.get('/recentProducts', async (req, res) => {
-    //   try {
-    //     const cursor = productsCollection.find().sort({ _id: -1 }).limit(4);
-    //     const result = await cursor.toArray();
-    //     res.send(result);
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).send({ error: "Failed to fetch recent blogs" });
-    //   }
-    // });
-
     app.get("/featuredProducts", async (req, res) => {
       try {
         const cursor = productsCollection.aggregate([
@@ -173,6 +156,9 @@ async function run() {
     app.post("/addProducts", async (req, res) => {
       const productData = req.body;
       try {
+        if (!productData) {
+          return res.status(400).json({ message: "Missing fields" });
+        }
         if (productData.auctionStartDate) {
           const startTime = new Date(productData.auctionStartDate);
 
@@ -183,30 +169,38 @@ async function run() {
         }
 
         const result = await productsCollection.insertOne(productData);
+        const notification = {
+          userId: "all",
+          message: `New product listed: ${productData.productName}`,
+          createdAt: new Date(),
+          read: false,
+        };
+        await notificationsCollection.insertOne(notification);
+        io.emit("notification_all", notification);
         res.status(200).json(result);
       } catch (err) {
         res.status(500).json({ message: "Error adding product", error: err });
       }
     });
 
-    app.post("/addProducts", async (req, res) => {
-      const productData = req.body;
-      try {
-        if (productData.auctionStartDate) {
-          const startTime = new Date(productData.auctionStartDate);
-          // Add 7 days (or your desired duration) to startTime for endTime
-          const auctionEndTime = new Date(startTime);
-          auctionEndTime.setDate(auctionEndTime.getDate() + 7); // Adding 7 days
-          // Update productData with calculated endTime
-          productData.auctionEndTime = auctionEndTime.toISOString(); // Convert to string format
-        }
-        // Insert the updated product data into MongoDB
-        const result = await productsCollection.insertOne(productData);
-        res.status(200).json(result);
-      } catch (err) {
-        res.status(500).json({ message: "Error adding product", error: err });
-      }
-    });
+    // app.post("/addProducts", async (req, res) => {
+    //   const productData = req.body;
+    //   try {
+    //     if (productData.auctionStartDate) {
+    //       const startTime = new Date(productData.auctionStartDate);
+    //       // Add 7 days (or your desired duration) to startTime for endTime
+    //       const auctionEndTime = new Date(startTime);
+    //       auctionEndTime.setDate(auctionEndTime.getDate() + 7); // Adding 7 days
+    //       // Update productData with calculated endTime
+    //       productData.auctionEndTime = auctionEndTime.toISOString(); // Convert to string format
+    //     }
+    //     // Insert the updated product data into MongoDB
+    //     const result = await productsCollection.insertOne(productData);
+    //     res.status(200).json(result);
+    //   } catch (err) {
+    //     res.status(500).json({ message: "Error adding product", error: err });
+    //   }
+    // });
 
     app.post("/users", async (req, res) => {
       try {
@@ -251,18 +245,50 @@ async function run() {
     //   }
     // });
 
+    // app.post("/bid/:id", async (req, res) => {
+    //   const { id } = req.params;
+    //   const { amount, user } = req.body;
+    //   try {
+    //     if (!ObjectId.isValid(id)) {
+    //       return res.status(400).send({ error: "Invalid product ID format" });
+    //     }
+    //     const objectId = new ObjectId(id);
+    //     const result = await productsCollection.updateOne(
+    //       { _id: objectId },
+    //       { $push: { bids: { amount, user, time: new Date() } } }
+    //     );
+    //     io.emit("newBid", { id, amount, user });
+    //     res.send(result);
+    //   } catch (error) {
+    //     res.status(500).send({ error: "Failed to place bid" });
+    //   }
+    // });
+
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
-      const { amount, user } = req.body;
+      const { amount, user, sellerId, productName } = req.body;
       try {
         if (!ObjectId.isValid(id)) {
           return res.status(400).send({ error: "Invalid product ID format" });
         }
         const objectId = new ObjectId(id);
+
         const result = await productsCollection.updateOne(
           { _id: objectId },
           { $push: { bids: { amount, user, time: new Date() } } }
         );
+
+        // সেলারকে নোটিফিকেশন পাঠানো
+        const notification = {
+          userId: sellerId,
+          message: `${user.name} placed a bid of $${amount} on your product: ${productName}`,
+          createdAt: new Date(),
+          read: false,
+        };
+
+        await notificationsCollection.insertOne(notification);
+        io.emit(`notification_${sellerId}`, notification);
+
         io.emit("newBid", { id, amount, user });
         res.send(result);
       } catch (error) {

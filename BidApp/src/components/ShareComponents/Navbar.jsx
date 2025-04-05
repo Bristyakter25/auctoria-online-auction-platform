@@ -1,8 +1,8 @@
-
 import { useContext, useState } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import NotificationBell from "../../Pages/BidTask/NotificationBell";
 
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
@@ -44,7 +44,7 @@ const Navbar = () => {
         </NavLink>
         <NavLink to="/addProduct" className="hover:text-blue-500">
           Add Product
-          </NavLink>
+        </NavLink>
 
         {user && (
           <NavLink to="/dashboard" className="hover:text-blue-500">
@@ -91,6 +91,7 @@ const Navbar = () => {
 
       {/* Contact Icons & Button */}
       <div className="hidden md:flex items-center space-x-4">
+        <NotificationBell />
         <FaPhoneAlt className="text-xl cursor-pointer hover:text-blue-500" />
         <FaEnvelope className="text-xl cursor-pointer hover:text-blue-500" />
         <FaMapMarkerAlt className="text-xl cursor-pointer hover:text-blue-500" />

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaGavel } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -11,6 +12,7 @@ const socket = io("http://localhost:5000", {
 });
 
 const Bid = () => {
+  const { user } = useContext(AuthContext);
   const item = {
     images: [
       "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
@@ -66,7 +68,11 @@ const Bid = () => {
       const res = await fetch(`http://localhost:5000/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: Number(bidAmount), user: "User1" }),
+        body: JSON.stringify({
+          sellerId: product.sellerId,
+          amount: Number(bidAmount),
+          user: user?.displayName,
+        }),
       });
       if (res.ok) {
         toast.success("Your bid has been submitted successfully!", {
@@ -86,6 +92,7 @@ const Bid = () => {
       });
     }
   };
+
   if (!product) return <p className="text-center">Loading...</p>;
   return (
     <div className="container mx-auto px-4 py-8">
