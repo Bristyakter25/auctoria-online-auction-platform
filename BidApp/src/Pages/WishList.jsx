@@ -3,15 +3,15 @@ import WishListCard from "./WishListCard";
 import { AuthContext } from "../providers/AuthProvider";
 
 const WishList = () => {
-  const { user } = useContext(AuthContext); // Get logged-in user
+  const { user } = useContext(AuthContext);
   const [wishListProducts, setWishListProducts] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
   useEffect(() => {
-    if (!user?.uid) return; // Ensure user is logged in before fetching
+    if (!user?.uid) return;
 
-    setLoading(true); // Start loading
+    setLoading(true); 
 
     fetch(`http://localhost:5000/wishlist/${user.uid}`)
       .then((res) => {
@@ -21,21 +21,20 @@ const WishList = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("Wishlist API Response:", data); // Debugging
-        setWishListProducts(data.wishlist || []); // ✅ Extract "wishlist" array
-        setLoading(false); // End loading
+        console.log("Wishlist API Response:", data); 
+        setWishListProducts(data.wishlist || []); 
+        setLoading(false); 
       })
       .catch((err) => {
         console.error("Error fetching wishlist:", err);
         setError("Failed to load your wishlist.");
-        setLoading(false); // End loading
+        setLoading(false); 
       });
-  }, [user]); // Run effect when user changes
-
+  }, [user]); 
   if (loading) {
     return (
       <div className="text-center mt-10">
-        <p>Loading your wishlist...</p> {/* Display loading text */}
+        <p>Loading your wishlist...</p> 
       </div>
     );
   }
