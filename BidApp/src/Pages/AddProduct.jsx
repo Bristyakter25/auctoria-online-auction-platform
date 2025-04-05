@@ -48,7 +48,7 @@ const AddProduct = () => {
   return (
     <div className="lg:max-w-lg mx-auto mt-10">
       <h1 className="text-3xl font-bold text-center mb-10">Add New Auction Product</h1>
-      <form onSubmit={handleSubmitProduct} className="space-y-4 bg-white dark:bg-purple-700 p-6 rounded shadow">
+      <form onSubmit={handleSubmitProduct} className="space-y-4 bg-white  p-6 rounded shadow">
         <div>
           <label className="block font-medium">Product Name</label>
           <input
