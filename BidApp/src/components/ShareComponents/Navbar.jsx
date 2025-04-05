@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-
+import auctionIcon from "../../assets/auction.png"
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -26,36 +26,23 @@ const Navbar = () => {
       {/* Logo Section */}
       <div className="flex items-center space-x-2">
         <img
-          src="https://i.ibb.co/Js9CG21/361076432-c6ae963c-9e4b-48c4-9bda-f1b54e9f5bf4.jpg"
+          src={auctionIcon}
           alt="Logo"
-          className="rounded-full w-10 h-10 object-cover"
+          className="rounded-full w-12 h-12 object-cover"
         />
-        <span className="font-semibold text-lg">Auctoria</span>
+        <span className="font-extrabold text-xl text-indigo-600">Auctoria</span>
       </div>
 
       {/* Nav Links */}
-      <div className="hidden md:flex space-x-6 text-gray-800">
+      <div className="hidden md:flex space-x-6 text-xl text-gray-800">
         <NavLink to="/" className="hover:text-blue-500">
           Home
         </NavLink>
-
-
-        
-
-
-
         <NavLink to="/allAuctions" className="hover:text-blue-500">
           View All Auctions</NavLink>
-        
-
         <NavLink to="/addProduct" className="hover:text-blue-500">
           Add Product
-
         </NavLink>
-        
- 
-
-
         {user && (
           <NavLink to="/dashboard/auctionChart" className="hover:text-blue-500">
             Dashboard
