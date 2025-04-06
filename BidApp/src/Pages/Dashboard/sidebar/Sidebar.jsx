@@ -11,6 +11,7 @@ const Sidebar = () => {
   const [isAdmin] = useAdmin();
   const [isSeller] = useSeller();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+ 
   return (
     <div>
      <div className="flex h-screen">

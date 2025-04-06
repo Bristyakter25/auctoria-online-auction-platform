@@ -1,17 +1,20 @@
 require("dotenv").config();
-var jwt = require("jsonwebtoken");
 const express = require("express");
 const cors = require("cors");
-const port = process.env.PORT || 5000;
-const app = express();
 const http = require("http");
-const socketIo = require("socket.io");
 const { Server } = require("socket.io");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const jwt = require("jsonwebtoken");
+
+const app = express();
+const port = process.env.PORT || 5000;
 const server = http.createServer(app);
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://bidapp-81c51.web.app",
 ];
+
 app.use(
   cors({
     origin: allowedOrigins,
@@ -19,6 +22,8 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+app.use(express.json());
+
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
@@ -27,31 +32,22 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-app.use(express.json());
 
 io.on("connection", (socket) => {
   console.log("A user connected", socket.id);
-  // // ইউজার আইডি রেজিস্টার করা
   // socket.on("register", (userId) => {
   //   users[userId] = socket.id;
   // });
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
+
   socket.on("connect_error", (error) => {
     console.error("❌ Connection Error:", error);
   });
-
-  socket.on("disconnect", (reason) => {
-    console.warn("⚠️ Disconnected:", reason);
-  });
 });
 
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-
-// console.log("DB_PASS:", process.env.DB_PASS);
 const uri = `mongodb+srv://auctoria:${process.env.DB_PASS}@cluster0.t199j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -71,6 +67,7 @@ async function run() {
     // );
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
+    const usersCollection = client.db("Auctoria").collection("users");
     const bidHistroyCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
@@ -102,57 +99,44 @@ async function run() {
 
     app.get("/users", async (req, res) => {
       try {
-        const users = await usersCollection.find().toArray();
-        res.status(200).json(users);
+        const result = await productsCollection.find().toArray();
+        res.json(result);
       } catch (error) {
-        res.status(500).json({ message: "Error fetching users", error });
+        res.status(500).json({ message: "Error fetching products", error });
       }
     });
 
-    app.get("/addProducts", async (req, res) => {
-      const cursor = productsCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-    app.get("/addProducts/:id", async (req, res) => {
-      const { id } = req.params;
-      const product = await productsCollection.findOne({
-        _id: new ObjectId(id),
-      });
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-
-      res.json(product);
-    });
-
+    // 🛠 Get Recent Products (Limited to 4)
     app.get("/recentProducts", async (req, res) => {
       try {
-        const cursor = productsCollection.find().sort({ _id: -1 }).limit(4);
-        const result = await cursor.toArray();
-        res.send(result);
+        const result = await productsCollection
+          .find()
+          .sort({ _id: -1 })
+          .limit(4)
+          .toArray();
+        res.json(result);
       } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: "Failed to fetch recent blogs" });
+        res.status(500).json({ error: "Failed to fetch recent products" });
       }
     });
 
     app.get("/featuredProducts", async (req, res) => {
       try {
-        const cursor = productsCollection.aggregate([
-          { $match: { status: "Active" } },
-          { $addFields: { startingBidNum: { $toDouble: "$startingBid" } } },
-          { $sort: { startingBidNum: -1 } },
-        ]);
-
-        const result = await cursor.toArray();
-        res.send(result);
+        const result = await productsCollection
+          .find({ status: "Active" })
+          .sort({ startingBid: -1 })
+          .toArray();
+        res.json(result);
       } catch (error) {
-        console.error(error);
-        res.status(500).send({ error: "Failed to fetch featured products" });
+        res.status(500).json({ error: "Failed to fetch featured products" });
       }
     });
-
+    app.get("/addProducts", async (req, res) => {
+      const cursor = productsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    // 🛠 Add Product
     app.post("/addProducts", async (req, res) => {
       const productData = req.body;
       try {
@@ -183,86 +167,201 @@ async function run() {
       }
     });
 
-    // app.post("/addProducts", async (req, res) => {
-    //   const productData = req.body;
-    //   try {
-    //     if (productData.auctionStartDate) {
-    //       const startTime = new Date(productData.auctionStartDate);
-    //       // Add 7 days (or your desired duration) to startTime for endTime
-    //       const auctionEndTime = new Date(startTime);
-    //       auctionEndTime.setDate(auctionEndTime.getDate() + 7); // Adding 7 days
-    //       // Update productData with calculated endTime
-    //       productData.auctionEndTime = auctionEndTime.toISOString(); // Convert to string format
-    //     }
-    //     // Insert the updated product data into MongoDB
-    //     const result = await productsCollection.insertOne(productData);
-    //     res.status(200).json(result);
-    //   } catch (err) {
-    //     res.status(500).json({ message: "Error adding product", error: err });
-    //   }
-    // });
-
-    app.post("/users", async (req, res) => {
+    app.get("/addProducts/:id", async (req, res) => {
+      const { id } = req.params;
       try {
-        const { name, email, photoURL, uid } = req.body;
+        const product = await productsCollection.findOne({
+          _id: new ObjectId(id),
+        });
 
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+
+        if (product.bids) {
+          product.bids = product.bids.map((bid) => ({
+            ...bid,
+            _id: bid._id ? bid._id.toString() : new ObjectId().toString(),
+          }));
+        }
+
+        res.json(product);
+      } catch (error) {
+        res.status(500).json({ error: "Invalid product ID" });
+      }
+    });
+
+    // 🛠 Get Single Product by delete
+    app.delete("/bid/:productId/:bidId", async (req, res) => {
+      const { productId, bidId } = req.params;
+
+      if (!ObjectId.isValid(productId) || !ObjectId.isValid(bidId)) {
+        return res.status(400).json({ message: "Invalid productId or bidId" });
+      }
+
+      try {
+        const result = await productsCollection.deleteOne(
+          { _id: new ObjectId(productId) },
+          { $pull: { bids: { _id: new ObjectId(bidId) } } }
+        );
+
+        if (result.deletedCount > 0) {
+          io.emit("bidDeleted", { productId, bidId });
+          res.json({ message: "Bid deleted successfully" });
+        } else {
+          res.status(404).json({ message: "Bid not found" });
+        }
+      } catch (error) {
+        res.status(500).json({ message: "Error deleting bid", error });
+      }
+    });
+
+    // lockout feature
+    app.post("/login", async (req, res) => {
+      const { email, password } = req.body;
+      const MAX_FAILED_ATTEMPTS = 3;
+      const LOCKOUT_DURATION = 10 * 60 * 1000; // 10 minutes lockout
+
+      try {
+        const user = await usersCollection.findOne({ email });
+
+        if (!user) {
+          return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        // Check if account is locked
+        if (user.isLocked && user.lockoutUntil > Date.now()) {
+          const remainingTime = Math.ceil(
+            (user.lockoutUntil - Date.now()) / 60000
+          );
+          return res.status(403).json({
+            message: `Account locked. Try again in ${remainingTime} minutes.`,
+          });
+        }
+
+        // Compare hashed password using bcrypt
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+          const failedAttempts = (user.failedAttempts || 0) + 1;
+          let updateFields = { failedAttempts };
+
+          console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
+
+          // Lock account after 3 failed attempts
+          if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+            updateFields.isLocked = true;
+            updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
+            console.log(
+              `Account for ${email} locked! Lockout until: ${updateFields.lockoutUntil}`
+            );
+          }
+
+          await usersCollection.updateOne({ email }, { $set: updateFields });
+          return res.status(401).json({
+            message: `Invalid credentials. Attempt ${failedAttempts} of ${MAX_FAILED_ATTEMPTS}.`,
+          });
+        }
+
+        // Reset failed attempts and unlock account if login is successful
+        await usersCollection.updateOne(
+          { email },
+          { $set: { failedAttempts: 0, isLocked: false, lockoutUntil: null } }
+        );
+
+        res.json({ message: "Login successful" });
+      } catch (error) {
+        console.error("Error in login:", error);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+
+    app.get("/check-lockout", async (req, res) => {
+      const { email } = req.query;
+      const user = await db.collection("users").findOne({ email });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if account is locked
+      if (user.isLocked && user.lockoutUntil > Date.now()) {
+        const remainingTime = Math.ceil(
+          (user.lockoutUntil - Date.now()) / 60000
+        );
+        return res.json({ isLocked: true, lockoutMinutes: remainingTime });
+      }
+
+      res.json({ isLocked: false });
+    });
+
+    app.get("/debug-user/:email", async (req, res) => {
+      const email = req.params.email;
+      try {
+        const user = await usersCollection.findOne({ email });
+        res.json(user);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+
+    app.post("/signup", async (req, res) => {
+      const { email, password } = req.body;
+
+      try {
         // Check if the user already exists
         const existingUser = await usersCollection.findOne({ email });
         if (existingUser) {
           return res.status(400).json({ message: "User already exists" });
         }
 
-        // Save the new user
-        const newUser = { name, email, photoURL, uid, createdAt: new Date() };
-        const result = await usersCollection.insertOne(newUser);
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
 
-        res
-          .status(201)
-          .json({ message: "User registered successfully", user: result });
+        // Insert the user into the database with the hashed password
+        await usersCollection.insertOne({
+          email,
+          password: hashedPassword, // Store the hashed password
+          failedAttempts: 0,
+          isLocked: false,
+          lockoutUntil: null,
+        });
+
+        res.status(201).json({ message: "User registered successfully" });
       } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        console.error("Error during registration:", error);
+        res.status(500).json({ message: "Server error during registration" });
       }
     });
 
-    app.get("/bidProduct/:id", async (req, res) => {
-      const id = req.params.id;
-      if (!ObjectId.isValid(id)) {
-        return res.status(400).send("Invalid ObjectId format");
+    app.post("/users", async (req, res) => {
+      const { name, email, photoURL, uid, createdAt } = req.body;
+      try {
+        // Check if user already exists
+        const existingUser = await usersCollection.findOne({ email });
+        if (existingUser) {
+          return res.status(400).json({ message: "User already exists" });
+        }
+
+        // Insert the new user
+        await usersCollection.insertOne({
+          name,
+          email,
+          photoURL,
+          uid,
+          createdAt,
+          failedAttempts: 0,
+          isLocked: false,
+          lockoutUntil: null,
+        });
+
+        res.status(201).json({ message: "User registered successfully" });
+      } catch (error) {
+        console.error("Error during registration:", error);
+        res.status(500).json({ message: "Server error during registration" });
       }
-      const query = { _id: new ObjectId(id) };
-      // console.log("product id", query);
-      const product = await productsCollection.findOne(query);
-      res.send(product);
     });
-
-    // app.post("/bids/:id", async (req, res) => {
-    //   const bidData = req.body;
-    //   try {
-    //     const result = await bidHistroyCollection.insertOne(bidData);
-    //     res.send(result);
-    //   } catch (err) {
-    //     res.status(500).json({ message: "Error adding bid", error: err });
-    //   }
-    // });
-
-    // app.post("/bid/:id", async (req, res) => {
-    //   const { id } = req.params;
-    //   const { amount, user } = req.body;
-    //   try {
-    //     if (!ObjectId.isValid(id)) {
-    //       return res.status(400).send({ error: "Invalid product ID format" });
-    //     }
-    //     const objectId = new ObjectId(id);
-    //     const result = await productsCollection.updateOne(
-    //       { _id: objectId },
-    //       { $push: { bids: { amount, user, time: new Date() } } }
-    //     );
-    //     io.emit("newBid", { id, amount, user });
-    //     res.send(result);
-    //   } catch (error) {
-    //     res.status(500).send({ error: "Failed to place bid" });
-    //   }
-    // });
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
@@ -272,13 +371,11 @@ async function run() {
           return res.status(400).send({ error: "Invalid product ID format" });
         }
         const objectId = new ObjectId(id);
-
         const result = await productsCollection.updateOne(
           { _id: objectId },
           { $push: { bids: { amount, user, time: new Date() } } }
         );
-
-        // সেলারকে নোটিফিকেশন পাঠানো
+        // notification
         const notification = {
           userId: sellerId,
           message: `${user.name} placed a bid of $${amount} on your product: ${productName}`,
@@ -298,13 +395,17 @@ async function run() {
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
+    // Not closing client to keep the server running
   }
 }
-run().catch(console.dir);
 
-app.get("/", async (req, res) => {
-  res.send("Auctoria is Waiting for an exclusive bid");
+run().catch(console.error);
+
+app.get("/", (req, res) => {
+  res.send("Auctoria is waiting for an exclusive bid!");
 });
+
+// 🛠 Start the Server
 server.listen(port, () => {
-  console.log(`server is running on port: ${port}`);
+  console.log(`Server is running on port: ${port}`);
 });
