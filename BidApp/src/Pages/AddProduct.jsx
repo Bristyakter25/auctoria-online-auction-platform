@@ -1,18 +1,21 @@
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const AddProduct = () => {
- 
- const { user } = useContext(AuthContext);
- console.log("inside add ",user?.email);
+  const { user } = useContext(AuthContext);
+  console.log("inside add ", user?.email, user?.uid);
+  const generateSellerId = () => {
+    return Math.floor(10000 + Math.random() * 90000).toString();
+  };
 
   const handleSubmitProduct = (e) => {
     e.preventDefault();
-
+    const sellerId = generateSellerId();
     const form = e.target;
     const productData = {
-      email:user?.email,
+      sellerId: sellerId,
+      email: user?.email,
       productName: form.productName.value,
       category: form.category.value, // New field
       description: form.description.value,
@@ -25,21 +28,21 @@ const AddProduct = () => {
 
     console.log(productData);
 
-    fetch('http://localhost:5000/addProducts', {
-      method: 'POST',
+    fetch("http://localhost:5000/addProducts", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         // 'user-email': user?.email,
       },
       body: JSON.stringify(productData),
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.insertedId) {
           Swal.fire({
             title: "Auction Product Added Successfully!",
             icon: "success",
-            draggable: true
+            draggable: true,
           });
         }
       });
@@ -47,8 +50,13 @@ const AddProduct = () => {
 
   return (
     <div className="lg:max-w-lg mx-auto mt-10">
-      <h1 className="text-3xl font-bold text-center mb-10">Add New Auction Product</h1>
-      <form onSubmit={handleSubmitProduct} className="space-y-4 bg-white  p-6 rounded shadow">
+      <h1 className="text-3xl font-bold text-center mb-10">
+        Add New Auction Product
+      </h1>
+      <form
+        onSubmit={handleSubmitProduct}
+        className="space-y-4 bg-white dark:bg-purple-700 p-6 rounded shadow"
+      >
         <div>
           <label className="block font-medium">Product Name</label>
           <input
@@ -63,7 +71,11 @@ const AddProduct = () => {
         {/* New Category Field */}
         <div>
           <label className="block font-medium">Category</label>
-          <select name="category" className="input dark:text-black input-bordered w-full" required>
+          <select
+            name="category"
+            className="input dark:text-black input-bordered w-full"
+            required
+          >
             <option value="Antiques">Antiques</option>
             <option value="Electronics">Electronics</option>
             <option value="Collectibles">Collectibles</option>
@@ -132,7 +144,11 @@ const AddProduct = () => {
         {/* New Status Field */}
         <div>
           <label className="block font-medium">Status</label>
-          <select name="status" className="input dark:text-black input-bordered w-full" required>
+          <select
+            name="status"
+            className="input dark:text-black input-bordered w-full"
+            required
+          >
             <option value="Active">Active</option>
             <option value="Upcoming">Upcoming</option>
             <option value="Live">Live</option>
@@ -140,7 +156,10 @@ const AddProduct = () => {
         </div>
 
         <div>
-          <button type="submit" className="btn bg-[#7E60BF] hover:text-black text-white w-full">
+          <button
+            type="submit"
+            className="btn bg-[#7E60BF] hover:text-black text-white w-full"
+          >
             Add Auction Product
           </button>
         </div>

@@ -15,36 +15,24 @@ import LatestAuctions from "../../components/HomeComponents/latestAuctions";
 import Countdown from "../../components/NewFeatures/Countdown";
 import FeaturedProducts from "./FeaturedProducts";
 import GetInKnow from "./GetInKnow";
-
-
+import NotificationBell from "../BidTask/NotificationBell";
+import EidGreeting from "../Eid/EidGreetings";
 
 const Home = () => {
   return (
     <div className="w-full">
       <Hero></Hero>
-  <div className="lg:max-w-7xl mx-auto">
-  <LatestAuctions></LatestAuctions>
-      <Question />
-      <FeaturedProducts></FeaturedProducts>
-
-
-
-
-     
-      <GetInKnow></GetInKnow>
-      <EidGreetingGenerator></EidGreetingGenerator>
-      <EidCountdown></EidCountdown>
-      {/* <MeetCards /> */}
-      <MeetUs></MeetUs>
-      {/* <Partners /> */}
-      <TrustedPartners></TrustedPartners>
-
-<Countdown></Countdown>
-      <MeetCards />
-      <Partners />
-      <BiddingMadness />
-      <ContactForm />
-  </div>
+      <div className="lg:max-w-7xl mx-auto">
+        <EidGreeting />
+        <LatestAuctions></LatestAuctions>
+        <Question />
+        <FeaturedProducts></FeaturedProducts>
+        <GetInKnow></GetInKnow>
+        <MeetCards />
+        <Partners />
+        <BiddingMadness />
+        <ContactForm />
+      </div>
     </div>
   );
 };

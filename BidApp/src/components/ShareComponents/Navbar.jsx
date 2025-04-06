@@ -1,9 +1,10 @@
-
 import { useContext, useState } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import auctionIcon from "../../assets/auction.png"
+
+import NotificationBell from "../../Pages/BidTask/NotificationBell";
+import auctionIcon from "../../assets/auction.png";
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -28,18 +29,21 @@ const Navbar = () => {
         <img
           src={auctionIcon}
           alt="Logo"
-          className="rounded-full w-12 h-12 object-cover"
+          className="rounded-full w-8 h-8 object-cover"
         />
         <span className="font-extrabold text-xl text-indigo-600">Auctoria</span>
       </div>
 
       {/* Nav Links */}
-      <div className="hidden md:flex space-x-6 text-xl text-gray-800">
+      <div className="hidden md:flex justify-center items-center space-x-6 text-base text-gray-800 ">
         <NavLink to="/" className="hover:text-blue-500">
           Home
         </NavLink>
+
         <NavLink to="/allAuctions" className="hover:text-blue-500">
-          View All Auctions</NavLink>
+          View All Auctions
+        </NavLink>
+
         <NavLink to="/addProduct" className="hover:text-blue-500">
           Add Product
         </NavLink>
@@ -88,6 +92,7 @@ const Navbar = () => {
 
       {/* Contact Icons & Button */}
       <div className="hidden md:flex items-center space-x-4">
+        <NotificationBell />
         <FaPhoneAlt className="text-xl cursor-pointer hover:text-blue-500" />
         <FaEnvelope className="text-xl cursor-pointer hover:text-blue-500" />
         <FaMapMarkerAlt className="text-xl cursor-pointer hover:text-blue-500" />
