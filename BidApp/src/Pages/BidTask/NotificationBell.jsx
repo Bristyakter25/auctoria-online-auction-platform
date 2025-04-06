@@ -83,51 +83,6 @@
 
 // export default NotificationBell;
 
-// import { useEffect, useState } from "react";
-// // import { toast } from "react-hot-toast";
-// import { toast } from "react-toastify";
-// import { io } from "socket.io-client";
-
-// const socket = io("http://localhost:5000");
-
-// const NotificationBell = ({ userId }) => {
-//   const [notifications, setNotifications] = useState([]);
-
-//   useEffect(() => {
-//     // ইউজার রেজিস্টার করবে
-//     socket.emit("register", userId);
-
-//     // নতুন প্রোডাক্ট নোটিফিকেশন শুনবে
-//     socket.on("new_product", (data) => {
-//       toast.success(data.message);
-//       setNotifications((prev) => [...prev, data.message]);
-//     });
-
-//     // বিড হলে নোটিফিকেশন শুনবে
-//     socket.on("new_bid", (data) => {
-//       toast.success(data.message);
-//       setNotifications((prev) => [...prev, data.message]);
-//     });
-
-//     return () => {
-//       socket.off("new_product");
-//       socket.off("new_bid");
-//     };
-//   }, [userId]);
-
-//   return (
-//     <div>
-//       <button>🔔 ({notifications.length})</button>
-//       <ul>
-//         {notifications.map((note, index) => (
-//           <li key={index}>{note}</li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default NotificationBell;
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import ioClient from "socket.io-client";

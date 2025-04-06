@@ -1,6 +1,7 @@
 import BiddingMadness from "../../components/HomeComponents/BiddingMadness";
 
 import ContactForm from "../../components/HomeComponents/ContactForm";
+import EidAuctionAnimation from "../../components/HomeComponents/EidAuctionAnimation";
 import EidCountdown from "../../components/HomeComponents/EidCountdown";
 import EidGreetingGenerator from "../../components/HomeComponents/EidGreetingGenerator";
 

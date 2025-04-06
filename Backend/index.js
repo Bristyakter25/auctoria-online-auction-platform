@@ -167,6 +167,8 @@ async function run() {
       }
     });
 
+    // 🛠 Get Single Product by ID
+
     app.get("/addProducts/:id", async (req, res) => {
       const { id } = req.params;
       try {
@@ -213,6 +215,68 @@ async function run() {
         }
       } catch (error) {
         res.status(500).json({ message: "Error deleting bid", error });
+      }
+    });
+
+    // 🛠 Get User Wishlist
+    // Ensure ObjectId is imported from MongoDB
+
+    app.get("/wishlist/:userId", async (req, res) => {
+      const { userId } = req.params;
+      try {
+        const user = await usersCollection.findOne({ uid: userId });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user.wishlist || user.wishlist.length === 0) {
+          return res.json({ message: "Wishlist is empty", wishlist: [] });
+        }
+
+        // Convert wishlist IDs to ObjectId for the query
+        const wishListedProducts = await productsCollection
+          .find({
+            _id: { $in: user.wishlist.map((id) => new ObjectId(id)) },
+          })
+          .toArray();
+
+        res.json({ wishlist: wishListedProducts });
+      } catch (error) {
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+
+    // 🛠 Add to Wishlist
+    app.post("/addToWishlist", async (req, res) => {
+      const { productId, userId } = req.body;
+      try {
+        const user = await usersCollection.findOne({ uid: userId });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Ensure wishlist is initialized as an empty array if it doesn't exist
+        const wishlist = user.wishlist || [];
+
+        const productObjectId = new ObjectId(productId);
+
+        // Check if the product is already in the wishlist
+        if (wishlist.includes(productObjectId.toString())) {
+          return res
+            .status(400)
+            .json({ message: "Product is already in your wishlist" });
+        }
+
+        // Add to wishlist only if it's not already there
+        const result = await usersCollection.updateOne(
+          { uid: userId },
+          { $addToSet: { wishlist: productObjectId } } // Ensures unique addition
+        );
+
+        if (result.modifiedCount > 0) {
+          res.json({ message: "Product added to wishlist" });
+        } else {
+          res.status(400).json({ message: "Failed to add to wishlist" });
+        }
+      } catch (error) {
+        console.error("Error in adding to wishlist:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
       }
     });
 

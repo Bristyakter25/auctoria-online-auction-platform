@@ -43,6 +43,7 @@ const Navbar = () => {
           <NavLink to="/allAuctions" className="hover:text-blue-500">
             All Auctions
           </NavLink>
+         
 
           {user ? (
             <div className="dropdown dropdown-end">
