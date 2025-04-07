@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaGavel } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -11,6 +12,7 @@ const socket = io("http://localhost:5000", {
 });
 
 const Bid = () => {
+  const { user } = useContext(AuthContext);
   const item = {
     images: [
       "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
@@ -40,14 +42,44 @@ const Bid = () => {
           ...prev,
           bids: [...(prev.bids || []), bid],
         }));
-        setCurrentBid(Math.max(currentBid, bid.amount));
+        setCurrentBid((prevBid) => Math.max(prevBid, bid.amount));
+      }
+    });
+
+    socket.on("bidDeleted", ({ productId, bidId }) => {
+      if (productId === id) {
+        setProduct((prev) => {
+          // Ensure prev is not null before accessing bids
+          if (!prev || !prev.bids) return prev;
+
+          const updatedBids = prev.bids.filter((bid) => bid._id !== bidId);
+
+          return {
+            ...prev,
+            bids: updatedBids,
+          };
+        });
+
+        setCurrentBid((prevBid) => {
+          setProduct((prev) => {
+            // Ensure prev is not null before filtering bids
+            if (!prev || !prev.bids) return prevBid;
+
+            const remainingBids = prev.bids.filter((bid) => bid._id !== bidId);
+            return remainingBids.length > 0
+              ? Math.max(...remainingBids.map((b) => b.amount))
+              : 0;
+          });
+        });
       }
     });
 
     return () => {
       socket.off("newBid");
+      socket.off("bidDeleted");
     };
-  }, [id, currentBid]);
+  }, [id]);
+
   const handleBid = async () => {
     if (!bidAmount || isNaN(bidAmount) || Number(bidAmount) <= 0) {
       toast.error("Please enter a valid bid amount!", {
@@ -66,7 +98,11 @@ const Bid = () => {
       const res = await fetch(`http://localhost:5000/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: Number(bidAmount), user: "User1" }),
+        body: JSON.stringify({
+          sellerId: product.sellerId,
+          amount: Number(bidAmount),
+          user: user?.displayName,
+        }),
       });
       if (res.ok) {
         toast.success("Your bid has been submitted successfully!", {
@@ -86,9 +122,56 @@ const Bid = () => {
       });
     }
   };
+
   if (!product) return <p className="text-center">Loading...</p>;
+
+  const handleDeleteBid = async (bidId) => {
+    console.log("Deleting bid with ID:", bidId);
+
+    if (!bidId) {
+      toast.error("Invalid bid ID!", { position: "top-right" });
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:5000/bid/${id}/${bidId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (res.ok) {
+        toast.success("Bid deleted successfully!", { position: "top-right" });
+
+        setProduct((prev) => {
+          if (!prev || !prev.bids) return prev;
+
+          const updatedBids = prev.bids.filter((bid) => bid._id !== bidId);
+
+          // Update current bid after filtering
+          const newCurrentBid =
+            updatedBids.length > 0
+              ? Math.max(...updatedBids.map((b) => b.amount))
+              : 0;
+          setCurrentBid(newCurrentBid);
+
+          return {
+            ...prev,
+            bids: updatedBids,
+          };
+        });
+      } else {
+        toast.error("Failed to delete bid!", { position: "top-right" });
+      }
+    } catch (error) {
+      console.error("Error deleting bid:", error);
+      toast.error("Server problem! Please try again later.", {
+        position: "top-right",
+      });
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-40">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Right Side: Images & Thumbnails */}
         <motion.div
@@ -196,9 +279,16 @@ const Bid = () => {
                       key={index}
                       className="bg-white p-4 shadow-md rounded-lg border border-gray-200"
                     >
-                      <p className="text-lg font-semibold text-blue-600">
-                        ${bid.amount}
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-lg font-semibold text-blue-600">
+                          ${bid.amount}
+                        </p>
+                        <button
+                          onClick={() => bid?._id && handleDeleteBid(bid._id)}
+                        >
+                          {/* <MdCancel /> */}
+                        </button>
+                      </div>
                       <p className="text-sm text-gray-500">
                         Bid by: {bid.user}
                       </p>

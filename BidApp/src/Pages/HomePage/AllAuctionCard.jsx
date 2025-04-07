@@ -5,6 +5,7 @@ import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { motion } from "framer-motion";
 import { FaGavel } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
+import Swal from "sweetalert2";
 
 const AllAuctionCard = ({ auction }) => {
   const navigate = useNavigate();
@@ -14,11 +15,11 @@ const AllAuctionCard = ({ auction }) => {
 
   const [isWishlisted, setIsWishlisted] = useState(false);
 
-  // Fetch wishlist from backend when component mounts
+  
   useEffect(() => {
     if (!userId) return;
 
-    // Fetch wishlist from backend to ensure it's for the logged-in user
+   
     const fetchWishlist = async () => {
       try {
         const response = await fetch(`http://localhost:5000/wishlist/${userId}`);
@@ -26,7 +27,7 @@ const AllAuctionCard = ({ auction }) => {
 
         if (response.ok) {
           const isProductInWishlist = data.wishlist.some(product => product._id === _id);
-          setIsWishlisted(isProductInWishlist); // Update state based on backend data
+          setIsWishlisted(isProductInWishlist); 
         } else {
           console.error("Failed to fetch wishlist");
         }
@@ -36,11 +37,16 @@ const AllAuctionCard = ({ auction }) => {
     };
 
     fetchWishlist();
-  }, [userId, _id]); // Re-run effect when userId or _id changes
+  }, [userId, _id]); 
 
   const handleAddToWishlist = async () => {
     if (!userId) {
-      alert("Please log in to add items to your wishlist.");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please Log In to add products in wishlist!",
+       
+      });
       return;
     }
 
@@ -59,8 +65,14 @@ const AllAuctionCard = ({ auction }) => {
       });
 
       if (response.ok) {
-        setIsWishlisted(true); // Update state immediately
-        alert("Product added to wishlist!");
+        setIsWishlisted(true); 
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "This Product is successfully Wish Listed!",
+          showConfirmButton: false,
+          timer: 1500
+        });
 
         // Re-fetch wishlist to ensure state consistency
         const updatedWishlistResponse = await fetch(`http://localhost:5000/wishlist/${userId}`);
@@ -68,8 +80,13 @@ const AllAuctionCard = ({ auction }) => {
         const isProductInWishlist = updatedData.wishlist.some(product => product._id === _id);
         setIsWishlisted(isProductInWishlist);
       } else {
-        const errorData = await response.json();
-        alert(`Failed to add to wishlist: ${errorData.message}`);
+        
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          
+        });
       }
     } catch (error) {
       console.error("Error adding to wishlist:", error);
