@@ -8,14 +8,6 @@ import Partners from "../../components/HomeComponents/Partners";
 import Question from "../../components/HomeComponents/Question";
 import LatestAuctions from "../../components/HomeComponents/latestAuctions";
 import FeaturedProducts from "./FeaturedProducts";
-
-
-
-import GetInKnow from "./GetInKnow";
-
-
-
-
 import GetInKnow from "./GetInKnow";
 
 
