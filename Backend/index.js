@@ -49,6 +49,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
     const db = client.db("Auctoria");
     const productsCollection = db.collection("addProducts");
     const usersCollection = db.collection("users");
@@ -62,6 +64,14 @@ async function run() {
         res.status(500).json({ message: "Error fetching products", error });
       }
     });
+    
+     //show specific seller products
+     app.get("/addProducts/:email",async(req,res)=>{
+      const {email}=req.params;
+      const query={email:email};
+      const result=await productsCollection.find(query).toArray(); 
+      res.send(result);
+    })
 
     // 🛠 Get Recent Products (Limited to 4)
     app.get("/recentProducts", async (req, res) => {
@@ -116,25 +126,29 @@ async function run() {
     });
 
     // 🛠 Get User Wishlist
-    app.get("/wishlist/:userId", async (req, res) => {
-      const { userId } = req.params;
-      try {
-        const user = await usersCollection.findOne({ uid: userId });
-        if (!user) return res.status(404).json({ message: "User not found" });
+    const { ObjectId } = require("mongodb"); // Ensure ObjectId is imported from MongoDB
 
-        if (!user.wishlist || user.wishlist.length === 0) {
-          return res.json({ message: "Wishlist is empty", wishlist: [] });
-        }
+app.get("/wishlist/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await usersCollection.findOne({ uid: userId });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-        const wishListedProducts = await productsCollection
-          .find({ _id: { $in: user.wishlist.map((id) => new ObjectId(id)) } })
-          .toArray();
+    if (!user.wishlist || user.wishlist.length === 0) {
+      return res.json({ message: "Wishlist is empty", wishlist: [] });
+    }
 
-        res.json({ wishlist: wishListedProducts });
-      } catch (error) {
-        res.status(500).json({ message: "Server error" });
-      }
-    });
+    // Convert wishlist IDs to ObjectId for the query
+    const wishListedProducts = await productsCollection.find({
+      _id: { $in: user.wishlist.map(id => new ObjectId(id)) },
+    }).toArray();
+    
+    res.json({ wishlist: wishListedProducts });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
     // 🛠 Add to Wishlist
     app.post("/addToWishlist", async (req, res) => {
@@ -142,21 +156,37 @@ async function run() {
       try {
         const user = await usersCollection.findOne({ uid: userId });
         if (!user) return res.status(404).json({ message: "User not found" });
-
+    
+        // Ensure wishlist is initialized as an empty array if it doesn't exist
+        const wishlist = user.wishlist || [];
+    
+        const productObjectId = new ObjectId(productId);
+    
+        // Check if the product is already in the wishlist
+        if (wishlist.includes(productObjectId.toString())) {
+          return res.status(400).json({ message: "Product is already in your wishlist" });
+        }
+    
+        // Add to wishlist only if it's not already there
         const result = await usersCollection.updateOne(
           { uid: userId },
-          { $addToSet: { wishlist: productId } }
+          { $addToSet: { wishlist: productObjectId } } // Ensures unique addition
         );
-
+    
         if (result.modifiedCount > 0) {
           res.json({ message: "Product added to wishlist" });
         } else {
           res.status(400).json({ message: "Failed to add to wishlist" });
         }
       } catch (error) {
-        res.status(500).json({ message: "Server error" });
+        console.error("Error in adding to wishlist:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
       }
     });
+    
+    
+    
+    
 
     // 🛠 JWT Authentication
     app.post("/jwt", async (req, res) => {
@@ -195,13 +225,23 @@ async function run() {
     });
 
   } finally {
+
+    // Ensures that the client will close when you finish/error
+    // await client.close();
+
     // Not closing client to keep the server running
+
   }
 }
 
+
 run().catch(console.error);
+
+app.get("/", (req, res) => {
+  res.send("Auctoria is waiting for an exclusive bid!");
+});
 
 // 🛠 Start the Server
 server.listen(port, () => {
-  console.log(`✅ Server is running on port ${port}`);
+  console.log(`Server is running on port: ${port}`);
 });
