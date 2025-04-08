@@ -1,4 +1,3 @@
-
 import { NavLink, Outlet } from "react-router-dom";
 import { GrCircleInformation } from "react-icons/gr";
 import {  FaHospitalUser, FaUsers, } from "react-icons/fa";

@@ -105,6 +105,14 @@ async function run() {
         res.status(500).json({ message: "Error fetching products", error });
       }
     });
+    
+     //show specific seller products
+     app.get("/addProducts/:email",async(req,res)=>{
+      const {email}=req.params;
+      const query={email:email};
+      const result=await productsCollection.find(query).toArray(); 
+      res.send(result);
+    })
 
     // 🛠 Get Recent Products (Limited to 4)
     app.get("/recentProducts", async (req, res) => {
