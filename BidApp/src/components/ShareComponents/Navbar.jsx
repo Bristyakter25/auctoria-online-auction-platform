@@ -92,7 +92,7 @@ const Navbar = () => {
 
       {/* Contact Icons & Button */}
       <div className="hidden md:flex items-center space-x-4">
-        <NotificationBell />
+        <NotificationBell user={user} />
         <FaPhoneAlt className="text-xl cursor-pointer hover:text-blue-500" />
         <FaEnvelope className="text-xl cursor-pointer hover:text-blue-500" />
         <FaMapMarkerAlt className="text-xl cursor-pointer hover:text-blue-500" />

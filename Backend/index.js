@@ -154,12 +154,13 @@ async function run() {
         if (productData.auctionStartDate) {
           const startTime = new Date(productData.auctionStartDate);
 
-          const auctionEndTime = new Date(startTime);
-          auctionEndTime.setDate(auctionEndTime.getDate() + 7);
+          // const auctionEndTime = new Date(startTime);
+          // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
+          const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
 
           productData.auctionEndTime = auctionEndTime.toISOString();
         }
-
+        productData.endingSoonNotified = false;
         const result = await productsCollection.insertOne(productData);
         const notification = {
           userId: "all",
@@ -437,31 +438,100 @@ async function run() {
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
-      const { amount, user, sellerId, productName } = req.body;
+      const { amount, user, email, sellerId, sellerEmail, productName } =
+        req.body;
+      // console.log("seller user", user, sellerEmail);
       try {
         if (!ObjectId.isValid(id)) {
           return res.status(400).send({ error: "Invalid product ID format" });
         }
+
         const objectId = new ObjectId(id);
         const result = await productsCollection.updateOne(
           { _id: objectId },
-          { $push: { bids: { amount, user, time: new Date() } } }
+          { $push: { bids: { amount, user, email, time: new Date() } } }
         );
-        // notification
+        console.log("Bid time:", new Date());
+        // notification for Seller when user Bid the product
         const notification = {
           userId: sellerId,
-          message: `${user.name} placed a bid of $${amount} on your product: ${productName}`,
+          email: sellerEmail,
+          message: `${user} placed a bid of $${amount} on your product: ${productName}`,
           createdAt: new Date(),
           read: false,
         };
-
+        // console.log(" Notification Data:", notification);
         await notificationsCollection.insertOne(notification);
-        io.emit(`notification_${sellerId}`, notification);
+        io.emit(`notification_${sellerEmail}`, notification);
+        // console.log(
+        //   " Emitting notification to:",
+        //   `notification_${sellerEmail}`
+        // );
 
-        io.emit("newBid", { id, amount, user });
+        io.emit("newBid", { id, amount, user, time: new Date() });
         res.send(result);
       } catch (error) {
         res.status(500).send({ error: "Failed to place bid" });
+      }
+    });
+
+    // about automatic send end time of bid to the bidder Users
+    const AuctionEndingTimer = async () => {
+      const now = new Date();
+      const tenMinutesLater = new Date(now.getTime() + 10 * 60 * 1000);
+      console.log("At Present date & Time:", now);
+      console.log("tenMinutesLater:", tenMinutesLater);
+      const endingSoonProducts = await productsCollection
+        .find({
+          auctionEndTime: {
+            $gte: now.toISOString(),
+            $lte: tenMinutesLater.toISOString(),
+          },
+          endingSoonNotified: { $ne: true },
+        })
+        .toArray();
+      console.log("Found ending soon products:", endingSoonProducts.length);
+      for (const product of endingSoonProducts) {
+        // const { bids = [], productName, _id } = product;
+        for (const bid of product.bids || []) {
+          const email = bid.email;
+          const notification = {
+            email,
+            message: `${product.productName} Its auction is about to end.`,
+            productId: product._id,
+            createdAt: new Date(),
+            read: false,
+          };
+
+          await notificationsCollection.insertOne(notification);
+          io.emit(`notification_${email}`, notification);
+        }
+        await productsCollection.updateOne(
+          { _id: new ObjectId(product._id) },
+          { $set: { endingSoonNotified: true } }
+        );
+        console.log(
+          `endingSoonNotified Product ${product._id} updated to notified`
+        );
+      }
+    };
+    setInterval(async () => {
+      console.log("Checking for ending soon auctions...");
+      AuctionEndingTimer();
+    }, 60 * 1000);
+
+    app.get("/notification/:email", async (req, res) => {
+      const { email } = req.params;
+      try {
+        const result = await notificationsCollection
+          .find({ email })
+          .sort({ createdAt: -1 })
+          .toArray();
+        res.send(result);
+      } catch (error) {
+        res
+          .status(500)
+          .json({ message: "Error fetching notifications", error });
       }
     });
   } finally {
