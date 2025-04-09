@@ -21,7 +21,7 @@ app.use(
   cors({
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "email", "userid"],
   })
 );
 app.use(express.json());
@@ -197,30 +197,93 @@ async function run() {
       }
     });
 
-    // 🛠 Get Single Product by delete
-    app.delete("/bid/:productId/:bidId", async (req, res) => {
-      const { productId, bidId } = req.params;
 
-      if (!ObjectId.isValid(productId) || !ObjectId.isValid(bidId)) {
-        return res.status(400).json({ message: "Invalid productId or bidId" });
-      }
 
-      try {
-        const result = await productsCollection.deleteOne(
-          { _id: new ObjectId(productId) },
-          { $pull: { bids: { _id: new ObjectId(bidId) } } }
-        );
+// 🛠 Get User's Bid History
 
-        if (result.deletedCount > 0) {
-          io.emit("bidDeleted", { productId, bidId });
-          res.json({ message: "Bid deleted successfully" });
-        } else {
-          res.status(404).json({ message: "Bid not found" });
-        }
-      } catch (error) {
-        res.status(500).json({ message: "Error deleting bid", error });
-      }
+
+
+
+app.get("/bidHistory/:email", async (req, res) => {
+  const email = req.params.email;
+  console.log("Fetching bid history for email:", email);
+
+  try {
+    const products = await productsCollection.find({
+      bids: { $elemMatch: { email: email } },
+    }).toArray();
+
+    const bidHistory = [];
+
+    products.forEach((product) => {
+      const userBids = product.bids.filter((bid) => bid.email === email);
+      userBids.forEach((bid) => {
+        bidHistory.push({
+          productName: product.productName,
+          bidAmount: bid.amount,
+          timestamp: bid.time,
+          _id: product._id,
+        });
+      });
     });
+
+    res.status(200).json(bidHistory);
+  } catch (error) {
+    console.error("Error fetching bid history", error);
+    res.status(500).json({ message: "Failed to fetch bid history" });
+  }
+});
+
+// 🛠 Delete Bid
+app.delete("/bidHistory/:id", async (req, res) => {
+  const bidId = req.params.id;
+  const userEmail = req.body.email;
+
+  try {
+    const product = await productsCollection.findOne({
+      "bids._id": new ObjectId(bidId),
+    });
+
+    if (!product) {
+      return res.status(404).json({ message: "Bid not found" });
+    }
+
+    const bid = product.bids.find((b) => b._id.toString() === bidId);
+
+    if (!bid || bid.email !== userEmail) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    
+    await productsCollection.deleteOne(
+      { _id: product._id },
+      {
+        $pull: {
+          bids: { _id: new ObjectId(bidId) },
+        },
+      }
+    );
+
+    res.json({ message: "Bid deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete bid" });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // 🛠 Get User Wishlist
     // Ensure ObjectId is imported from MongoDB
