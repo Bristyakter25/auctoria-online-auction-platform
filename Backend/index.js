@@ -5,10 +5,12 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 const app = express();
 const port = process.env.PORT || 5000;
 const server = http.createServer(app);
+// const bcrypt = require('bcrypt');
 
 const allowedOrigins = ["http://localhost:5173", "https://bidapp-81c51.web.app"];
 
@@ -260,28 +262,22 @@ app.get("/wishlist/:userId", async (req, res) => {
           return res.status(403).json({ message: `Account locked. Try again in ${remainingTime} minutes.` });
         }
     
-        // Compare hashed password using bcrypt
-        const isMatch = await bcrypt.compare(password, user.password);
-    
-        if (!isMatch) {
+        // Compare plain-text password
+        if (user.password !== password) {
           const failedAttempts = (user.failedAttempts || 0) + 1;
           let updateFields = { failedAttempts };
-        
-          console.log(`Failed attempts for ${email}: ${failedAttempts}`);  // Debugging line
-        
+    
           // Lock account after 3 failed attempts
           if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
             updateFields.isLocked = true;
             updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
-            console.log(`Account for ${email} locked! Lockout until: ${updateFields.lockoutUntil}`);
           }
-        
+    
           await usersCollection.updateOne({ email }, { $set: updateFields });
           return res.status(401).json({
             message: `Invalid credentials. Attempt ${failedAttempts} of ${MAX_FAILED_ATTEMPTS}.`
           });
         }
-        
     
         // Reset failed attempts and unlock account if login is successful
         await usersCollection.updateOne(
@@ -296,6 +292,8 @@ app.get("/wishlist/:userId", async (req, res) => {
         res.status(500).json({ message: "Server error" });
       }
     });
+    
+    
 
  app.get("/check-lockout", async (req, res) => {
       const { email } = req.query;
@@ -415,6 +413,22 @@ app.get("/wishlist/:userId", async (req, res) => {
       });
     };
 
+    
+
+   
+
+  
+    
+    
+   
+    
+    
+    
+    
+    
+
+    
+
     // 🛠 Get All Users
     app.get("/users", async (req, res) => {
       try {
@@ -430,8 +444,7 @@ app.get("/wishlist/:userId", async (req, res) => {
     // Ensures that the client will close when you finish/error
     // await client.close();
 
-    // Not closing client to keep the server running
-
+    
   }
 }
 
