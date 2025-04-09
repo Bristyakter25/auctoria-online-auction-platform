@@ -13,6 +13,7 @@ import ManageUsers from "../Pages/Dashboard/ManageUsers";
 import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
 import Bid from "../Pages/BidTask/Bid";
+import BidHistory from "../Pages/BidTask/BidHistory";
 import ForgotPassword from "../Pages/Authentication/ForgotPassword";
 import ResetPassword from "../Pages/Authentication/ResetPassword";
 
@@ -50,6 +51,7 @@ export const router = createBrowserRouter([
       { path: "manageUsers", element: <ManageUsers /> },
       // { path: "wishList", element: <WishList /> },
       { path: "wishList", element: <WishList /> },
+      { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "profile", element: <Profile /> },
       { path: "updatedBidInfo", element: <UpdateBid /> },
     ],
