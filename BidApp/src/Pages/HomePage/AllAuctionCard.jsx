@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { FaGavel } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
+import { WishlistContext } from "../../providers/wishListProvider";
 
 const AllAuctionCard = ({ auction }) => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const AllAuctionCard = ({ auction }) => {
   const userId = user?.uid;
 
   const [isWishlisted, setIsWishlisted] = useState(false);
-
+  const { refetchWishlist} = useContext(WishlistContext);
   
   useEffect(() => {
     if (!userId) return;
@@ -73,6 +74,7 @@ const AllAuctionCard = ({ auction }) => {
           showConfirmButton: false,
           timer: 1500
         });
+        refetchWishlist();
 
         // Re-fetch wishlist to ensure state consistency
         const updatedWishlistResponse = await fetch(`http://localhost:5000/wishlist/${userId}`);
