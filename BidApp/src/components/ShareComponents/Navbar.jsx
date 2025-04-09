@@ -16,7 +16,7 @@ const Navbar = () => {
     signOutUser()
       .then(() => {
         console.log("Successfully signed out");
-        navigate("/login"); // Redirect to login page after signing out
+        navigate("/login"); 
       })
       .catch((error) => {
         console.error("Failed to sign out", error);
