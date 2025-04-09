@@ -99,14 +99,7 @@ async function run() {
       });
     };
 
-    app.get("/users", async (req, res) => {
-      try {
-        const result = await productsCollection.find().toArray();
-        res.json(result);
-      } catch (error) {
-        res.status(500).json({ message: "Error fetching products", error });
-      }
-    });
+    
     
      //show specific seller products
      app.get("/addProducts/:email",async(req,res)=>{
@@ -490,28 +483,50 @@ app.delete("/bidHistory/:id", async (req, res) => {
       try {
         // Check if user already exists
         const existingUser = await usersCollection.findOne({ email });
+    
         if (existingUser) {
-          return res.status(400).json({ message: "User already exists" });
+          return res.status(200).json({ message: "User already exists" });
         }
-
-        // Insert the new user
+    
+        // Insert new user
         await usersCollection.insertOne({
           name,
           email,
           photoURL,
-          uid,
-          createdAt,
+          uid: uid || null,
+          createdAt: createdAt || new Date(),
           failedAttempts: 0,
           isLocked: false,
           lockoutUntil: null,
         });
-
+    
         res.status(201).json({ message: "User registered successfully" });
       } catch (error) {
         console.error("Error during registration:", error);
         res.status(500).json({ message: "Server error during registration" });
       }
     });
+
+    // app.get("/users", async (req, res) => {
+    //   try {
+    //     const result = await productsCollection.find().toArray();
+    //     res.json(result);
+    //   } catch (error) {
+    //     res.status(500).json({ message: "Error fetching products", error });
+    //   }
+    // });
+
+    app.get("/users", async (req, res) => {
+      try {
+        // Fetch users from the database
+        const result = await usersCollection.find().toArray();
+        res.json(result);  // Send the users as JSON response
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching users", error });
+      }
+    });
+    
+    
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
