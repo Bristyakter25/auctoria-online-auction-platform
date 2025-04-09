@@ -68,10 +68,11 @@ async function run() {
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
-    const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    // const bidHistroyCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
       .collection("notifications");
+    const reviewsCollection = client.db("Auctoria").collection("reviews");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -280,6 +281,43 @@ async function run() {
         res.status(500).json({ message: "Server error", error: error.message });
       }
     });
+
+    // app.post("/addToWishlist", async (req, res) => {
+    //   const { productId, userId } = req.body;
+    //   console.log("wishlist", productId, userId);
+    //   try {
+    //     const user = await usersCollection.findOne({ uid: userId });
+
+    //     if (!user) return res.status(404).json({ message: "User not found" });
+
+    //     // Ensure wishlist is initialized as an empty array if it doesn't exist
+    //     const wishlist = user.wishlist || [];
+
+    //     const productObjectId = new ObjectId(productId);
+
+    //     // Check if the product is already in the wishlist
+    //     if (wishlist.includes(productObjectId.toString())) {
+    //       return res
+    //         .status(400)
+    //         .json({ message: "Product is already in your wishlist" });
+    //     }
+
+    //     // Add to wishlist only if it's not already there
+    //     const result = await usersCollection.updateOne(
+    //       { uid: userId },
+    //       { $addToSet: { wishlist: productObjectId } } // Ensures unique addition
+    //     );
+
+    //     if (result.modifiedCount > 0) {
+    //       res.json({ message: "Product added to wishlist" });
+    //     } else {
+    //       res.status(400).json({ message: "Failed to add to wishlist" });
+    //     }
+    //   } catch (error) {
+    //     console.error("Error in adding to wishlist:", error);
+    //     res.status(500).json({ message: "Server error", error: error.message });
+    //   }
+    // });
 
     // lockout feature
     app.post("/login", async (req, res) => {
@@ -524,6 +562,35 @@ async function run() {
         res
           .status(500)
           .json({ message: "Error fetching notifications", error });
+      }
+    });
+
+    // Review related API
+
+    app.get("/reviews/:sellerEmail", async (req, res) => {
+      const { sellerEmail } = req.params;
+      const result = await reviewsCollection.find({ sellerEmail }).toArray();
+      res.send(result);
+    });
+
+    app.post("/reviews", async (req, res) => {
+      try {
+        const review = req.body;
+        const { sellerEmail, reviewerEmail } = review;
+        const exsitingReview = await reviewsCollection.findOne({
+          sellerEmail,
+          reviewerEmail,
+        });
+        if (exsitingReview) {
+          return res.status(400).send({
+            error: "You have already reviewed this seller!",
+          });
+        }
+        // review.createdAt = new Date();
+        const result = await reviewsCollection.insertOne(review);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to submit review" });
       }
     });
   } finally {
