@@ -181,6 +181,7 @@ const Login = () => {
             >
               Sign up
             </Link>
+            <Link to="/forgot-password">Forget Password?</Link>
           </p>
           <div className="flex flex-col items-center justify-center">
             <GoToHomeButton />

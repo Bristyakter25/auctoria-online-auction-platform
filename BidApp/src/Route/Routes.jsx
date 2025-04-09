@@ -14,6 +14,8 @@ import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
 import Bid from "../Pages/BidTask/Bid";
 import BidHistory from "../Pages/BidTask/BidHistory";
+import ForgotPassword from "../Pages/Authentication/ForgotPassword";
+import ResetPassword from "../Pages/Authentication/ResetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +29,14 @@ export const router = createBrowserRouter([
       { path: "/allAuctions", element: <AllAuctions /> },
       { path: "/profile", element: <Profile /> },
       { path: "/bid/:id", element: <Bid /> },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword></ForgotPassword>
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPassword></ResetPassword>
+      }
     ],
   },
   {

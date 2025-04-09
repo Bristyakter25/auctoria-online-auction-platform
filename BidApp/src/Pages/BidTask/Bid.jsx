@@ -27,9 +27,7 @@ const Bid = () => {
   const [bidAmount, setBidAmount] = useState("");
   const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
-  const [timeLeft, setTimeLeft] = useState("");
-
-
+  console.log("bid time", product);
   useEffect(() => {
     fetch(`http://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
@@ -43,18 +41,19 @@ const Bid = () => {
 
     socket.on("newBid", (bid) => {
       if (bid.id === id) {
+        console.log("bid time", bid.time);
         setProduct((prev) => ({
           ...prev,
           bids: [...(prev.bids || []), bid],
         }));
         setCurrentBid((prevBid) => Math.max(prevBid, bid.amount));
+        // console.log("Bid time on frontend:", bid.time);
       }
     });
 
     socket.on("bidDeleted", ({ productId, bidId }) => {
       if (productId === id) {
         setProduct((prev) => {
-          // Ensure prev is not null before accessing bids
           if (!prev || !prev.bids) return prev;
 
           const updatedBids = prev.bids.filter((bid) => bid._id !== bidId);
@@ -67,7 +66,6 @@ const Bid = () => {
 
         setCurrentBid((prevBid) => {
           setProduct((prev) => {
-            // Ensure prev is not null before filtering bids
             if (!prev || !prev.bids) return prevBid;
 
             const remainingBids = prev.bids.filter((bid) => bid._id !== bidId);
@@ -107,8 +105,11 @@ const Bid = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sellerId: product.sellerId,
+          sellerEmail: product.email,
           amount: Number(bidAmount),
           user: user?.displayName,
+          email: user?.email,
+          productName: product.productName,
         }),
       });
       if (res.ok) {
@@ -258,7 +259,9 @@ const Bid = () => {
                         Bid by: {bid.user}
                       </p>
                       <p className="text-xs text-gray-400">
-                        {new Date(bid.time).toLocaleString()}
+                        {bid.time
+                          ? new Date(bid?.time).toLocaleString()
+                          : "Loading..."}
                       </p>
                     </div>
                   ))
