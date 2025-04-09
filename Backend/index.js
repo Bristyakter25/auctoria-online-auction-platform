@@ -96,6 +96,18 @@ async function run() {
         next();
       });
     };
+    //verify seller after verifyToken
+    const verifySeller = async (req, res, next) => {
+     
+      const email = req?.decoded?.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      const isSeller = user?.role == "seller";
+      if (!isSeller) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
 
     app.get("/users", async (req, res) => {
       try {
@@ -104,6 +116,21 @@ async function run() {
       } catch (error) {
         res.status(500).json({ message: "Error fetching products", error });
       }
+    });
+
+    // seller verification
+    app.get("/users/seller/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      if (email != req.decoded.email) {
+        return res.status(403).send({ message: "unauthorized access" });
+      }
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      let seller = false;
+      if (user) {
+        seller = user?.role == "seller";
+      }
+      res.send({ seller });
     });
     
      //show specific seller products
