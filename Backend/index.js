@@ -5,7 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
+
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -64,9 +64,9 @@ async function run() {
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
-    // console.log(
-    //   "Pinged your deployment. You successfully connected to new MongoDB!"
-    // );
+    console.log(
+      "Pinged your deployment. You successfully connected to new MongoDB!"
+    );
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
@@ -270,23 +270,8 @@ app.delete("/bidHistory/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete bid" });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // 🛠 Get User Wishlist
-    // Ensure ObjectId is imported from MongoDB
+  // 🛠 Get User Wishlist
+    
 
     app.get("/wishlist/:userId", async (req, res) => {
       const { userId } = req.params;
@@ -317,25 +302,25 @@ app.delete("/bidHistory/:id", async (req, res) => {
       try {
         const user = await usersCollection.findOne({ uid: userId });
         if (!user) return res.status(404).json({ message: "User not found" });
-
-        // Ensure wishlist is initialized as an empty array if it doesn't exist
-        const wishlist = user.wishlist || [];
-
+    
         const productObjectId = new ObjectId(productId);
-
-        // Check if the product is already in the wishlist
-        if (wishlist.includes(productObjectId.toString())) {
+    
+        
+        const wishlist = (user.wishlist || []).map(id => id.toString());
+        const productIdStr = productObjectId.toString();
+    
+        if (wishlist.includes(productIdStr)) {
           return res
             .status(400)
             .json({ message: "Product is already in your wishlist" });
         }
-
+    
         // Add to wishlist only if it's not already there
         const result = await usersCollection.updateOne(
           { uid: userId },
-          { $addToSet: { wishlist: productObjectId } } // Ensures unique addition
+          { $addToSet: { wishlist: productObjectId } }
         );
-
+    
         if (result.modifiedCount > 0) {
           res.json({ message: "Product added to wishlist" });
         } else {
@@ -346,6 +331,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
       }
     });
+    
 
     // lockout feature
     app.post("/login", async (req, res) => {
