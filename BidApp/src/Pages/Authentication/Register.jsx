@@ -1,15 +1,17 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
+
 
 
  
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 
 import auctionImage from "../../assets/auction-image.svg"; 
 import Swal from "sweetalert2";
 import SocialLogin from "./SocialLogin";
+import { sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../firebase/firebase.init";
 
 
 
@@ -17,6 +19,8 @@ const Register = () => {
   const navigate = useNavigate();
 
   const {createUser,updateUserProfile} = useContext(AuthContext);
+
+  const emailRef = useRef()
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -36,7 +40,13 @@ const Register = () => {
           .then(() => {
             console.log("User profile updated successfully");
   
-            // Step 1: Prepare user data for MongoDB
+            // send verification email
+            sendEmailVerification(auth.currentUser)
+            .then(() =>{
+              console.log("email verification send")
+            })
+
+
             const userData = {
               name,
               email,
@@ -45,7 +55,7 @@ const Register = () => {
               createdAt: new Date(),
             };
   
-            // Step 2: Send user data to MongoDB
+            
             fetch("http://localhost:5000/users", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -96,6 +106,22 @@ const Register = () => {
         });
       });
   };
+
+  const handleForgetPassword =() => {
+    console.log(emailRef.current.value);
+    const email = emailRef.current.value;
+    if(!email){
+      alert("please provide valid email address first");
+    }
+    else{
+      sendPasswordResetEmail(auth,email)
+      .then(()=>{
+        alert('Password Reset email is sent please check your email');
+      })
+      
+    }
+
+  }
   
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -138,9 +164,6 @@ const Register = () => {
                 className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Enter your full name"
                 name="name"
-
-                
-
                 required
               />
             </div>
@@ -153,6 +176,7 @@ const Register = () => {
                 type="email"
 
                 className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                ref={emailRef}
                 placeholder="Enter your email"
                 name="email"
                 required
@@ -169,7 +193,6 @@ const Register = () => {
                 placeholder="Create a password"
                 name="password"
 
-                
                 required
               />
             </div>
@@ -185,6 +208,8 @@ const Register = () => {
             className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
           />
         </div>
+
+        <div onClick={handleForgetPassword}><a className="link link-hover">Forgot password?</a></div>
             <button
               type="submit"
 
