@@ -6,11 +6,13 @@ import BuyerNavbar from "../dasboardaNavbar/BuyerNavbar";
 import SellerNavbar from "../dasboardaNavbar/SellerNavbar";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import useRole from "../../../hooks/useRole";
 
 const Sidebar = () => {
   const [isAdmin] = useAdmin();
   const [isSeller] = useSeller();
-  console.log(isSeller, isAdmin);
+  const [role,isLoading] = useRole()
+  
   const [isSidebarOpen, setSidebarOpen] = useState(false);
  
   return (

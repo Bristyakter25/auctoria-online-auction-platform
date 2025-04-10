@@ -5,7 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -123,41 +123,15 @@ async function run() {
       }
       next();
     };
-    //verify admin api
-    app.get("/user/admin/:email", verifyToken, async (req, res) => {
-      const email = req.params.email;
-      if (email != req.decoded.email) {
-        return res.status(403).send({ message: "unauthorized access" });
-      }
-      const query = { email };
-      const user = await usersCollection.findOne(query);
-      let admin = false;
-      if (user) {
-        admin = user?.role == "admin";
-      }
-      res.send({ admin });
-    });
-    //verify seller api
-    app.get("/user/seller/:email", async (req, res) => {
-      const email = req.params.email;
-      // console.log("email", email,req.decoded?.email);
-      // if (email != req.decoded?.email) {
-      //   return res.status(403).send({ message: "unauthorized access" });
-      // }
-      const query = { email };
-      const user = await usersCollection.findOne(query);
-      let seller = false;
-      if (user) {
-        seller = user?.role == "seller";
-      }
-      console.log("seller", seller);
-      res.send({ seller });
-    });
+
     //verify user role api
     app.get("/user/role/:email", async (req, res) => {
       const email = req.params.email;
-      const query = { email };
+      const query = { email:email };
+      // console.log(query, "email in role api");
       const user = await usersCollection.findOne(query);
+      // console.log("User role:", user);
+      // console.log( user?.role);
       res.send({ role: user?.role });
     } );
     app.get("/users", async (req, res) => {
@@ -533,7 +507,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
     });
 
     app.post("/users", async (req, res) => {
-      const { name, email, photoURL, uid, createdAt } = req.body;
+      const { name, email, photoURL, uid, createdAt,role } = req.body;
       try {
         // Check if user already exists
         const existingUser = await usersCollection.findOne({ email });
@@ -545,6 +519,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
         // Insert new user
         await usersCollection.insertOne({
           name,
+
           email,
           photoURL,
           uid: uid || null,
@@ -552,6 +527,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
           failedAttempts: 0,
           isLocked: false,
           lockoutUntil: null,
+          role
         });
     
         res.status(201).json({ message: "User registered successfully" });
@@ -584,11 +560,6 @@ app.delete("/bidHistory/:id", async (req, res) => {
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
-<<<<<<< HEAD
-      const { bidId, amount, user, email, sellerId, sellerEmail, productName } =
-        req.body;
-      // console.log("seller user", user, sellerEmail);
-=======
       const { amount, user, email, sellerId, sellerEmail, productName } = req.body;
     
       if (!ObjectId.isValid(id)) {
@@ -602,7 +573,6 @@ app.delete("/bidHistory/:id", async (req, res) => {
       const objectId = new ObjectId(id);
       const now = new Date();
     
->>>>>>> 74e00b6fe092cac1e7a8418d658f2a556e471bc9
       try {
         const result = await productsCollection.updateOne(
           { _id: objectId },
