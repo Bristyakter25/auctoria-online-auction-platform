@@ -282,43 +282,6 @@ async function run() {
       }
     });
 
-    // app.post("/addToWishlist", async (req, res) => {
-    //   const { productId, userId } = req.body;
-    //   console.log("wishlist", productId, userId);
-    //   try {
-    //     const user = await usersCollection.findOne({ uid: userId });
-
-    //     if (!user) return res.status(404).json({ message: "User not found" });
-
-    //     // Ensure wishlist is initialized as an empty array if it doesn't exist
-    //     const wishlist = user.wishlist || [];
-
-    //     const productObjectId = new ObjectId(productId);
-
-    //     // Check if the product is already in the wishlist
-    //     if (wishlist.includes(productObjectId.toString())) {
-    //       return res
-    //         .status(400)
-    //         .json({ message: "Product is already in your wishlist" });
-    //     }
-
-    //     // Add to wishlist only if it's not already there
-    //     const result = await usersCollection.updateOne(
-    //       { uid: userId },
-    //       { $addToSet: { wishlist: productObjectId } } // Ensures unique addition
-    //     );
-
-    //     if (result.modifiedCount > 0) {
-    //       res.json({ message: "Product added to wishlist" });
-    //     } else {
-    //       res.status(400).json({ message: "Failed to add to wishlist" });
-    //     }
-    //   } catch (error) {
-    //     console.error("Error in adding to wishlist:", error);
-    //     res.status(500).json({ message: "Server error", error: error.message });
-    //   }
-    // });
-
     // lockout feature
     app.post("/login", async (req, res) => {
       const { email, password } = req.body;
@@ -468,7 +431,7 @@ async function run() {
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
-      const { amount, user, email, sellerId, sellerEmail, productName } =
+      const { bidId, amount, user, email, sellerId, sellerEmail, productName } =
         req.body;
       // console.log("seller user", user, sellerEmail);
       try {
@@ -479,7 +442,7 @@ async function run() {
         const objectId = new ObjectId(id);
         const result = await productsCollection.updateOne(
           { _id: objectId },
-          { $push: { bids: { amount, user, email, time: new Date() } } }
+          { $push: { bids: { bidId, amount, user, email, time: new Date() } } }
         );
         console.log("Bid time:", new Date());
         // notification for Seller when user Bid the product
