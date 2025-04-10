@@ -1,3 +1,4 @@
+
 import { useContext, useEffect, useState } from "react";
 import { FaGavel } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -5,7 +6,11 @@ import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
+<<<<<<< HEAD
 import Tabs from "./Tabs";
+=======
+import { MdCancel } from "react-icons/md";
+>>>>>>> 74e00b6fe092cac1e7a8418d658f2a556e471bc9
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -81,6 +86,8 @@ const Bid = () => {
       socket.off("bidDeleted");
     };
   }, [id]);
+ 
+
 
   const generateSellerId = () => {
     return Math.floor(10000 + Math.random() * 90000).toString();
@@ -127,7 +134,7 @@ const Bid = () => {
       }
     } catch (error) {
       console.error("Error placing bid:", error);
-      toast.error("Server problem! Please try again later।", {
+      toast.error("Server problem! Please try again later.", {
         position: "top-right",
       });
     }
@@ -135,50 +142,11 @@ const Bid = () => {
 
   if (!product) return <p className="text-center">Loading...</p>;
 
-  const handleDeleteBid = async (bidId) => {
-    console.log("Deleting bid with ID:", bidId);
+ 
 
-    if (!bidId) {
-      toast.error("Invalid bid ID!", { position: "top-right" });
-      return;
-    }
 
-    try {
-      const res = await fetch(`http://localhost:5000/bid/${id}/${bidId}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
 
-      if (res.ok) {
-        toast.success("Bid deleted successfully!", { position: "top-right" });
 
-        setProduct((prev) => {
-          if (!prev || !prev.bids) return prev;
-
-          const updatedBids = prev.bids.filter((bid) => bid._id !== bidId);
-
-          // Update current bid after filtering
-          const newCurrentBid =
-            updatedBids.length > 0
-              ? Math.max(...updatedBids.map((b) => b.amount))
-              : 0;
-          setCurrentBid(newCurrentBid);
-
-          return {
-            ...prev,
-            bids: updatedBids,
-          };
-        });
-      } else {
-        toast.error("Failed to delete bid!", { position: "top-right" });
-      }
-    } catch (error) {
-      console.error("Error deleting bid:", error);
-      toast.error("Server problem! Please try again later.", {
-        position: "top-right",
-      });
-    }
-  };
 
   return (
     <div className="container mx-auto px-4 py-40">
@@ -189,8 +157,7 @@ const Bid = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           className="bg-white p-6 shadow-md rounded-lg border"
-        >
-          {/* Main Image */}
+        >           {/* Main Image */}
           <motion.img
             src={product.productImage}
             alt="Auction Item"
@@ -206,9 +173,8 @@ const Bid = () => {
                 key={index}
                 src={img}
                 alt="Thumbnail"
-                className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${
-                  selectedImage === img ? "border-blue-600" : "border-gray-300"
-                }`}
+                className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img ? "border-blue-600" : "border-gray-300"
+                  }`}
                 whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.3 }}
                 onClick={() => setSelectedImage(img)}
@@ -235,6 +201,9 @@ const Bid = () => {
             </p>{" "}
           </div>
           <p className="text-gray-500 text-sm mb-4"> {product.category}</p>
+
+       
+
 
           {/* Start & End Time */}
           <p className="text-gray-700">
@@ -315,11 +284,7 @@ const Bid = () => {
                         <p className="text-lg font-semibold text-gray-800">
                           ${bid.amount}
                         </p>
-                        <button
-                          onClick={() => bid?._id && handleDeleteBid(bid._id)}
-                        >
-                          {/* <MdCancel /> */}
-                        </button>
+                     
                       </div>
                       <p className="text-sm text-gray-500">
                         Bid by: {bid.user}
