@@ -5,7 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
+
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -64,16 +64,17 @@ async function run() {
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
-    // console.log(
-    //   "Pinged your deployment. You successfully connected to new MongoDB!"
-    // );
+    console.log(
+      "Pinged your deployment. You successfully connected to new MongoDB!"
+    );
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
-    const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    // const bidHistroyCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
       .collection("notifications");
+    const reviewsCollection = client.db("Auctoria").collection("reviews");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -98,15 +99,27 @@ async function run() {
         next();
       });
     };
-
-    app.get("/users", async (req, res) => {
-      try {
-        const result = await productsCollection.find().toArray();
-        res.json(result);
-      } catch (error) {
-        res.status(500).json({ message: "Error fetching products", error });
+    //verify seller after verifyToken
+    const verifySeller = async (req, res, next) => {
+     
+      const email = req?.decoded?.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      const isSeller = user?.role == "seller";
+      if (!isSeller) {
+        return res.status(403).send({ message: "forbidden access" });
       }
-    });
+      next();
+    };
+
+    // app.get("/users", async (req, res) => {
+    //   try {
+    //     const result = await productsCollection.find().toArray();
+    //     res.json(result);
+    //   } catch (error) {
+    //     res.status(500).json({ message: "Error fetching products", error });
+    //   }
+    // });
     
      //show specific seller products
      app.get("/addProducts/:email",async(req,res)=>{
@@ -270,11 +283,8 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
     res.status(500).send({ success: false, message: "Server error", error });
   }
 });
-
-
-
-    // 🛠 Get User Wishlist
-    // Ensure ObjectId is imported from MongoDB
+  // 🛠 Get User Wishlist
+    
 
     app.get("/wishlist/:userId", async (req, res) => {
       const { userId } = req.params;
@@ -305,25 +315,25 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
       try {
         const user = await usersCollection.findOne({ uid: userId });
         if (!user) return res.status(404).json({ message: "User not found" });
-
-        // Ensure wishlist is initialized as an empty array if it doesn't exist
-        const wishlist = user.wishlist || [];
-
+    
         const productObjectId = new ObjectId(productId);
-
-        // Check if the product is already in the wishlist
-        if (wishlist.includes(productObjectId.toString())) {
+    
+        
+        const wishlist = (user.wishlist || []).map(id => id.toString());
+        const productIdStr = productObjectId.toString();
+    
+        if (wishlist.includes(productIdStr)) {
           return res
             .status(400)
             .json({ message: "Product is already in your wishlist" });
         }
-
+    
         // Add to wishlist only if it's not already there
         const result = await usersCollection.updateOne(
           { uid: userId },
-          { $addToSet: { wishlist: productObjectId } } // Ensures unique addition
+          { $addToSet: { wishlist: productObjectId } }
         );
-
+    
         if (result.modifiedCount > 0) {
           res.json({ message: "Product added to wishlist" });
         } else {
@@ -334,6 +344,7 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
       }
     });
+    
 
     // lockout feature
     app.post("/login", async (req, res) => {
@@ -471,22 +482,23 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
       try {
         // Check if user already exists
         const existingUser = await usersCollection.findOne({ email });
+    
         if (existingUser) {
-          return res.status(400).json({ message: "User already exists" });
+          return res.status(200).json({ message: "User already exists" });
         }
-
-        // Insert the new user
+    
+        // Insert new user
         await usersCollection.insertOne({
           name,
           email,
           photoURL,
-          uid,
-          createdAt,
+          uid: uid || null,
+          createdAt: createdAt || new Date(),
           failedAttempts: 0,
           isLocked: false,
           lockoutUntil: null,
         });
-
+    
         res.status(201).json({ message: "User registered successfully" });
       } catch (error) {
         console.error("Error during registration:", error);
@@ -494,54 +506,65 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
       }
     });
 
-    // app.post("/bid/:id", async (req, res) => {
-    //   const { id } = req.params;
-    //   const { amount, user, email, sellerId, sellerEmail, productName } = req.body;
+
+    app.get("/users", async (req, res) => {
+      try {
+        // Fetch users from the database
+        const result = await usersCollection.find().toArray();
+        res.json(result);  // Send the users as JSON response
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching users", error });
+      }
+    });
     
-    //   if (!ObjectId.isValid(id)) {
-    //     return res.status(400).send({ error: "Invalid product ID format" });
-    //   }
     
-    //   if (!amount || !user || !email || !sellerId || !sellerEmail || !productName) {
-    //     return res.status(400).send({ error: "Missing required bid fields" });
-    //   }
+
+    app.post("/bid/:id", async (req, res) => {
+      const { id } = req.params;
+      const { amount, user, email, sellerId, sellerEmail, productName } = req.body;
     
-    //   const objectId = new ObjectId(id);
-    //   const now = new Date();
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).send({ error: "Invalid product ID format" });
+      }
     
-    //   try {
-    //     const result = await productsCollection.updateOne(
-    //       { _id: objectId },
-    //       { $push: { bids: { amount, user, email, time: now } } }
-    //     );
+      if (!amount || !user || !email || !sellerId || !sellerEmail || !productName) {
+        return res.status(400).send({ error: "Missing required bid fields" });
+      }
     
-    //     if (result.modifiedCount === 0) {
-    //       return res.status(404).send({ error: "Product not found or bid not added" });
-    //     }
+      const objectId = new ObjectId(id);
+      const now = new Date();
     
-    //     const notification = {
-    //       userId: sellerId,
-    //       email: sellerEmail,
-    //       message: `${user} placed a bid of $${amount} on your product: ${productName}`,
-    //       createdAt: now,
-    //       read: false,
-    //     };
+      try {
+        const result = await productsCollection.updateOne(
+          { _id: objectId },
+          { $push: { bids: { amount, user, email, time: now } } }
+        );
     
-    //     await notificationsCollection.insertOne(notification);
+        if (result.modifiedCount === 0) {
+          return res.status(404).send({ error: "Product not found or bid not added" });
+        }
     
-    //     io.emit(`notification_${sellerEmail}`, notification);
-    //     io.emit("newBid", { id, amount, user, time: now });
+        const notification = {
+          userId: sellerId,
+          email: sellerEmail,
+          message: `${user} placed a bid of $${amount} on your product: ${productName}`,
+          createdAt: now,
+          read: false,
+        };
     
-    //     res.send(result);
-    //   } catch (error) {
-    //     console.error("Bid error:", error);
-    //     res.status(500).send({ error: "Failed to place bid" });
-    //   }
-    // });
+        await notificationsCollection.insertOne(notification);
     
+        io.emit(`notification_${sellerEmail}`, notification);
+        io.emit("newBid", { id, amount, user, time: now });
+    
+        res.send(result);
+      } catch (error) {
+        console.error("Bid error:", error);
+        res.status(500).send({ error: "Failed to place bid" });
+      }
+    });
+
     // 🛠 Get All Users
-    
-    
     app.get("/users", async (req, res) => {
       try {
         const users = await usersCollection.find().toArray();
@@ -576,46 +599,6 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
         res.status(500).send({ error: "Failed to place bid" });
       }
     });
-
-
-    app.post("/bid/:id", async (req, res) => {
-      const { id } = req.params;
-      const { amount, user, email, sellerId, sellerEmail, productName } =
-        req.body;
-      // console.log("seller user", user, sellerEmail);
-      try {
-        if (!ObjectId.isValid(id)) {
-          return res.status(400).send({ error: "Invalid product ID format" });
-        }
-
-        const objectId = new ObjectId(id);
-        const result = await productsCollection.updateOne(
-          { _id: objectId },
-          { $push: { bids: { amount, user, email, time: new Date() } } }
-        );
-        console.log("Bid time:", new Date());
-        // notification for Seller when user Bid the product
-        const notification = {
-          userId: sellerId,
-          email: sellerEmail,
-          message: `${user} placed a bid of $${amount} on your product: ${productName}`,
-          createdAt: new Date(),
-          read: false,
-        };
-        // console.log(" Notification Data:", notification);
-        await notificationsCollection.insertOne(notification);
-        io.emit(`notification_${sellerEmail}`, notification);
-        // console.log(
-        //   " Emitting notification to:",
-        //   notification_${sellerEmail}
-        // );
-
-        io.emit("newBid", { id, amount, user, time: new Date() });
-        res.send(result);
-      } catch (error) {
-        res.status(500).send({ error: "Failed to place bid" });
-      }
-    });  
 
     // about automatic send end time of bid to the bidder Users
     const AuctionEndingTimer = async () => {
@@ -676,7 +659,8 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
           .json({ message: "Error fetching notifications", error });
       }
     });
-  } finally {
+  }
+  finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
 

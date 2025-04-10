@@ -1,20 +1,22 @@
 import { useContext, useState } from "react";
-import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-
+import { IoMdHeartEmpty } from "react-icons/io";
 import NotificationBell from "../../Pages/BidTask/NotificationBell";
 import auctionIcon from "../../assets/auction.png";
+import { WishlistContext } from "../../providers/wishListProvider";
+
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const { wishlist } = useContext(WishlistContext);
   const handleSignOut = () => {
     signOutUser()
       .then(() => {
         console.log("Successfully signed out");
-        navigate("/login"); // Redirect to login page after signing out
+        navigate("/login"); 
       })
       .catch((error) => {
         console.error("Failed to sign out", error);
@@ -93,7 +95,16 @@ const Navbar = () => {
       {/* Contact Icons & Button */}
       <div className="hidden md:flex items-center space-x-4">
         <NotificationBell user={user} />
-        <FaPhoneAlt className="text-xl cursor-pointer hover:text-blue-500" />
+        <Link to="/wishlist" className="relative inline-block">
+      <IoMdHeartEmpty className="text-2xl cursor-pointer hover:text-blue-500" />
+      {wishlist.length > 0 && (
+        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          {wishlist.length}
+        </span>
+      )}
+    </Link>
+
+
         <FaEnvelope className="text-xl cursor-pointer hover:text-blue-500" />
         <FaMapMarkerAlt className="text-xl cursor-pointer hover:text-blue-500" />
         <Link to="/get-started">

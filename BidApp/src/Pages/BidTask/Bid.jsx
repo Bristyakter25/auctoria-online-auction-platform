@@ -27,7 +27,7 @@ const Bid = () => {
   const [bidAmount, setBidAmount] = useState("");
   const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
-  console.log("bid time", product);
+
   useEffect(() => {
     fetch(`http://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
@@ -85,6 +85,10 @@ const Bid = () => {
  
 
 
+  const generateSellerId = () => {
+    return Math.floor(10000 + Math.random() * 90000).toString();
+  };
+
   const handleBid = async () => {
     if (!bidAmount || isNaN(bidAmount) || Number(bidAmount) <= 0) {
       toast.error("Please enter a valid bid amount!", {
@@ -98,12 +102,13 @@ const Bid = () => {
       });
       return;
     }
-
+    // const bidId = generateSellerId();
     try {
       const res = await fetch(`http://localhost:5000/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          bidId: generateSellerId(),
           sellerId: product.sellerId,
           sellerEmail: product.email,
           amount: Number(bidAmount),
@@ -178,9 +183,19 @@ const Bid = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border"
+          className="bg-white p-6 shadow-md rounded-lg border relative "
         >
-          <h2 className="text-2xl font-bold mb-2"> {product.productName}</h2>
+          <div className="text-2xl font-bold mb-2 flex items-center ">
+            {" "}
+            <div
+              className="w-0 h-0 border-t-[28px] border-t-transparent border-l-[28px] border-l-teal-300
+  border-b-[28px] border-b-transparent absolute -top-5 -right-1 -rotate-45 "
+            ></div>
+            <h2 className="w-8/12 ">{product.productName} </h2>
+            <p className="text-lg text-gray-900 flex justify-center items-center -top-1 right-1 absolute">
+              {product.bids?.length}
+            </p>{" "}
+          </div>
           <p className="text-gray-500 text-sm mb-4"> {product.category}</p>
 
        
@@ -188,18 +203,19 @@ const Bid = () => {
 
           {/* Start & End Time */}
           <p className="text-gray-700">
-            <strong>Start Time:</strong>{" "}
+            <strong>Auction Start:</strong>{" "}
             {new Date(product.auctionStartDate).toLocaleString()}
           </p>
-          <p className="text-gray-700">
-            <strong>Closing Time:</strong>{" "}
+          <p className="text-gray-600">
+            <strong>Auction ends:</strong>{" "}
             {new Date(product.auctionEndTime).toLocaleString()}
           </p>
 
           {/* Current Bid */}
           <div className="mt-4">
-            <p className="text-lg font-semibold text-blue-600">
-              Current Bid: $<span> {currentBid || "No bids yet"}</span>
+            <p className="text-sm font-semibold text-gray-600">Current Bid:</p>
+            <p className="text-3xl font-bold">
+              $ {currentBid || "No bids yet"}
             </p>
           </div>
 
@@ -215,28 +231,39 @@ const Bid = () => {
           </div>
 
           {/* Make a Bid Button */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={handleBid}
-            className="mt-4 w-full bg-teal-400 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-teal-500  transition"
-          >
-            <FaGavel /> Make a Bid
-          </motion.button>
+          {product.endingSoonNotified === true ? (
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleBid}
+              disabled
+              className=" mt-4 w-full bg-gray-400 py-2 rounded-lg flex items-center justify-center gap-2  "
+            >
+              <FaGavel /> Auction Ended
+            </motion.button>
+          ) : (
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleBid}
+              className="mt-4 w-full bg-teal-400 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-teal-500  transition"
+            >
+              <FaGavel /> Make a Bid
+            </motion.button>
+          )}
 
           {/* Total Bids */}
-          <p className="mt-4 text-blue-600 font-bold ">
+          {/* <p className="mt-4 text-blue-600 font-bold ">
             Total Bids:{" "}
             <span className="">
               {product.bids?.length ? product.bids?.length : "0"}
             </span>
-          </p>
+          </p> */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             className="bg-white   "
           >
-            <h3 className="text-xl font-bold text-gray-700 mb-3">
+            <h3 className="text-xl font-bold text-gray-600 mb-3 mt-3">
               Latest Bids
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -250,7 +277,7 @@ const Bid = () => {
                       className="bg-white p-4 shadow-md rounded-lg border border-gray-200"
                     >
                       <div className="flex items-center justify-between">
-                        <p className="text-lg font-semibold text-blue-600">
+                        <p className="text-lg font-semibold text-gray-800">
                           ${bid.amount}
                         </p>
                      
@@ -272,6 +299,7 @@ const Bid = () => {
           </motion.div>
         </motion.div>
       </div>
+      <Tabs sellerId={product._id} sellerEmail={product.email} />
     </div>
   );
 };
