@@ -18,7 +18,6 @@ import Bid from "../Pages/BidTask/Bid";
 import BidHistory from "../Pages/BidTask/BidHistory";
 
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -48,7 +47,6 @@ export const router = createBrowserRouter([
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
       { path: "manageUsers", element: <ManageUsers /> },
-      // { path: "wishList", element: <WishList /> },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "profile", element: <Profile /> },

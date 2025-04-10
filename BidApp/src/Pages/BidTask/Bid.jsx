@@ -6,11 +6,7 @@ import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
-<<<<<<< HEAD
-import Tabs from "./Tabs";
-=======
 import { MdCancel } from "react-icons/md";
->>>>>>> 74e00b6fe092cac1e7a8418d658f2a556e471bc9
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
