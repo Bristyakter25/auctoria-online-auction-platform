@@ -17,13 +17,13 @@ const AddProduct = () => {
       sellerId: sellerId,
       email: user?.email,
       productName: form.productName.value,
-      category: form.category.value, // New field
+      category: form.category.value,
       description: form.description.value,
       startingBid: form.startingBid.value,
       auctionStartDate: form.auctionStartDate.value,
       productImage: form.productImage.value,
-      location: form.location.value, // New field
-      status: form.status.value, // New field
+      location: form.location.value,
+      status: form.status.value,
     };
 
     console.log(productData);
