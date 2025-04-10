@@ -144,12 +144,12 @@ async function run() {
     });
     
      //show specific seller products
-     app.get("/addProducts/:email",async(req,res)=>{
-      const {email}=req.params;
-      const query={email:email};
-      const result=await productsCollection.find(query).toArray(); 
-      res.send(result);
-    })
+    //  app.get("/addProducts/:email",async(req,res)=>{
+    //   const {email}=req.params;
+    //   const query={email:email};
+    //   const result=await productsCollection.find(query).toArray(); 
+    //   res.send(result);
+    // })
 
     // 🛠 Get Recent Products (Limited to 4)
     app.get("/recentProducts", async (req, res) => {
@@ -551,7 +551,8 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
         return res.status(400).send({ error: "Invalid product ID format" });
       }
     
-      if (!amount || !user || !email || !sellerId || !sellerEmail || !productName) {
+      // if (!amount || !user || !email || !sellerId || !sellerEmail || !productName) {
+        if (!amount || !user || !email || !productName) {
         return res.status(400).send({ error: "Missing required bid fields" });
       }
     
