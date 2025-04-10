@@ -31,6 +31,10 @@ export const router = createBrowserRouter([
       { path: "/allAuctions", element: <AllAuctions /> },
       { path: "/profile", element: <Profile /> },
       { path: "/bid/:id", element: <Bid /> },
+      {
+        path: "/wishlist",
+        element:<WishList></WishList>
+      }
      
     ],
   },

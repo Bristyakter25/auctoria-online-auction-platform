@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 // import AuthProvider from "./providers/AuthProvider.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthProvider from "./providers/AuthProvider";
+import { WishlistProvider } from "./providers/wishListProvider.jsx";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -16,7 +17,9 @@ createRoot(document.getElementById("root")).render(
     <ToastContainer />
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <RouterProvider router={router} />
+       <WishlistProvider>
+       <RouterProvider router={router} />
+       </WishlistProvider>
       </AuthProvider>
     </QueryClientProvider>
   </StrictMode>

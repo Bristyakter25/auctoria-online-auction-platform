@@ -41,7 +41,7 @@ const WishList = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-center my-5">Your Wishlisted Items</h2>
+      <h2 className="text-2xl font-bold text-center mt-36 mb-5 ">Your Wishlisted Items</h2>
 
       {error && <p className="text-center text-red-500">{error}</p>} {/* Display error message if any */}
 

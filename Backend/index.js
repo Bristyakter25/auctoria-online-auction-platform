@@ -5,7 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
-// const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -64,16 +64,17 @@ async function run() {
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
-    // console.log(
-    //   "Pinged your deployment. You successfully connected to new MongoDB!"
-    // );
+    console.log(
+      "Pinged your deployment. You successfully connected to new MongoDB!"
+    );
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
-    const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    // const bidHistroyCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
       .collection("notifications");
+    const reviewsCollection = client.db("Auctoria").collection("reviews");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -337,23 +338,8 @@ app.delete("/bidHistory/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete bid" });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // 🛠 Get User Wishlist
-    // Ensure ObjectId is imported from MongoDB
+  // 🛠 Get User Wishlist
+    
 
     app.get("/wishlist/:userId", async (req, res) => {
       const { userId } = req.params;
@@ -384,25 +370,25 @@ app.delete("/bidHistory/:id", async (req, res) => {
       try {
         const user = await usersCollection.findOne({ uid: userId });
         if (!user) return res.status(404).json({ message: "User not found" });
-
-        // Ensure wishlist is initialized as an empty array if it doesn't exist
-        const wishlist = user.wishlist || [];
-
+    
         const productObjectId = new ObjectId(productId);
-
-        // Check if the product is already in the wishlist
-        if (wishlist.includes(productObjectId.toString())) {
+    
+        
+        const wishlist = (user.wishlist || []).map(id => id.toString());
+        const productIdStr = productObjectId.toString();
+    
+        if (wishlist.includes(productIdStr)) {
           return res
             .status(400)
             .json({ message: "Product is already in your wishlist" });
         }
-
+    
         // Add to wishlist only if it's not already there
         const result = await usersCollection.updateOne(
           { uid: userId },
-          { $addToSet: { wishlist: productObjectId } } // Ensures unique addition
+          { $addToSet: { wishlist: productObjectId } }
         );
-
+    
         if (result.modifiedCount > 0) {
           res.json({ message: "Product added to wishlist" });
         } else {
@@ -413,6 +399,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
       }
     });
+    
 
     // lockout feature
     app.post("/login", async (req, res) => {
@@ -597,6 +584,11 @@ app.delete("/bidHistory/:id", async (req, res) => {
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
+<<<<<<< HEAD
+      const { bidId, amount, user, email, sellerId, sellerEmail, productName } =
+        req.body;
+      // console.log("seller user", user, sellerEmail);
+=======
       const { amount, user, email, sellerId, sellerEmail, productName } = req.body;
     
       if (!ObjectId.isValid(id)) {
@@ -610,6 +602,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
       const objectId = new ObjectId(id);
       const now = new Date();
     
+>>>>>>> 74e00b6fe092cac1e7a8418d658f2a556e471bc9
       try {
         const result = await productsCollection.updateOne(
           { _id: objectId },
@@ -649,7 +642,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
         const objectId = new ObjectId(id);
         const result = await productsCollection.updateOne(
           { _id: objectId },
-          { $push: { bids: { amount, user, email, time: new Date() } } }
+          { $push: { bids: { bidId, amount, user, email, time: new Date() } } }
         );
         console.log("Bid time:", new Date());
         // notification for Seller when user Bid the product
@@ -733,6 +726,35 @@ app.delete("/bidHistory/:id", async (req, res) => {
         res
           .status(500)
           .json({ message: "Error fetching notifications", error });
+      }
+    });
+
+    // Review related API
+
+    app.get("/reviews/:sellerEmail", async (req, res) => {
+      const { sellerEmail } = req.params;
+      const result = await reviewsCollection.find({ sellerEmail }).toArray();
+      res.send(result);
+    });
+
+    app.post("/reviews", async (req, res) => {
+      try {
+        const review = req.body;
+        const { sellerEmail, reviewerEmail } = review;
+        const exsitingReview = await reviewsCollection.findOne({
+          sellerEmail,
+          reviewerEmail,
+        });
+        if (exsitingReview) {
+          return res.status(400).send({
+            error: "You have already reviewed this seller!",
+          });
+        }
+        // review.createdAt = new Date();
+        const result = await reviewsCollection.insertOne(review);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to submit review" });
       }
     });
   } finally {
