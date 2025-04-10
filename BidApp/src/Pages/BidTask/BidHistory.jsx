@@ -39,10 +39,7 @@ const BidHistory = () => {
       console.error("Failed to delete bid:", error);
     }
   };
-
-
   
-
   if (loading) return <p>Loading...</p>;
 
   return (
