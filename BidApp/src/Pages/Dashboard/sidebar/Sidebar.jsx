@@ -10,6 +10,7 @@ import { useState } from "react";
 const Sidebar = () => {
   const [isAdmin] = useAdmin();
   const [isSeller] = useSeller();
+  console.log(isSeller, isAdmin);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
  
   return (
