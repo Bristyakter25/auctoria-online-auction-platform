@@ -6,15 +6,16 @@ const useSeller = () => {
   const { user, loading } = useContextHooks();
   const axiosSecure = useAxiosSecure();
 
-  const { data: isSeller, isPending: isSellerLoadin } = useQuery({
-    queryKey: [user?.email],
+  const { data: isSeller=[], isPending: isSellerLoading } = useQuery({
+    queryKey: ["user/seller",user?.email],
     enabled: !loading,
     queryFn: async () => {
-      const res = await axiosSecure.get(`user/seller/${user.email}`);
-      return res.data?.isSeller;
+      const res = await axiosSecure.get(`user/role/${user?.email}`);
+      return res.data;
     },
   });
-  return [isSeller, isSellerLoadin];
+  console.log(isSeller, "isSeller");
+  return [isSeller, isSellerLoading];
 };
 
 export default useSeller;

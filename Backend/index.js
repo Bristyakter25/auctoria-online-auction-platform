@@ -5,7 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
-
+const nodemailer = require("nodemailer");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -99,6 +99,18 @@ async function run() {
         next();
       });
     };
+    //verify admin after verifyToken
+    const verifyAdmin = async (req, res, next) => {
+     
+      const email = req?.decoded?.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      const isAdmin = user?.role == "admin";
+      if (!isAdmin) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
     //verify seller after verifyToken
     const verifySeller = async (req, res, next) => {
      
@@ -111,7 +123,43 @@ async function run() {
       }
       next();
     };
-
+    //verify admin api
+    app.get("/user/admin/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      if (email != req.decoded.email) {
+        return res.status(403).send({ message: "unauthorized access" });
+      }
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      let admin = false;
+      if (user) {
+        admin = user?.role == "admin";
+      }
+      res.send({ admin });
+    });
+    //verify seller api
+    app.get("/user/seller/:email", async (req, res) => {
+      const email = req.params.email;
+      // console.log("email", email,req.decoded?.email);
+      // if (email != req.decoded?.email) {
+      //   return res.status(403).send({ message: "unauthorized access" });
+      // }
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      let seller = false;
+      if (user) {
+        seller = user?.role == "seller";
+      }
+      console.log("seller", seller);
+      res.send({ seller });
+    });
+    //verify user role api
+    app.get("/user/role/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await usersCollection.findOne(query);
+      res.send({ role: user?.role });
+    } );
     app.get("/users", async (req, res) => {
       try {
         const result = await productsCollection.find().toArray();
