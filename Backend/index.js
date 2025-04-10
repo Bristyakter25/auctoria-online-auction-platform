@@ -70,10 +70,11 @@ async function run() {
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
-    const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    // const bidHistroyCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
       .collection("notifications");
+    const reviewsCollection = client.db("Auctoria").collection("reviews");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -535,6 +536,11 @@ app.delete("/bidHistory/:id", async (req, res) => {
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
+<<<<<<< HEAD
+      const { bidId, amount, user, email, sellerId, sellerEmail, productName } =
+        req.body;
+      // console.log("seller user", user, sellerEmail);
+=======
       const { amount, user, email, sellerId, sellerEmail, productName } = req.body;
     
       if (!ObjectId.isValid(id)) {
@@ -548,6 +554,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
       const objectId = new ObjectId(id);
       const now = new Date();
     
+>>>>>>> 74e00b6fe092cac1e7a8418d658f2a556e471bc9
       try {
         const result = await productsCollection.updateOne(
           { _id: objectId },
@@ -587,7 +594,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
         const objectId = new ObjectId(id);
         const result = await productsCollection.updateOne(
           { _id: objectId },
-          { $push: { bids: { amount, user, email, time: new Date() } } }
+          { $push: { bids: { bidId, amount, user, email, time: new Date() } } }
         );
         console.log("Bid time:", new Date());
         // notification for Seller when user Bid the product
@@ -671,6 +678,35 @@ app.delete("/bidHistory/:id", async (req, res) => {
         res
           .status(500)
           .json({ message: "Error fetching notifications", error });
+      }
+    });
+
+    // Review related API
+
+    app.get("/reviews/:sellerEmail", async (req, res) => {
+      const { sellerEmail } = req.params;
+      const result = await reviewsCollection.find({ sellerEmail }).toArray();
+      res.send(result);
+    });
+
+    app.post("/reviews", async (req, res) => {
+      try {
+        const review = req.body;
+        const { sellerEmail, reviewerEmail } = review;
+        const exsitingReview = await reviewsCollection.findOne({
+          sellerEmail,
+          reviewerEmail,
+        });
+        if (exsitingReview) {
+          return res.status(400).send({
+            error: "You have already reviewed this seller!",
+          });
+        }
+        // review.createdAt = new Date();
+        const result = await reviewsCollection.insertOne(review);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to submit review" });
       }
     });
   } finally {

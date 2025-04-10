@@ -13,7 +13,7 @@ const socket = io("http://localhost:5000", {
 });
 
 const NotificationBell = ({ user }) => {
-  console.log("userId is", user);
+  // console.log("userId is", user);
   const axiosPublic = UseAxiosPublic();
   // const [notifications, setNotifications] = useState([bidNotifications]);
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +28,7 @@ const NotificationBell = ({ user }) => {
     queryKey: ["notifications", userEmail],
     queryFn: async () => {
       const res = await axiosPublic.get(`/notification/${userEmail}`);
-      console.log("user data", res.data);
+      // console.log("user data", res.data);
       return res.data;
     },
     enabled: !!userEmail,
