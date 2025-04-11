@@ -278,11 +278,11 @@ const Bid = () => {
                       <p className="text-sm text-gray-500">
                         Bid by: {bid.user}
                       </p>
-                      <p className="text-xs text-gray-400">
+                      {/* <p className="text-xs text-gray-400">
                         {bid.time
                           ? new Date(bid?.time).toLocaleString()
                           : "Loading..."}
-                      </p>
+                      </p> */}
                     </div>
                   ))
               ) : (
