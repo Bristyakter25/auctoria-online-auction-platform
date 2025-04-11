@@ -501,6 +501,8 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
 
     app.post("/users", async (req, res) => {
       const { name, email, photoURL, uid, createdAt,role } = req.body;
+      // console.log("Received user data:", req.body);
+      
       try {
         // Check if user already exists
         const existingUser = await usersCollection.findOne({ email });
