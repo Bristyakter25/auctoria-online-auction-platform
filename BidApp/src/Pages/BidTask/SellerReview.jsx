@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { FaCircleUser } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
@@ -60,11 +61,6 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
     enabled: !!sellerEmail,
   });
   console.log("review data", clientReviews);
-  // useEffect(() => {
-  //   if (clientReviews.length > 0) {
-  //     setReviews(clientReviews);
-  //   }
-  // }, [clientReviews]);
 
   return (
     <div className="w-full lg:flex justify-between gap-4 space-y-3 lg:space-y-0">
@@ -79,10 +75,14 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
                 className=" rounded-md flex items-center bg-gray-50 "
               >
                 <div>
-                  <img
+                  {/* <img
                     className="hidden object-cover w-12 h-12 mr-5 rounded-full sm:block border"
-                    src={user?.photoURL}
+                    src={<FaUser size={}/>}
                     alt="avatar"
+                  /> */}
+                  <FaCircleUser
+                    size={36}
+                    className="text-gray-500 items-center"
                   />
                 </div>
                 <div className="w-full p-3 mx-3">

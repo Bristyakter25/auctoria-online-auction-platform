@@ -14,15 +14,12 @@ import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
 import Bid from "../Pages/BidTask/Bid";
 
-
 import BidHistory from "../Pages/BidTask/BidHistory";
-
-
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />, 
+    element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
@@ -33,9 +30,8 @@ export const router = createBrowserRouter([
       { path: "/bid/:id", element: <Bid /> },
       {
         path: "/wishlist",
-        element:<WishList></WishList>
-      }
-     
+        element: <WishList></WishList>,
+      },
     ],
   },
   {
@@ -48,7 +44,6 @@ export const router = createBrowserRouter([
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
       { path: "manageUsers", element: <ManageUsers /> },
-      // { path: "wishList", element: <WishList /> },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "profile", element: <Profile /> },

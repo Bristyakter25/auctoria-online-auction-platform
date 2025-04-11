@@ -97,7 +97,39 @@ async function run() {
         next();
       });
     };
+    //verify admin after verifyToken
+    const verifyAdmin = async (req, res, next) => {
+      const email = req?.decoded?.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      const isAdmin = user?.role == "admin";
+      if (!isAdmin) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
+    //verify seller after verifyToken
+    const verifySeller = async (req, res, next) => {
+      const email = req?.decoded?.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      const isSeller = user?.role == "seller";
+      if (!isSeller) {
+        return res.status(403).send({ message: "forbidden access" });
+      }
+      next();
+    };
 
+    //verify user role api
+    app.get("/user/role/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      // console.log(query, "email in role api");
+      const user = await usersCollection.findOne(query);
+      // console.log("User role:", user);
+      // console.log( user?.role);
+      res.send({ role: user?.role });
+    });
     app.get("/users", async (req, res) => {
       try {
         const result = await productsCollection.find().toArray();
@@ -387,7 +419,9 @@ async function run() {
     });
 
     app.post("/users", async (req, res) => {
-      const { name, email, photoURL, uid, createdAt } = req.body;
+      const { name, email, photoURL, uid, createdAt, role } = req.body;
+      // console.log("Received user data:", req.body);
+
       try {
         // Check if user already exists
         const existingUser = await usersCollection.findOne({ email });
@@ -397,6 +431,7 @@ async function run() {
         // Insert the new user
         await usersCollection.insertOne({
           name,
+
           email,
           photoURL,
           uid: uid || null,
@@ -404,6 +439,7 @@ async function run() {
           failedAttempts: 0,
           isLocked: false,
           lockoutUntil: null,
+          role,
         });
 
         res.status(201).json({ message: "User registered successfully" });
