@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
+import { MdCancel } from "react-icons/md";
+import Tabs from "./Tabs";
 // import { MdCancel } from "react-icons/md";
 
 const socket = io("http://localhost:5000", {
