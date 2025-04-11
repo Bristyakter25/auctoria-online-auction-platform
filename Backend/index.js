@@ -6,11 +6,9 @@ const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 
-
 const app = express();
 const port = process.env.PORT || 5000;
 const server = http.createServer(app);
-// const bcrypt = require('bcrypt');
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -21,7 +19,7 @@ app.use(
   cors({
     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization", "email", "userid"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
@@ -64,13 +62,13 @@ async function run() {
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to new MongoDB!"
-    );
+    // console.log(
+    //   "Pinged your deployment. You successfully connected to new MongoDB!"
+    // );
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
-    // const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    const bidHistroyCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
       .collection("notifications");
@@ -99,18 +97,6 @@ async function run() {
         next();
       });
     };
-    //verify seller after verifyToken
-    const verifySeller = async (req, res, next) => {
-     
-      const email = req?.decoded?.email;
-      const query = { email: email };
-      const user = await usersCollection.findOne(query);
-      const isSeller = user?.role == "seller";
-      if (!isSeller) {
-        return res.status(403).send({ message: "forbidden access" });
-      }
-      next();
-    };
 
     app.get("/users", async (req, res) => {
       try {
@@ -120,14 +106,6 @@ async function run() {
         res.status(500).json({ message: "Error fetching products", error });
       }
     });
-    
-     //show specific seller products
-     app.get("/addProducts/:email",async(req,res)=>{
-      const {email}=req.params;
-      const query={email:email};
-      const result=await productsCollection.find(query).toArray(); 
-      res.send(result);
-    })
 
     // 🛠 Get Recent Products (Limited to 4)
     app.get("/recentProducts", async (req, res) => {
@@ -190,11 +168,19 @@ async function run() {
         res.status(500).json({ message: "Error adding product", error: err });
       }
     });
+    //show specific seller products
+    // app.get("/addProducts/:email", async (req, res) => {
+    //   const { email } = req.params;
+    //   const query = { email: email };
+    //   const result = await productsCollection.find(query).toArray();
+    //   res.send(result);
+    // });
 
     // 🛠 Get Single Product by ID
 
     app.get("/addProducts/:id", async (req, res) => {
       const { id } = req.params;
+      console.log("product id is ", id);
       try {
         const product = await productsCollection.findOne({
           _id: new ObjectId(id),
@@ -217,81 +203,8 @@ async function run() {
       }
     });
 
-
-
-// 🛠 Get User's Bid History
-
-
-
-
-app.get("/bidHistory/:email", async (req, res) => {
-  const email = req.params.email;
-  console.log("Fetching bid history for email:", email);
-
-  try {
-    const products = await productsCollection.find({
-      bids: { $elemMatch: { email: email } },
-    }).toArray();
-
-    const bidHistory = [];
-
-    products.forEach((product) => {
-      const userBids = product.bids.filter((bid) => bid.email === email);
-      userBids.forEach((bid) => {
-        bidHistory.push({
-          productName: product.productName,
-          bidAmount: bid.amount,
-          timestamp: bid.time,
-          _id: product._id,
-        });
-      });
-    });
-
-    res.status(200).json(bidHistory);
-  } catch (error) {
-    console.error("Error fetching bid history", error);
-    res.status(500).json({ message: "Failed to fetch bid history" });
-  }
-});
-
-// 🛠 Delete Bid
-app.delete("/bidHistory/:id", async (req, res) => {
-  const bidId = req.params.id;
-  const userEmail = req.body.email;
-
-  try {
-    const product = await productsCollection.findOne({
-      "bids._id": new ObjectId(bidId),
-    });
-
-    if (!product) {
-      return res.status(404).json({ message: "Bid not found" });
-    }
-
-    const bid = product.bids.find((b) => b._id.toString() === bidId);
-
-    if (!bid || bid.email !== userEmail) {
-      return res.status(403).json({ message: "Unauthorized" });
-    }
-
-    
-    await productsCollection.deleteOne(
-      { _id: product._id },
-      {
-        $pull: {
-          bids: { _id: new ObjectId(bidId) },
-        },
-      }
-    );
-
-    res.json({ message: "Bid deleted successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to delete bid" });
-  }
-});
-  // 🛠 Get User Wishlist
-    
+    // 🛠 Get User Wishlist
+    // Ensure ObjectId is imported from MongoDB
 
     app.get("/wishlist/:userId", async (req, res) => {
       const { userId } = req.params;
@@ -322,25 +235,24 @@ app.delete("/bidHistory/:id", async (req, res) => {
       try {
         const user = await usersCollection.findOne({ uid: userId });
         if (!user) return res.status(404).json({ message: "User not found" });
-    
+
         const productObjectId = new ObjectId(productId);
-    
-        
-        const wishlist = (user.wishlist || []).map(id => id.toString());
+
+        const wishlist = (user.wishlist || []).map((id) => id.toString());
         const productIdStr = productObjectId.toString();
-    
+
         if (wishlist.includes(productIdStr)) {
           return res
             .status(400)
             .json({ message: "Product is already in your wishlist" });
         }
-    
+
         // Add to wishlist only if it's not already there
         const result = await usersCollection.updateOne(
           { uid: userId },
           { $addToSet: { wishlist: productObjectId } }
         );
-    
+
         if (result.modifiedCount > 0) {
           res.json({ message: "Product added to wishlist" });
         } else {
@@ -351,7 +263,6 @@ app.delete("/bidHistory/:id", async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
       }
     });
-    
 
     // lockout feature
     app.post("/login", async (req, res) => {
@@ -380,59 +291,44 @@ app.delete("/bidHistory/:id", async (req, res) => {
         if (user.password !== password) {
           const failedAttempts = (user.failedAttempts || 0) + 1;
           let updateFields = { failedAttempts };
-    
-        // Compare hashed password using bcrypt
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-          const failedAttempts = (user.failedAttempts || 0) + 1;
-          let updateFields = { failedAttempts };
-
-          console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
-
-
-          // Lock account after 3 failed attempts
-          if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
-            updateFields.isLocked = true;
-            updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
-
-          }
-    
-
+          // Compare hashed password using bcrypt
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
+            const failedAttempts = (user.failedAttempts || 0) + 1;
+            let updateFields = { failedAttempts };
+            console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
+            // Lock account after 3 failed attempts
+            if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+              updateFields.isLocked = true;
+              updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
+            }
             console.log(
               `Account for ${email} locked! Lockout until: ${updateFields.lockoutUntil}`
             );
           }
-
-
           await usersCollection.updateOne({ email }, { $set: updateFields });
           return res.status(401).json({
             message: `Invalid credentials. Attempt ${failedAttempts} of ${MAX_FAILED_ATTEMPTS}.`,
           });
         }
-   // Reset failed attempts and unlock account if login is successful
+        // Reset failed attempts and unlock account if login is successful
         await usersCollection.updateOne(
           { email },
           { $set: { failedAttempts: 0, isLocked: false, lockoutUntil: null } }
         );
-
         res.json({ message: "Login successful" });
       } catch (error) {
         console.error("Error in login:", error);
         res.status(500).json({ message: "Server error" });
       }
     });
-    
-    
 
     app.get("/check-lockout", async (req, res) => {
       const { email } = req.query;
       const user = await db.collection("users").findOne({ email });
-
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-
       // Check if account is locked
       if (user.isLocked && user.lockoutUntil > Date.now()) {
         const remainingTime = Math.ceil(
@@ -440,7 +336,6 @@ app.delete("/bidHistory/:id", async (req, res) => {
         );
         return res.json({ isLocked: true, lockoutMinutes: remainingTime });
       }
-
       res.json({ isLocked: false });
     });
 
@@ -457,14 +352,12 @@ app.delete("/bidHistory/:id", async (req, res) => {
 
     app.post("/signup", async (req, res) => {
       const { email, password } = req.body;
-
       try {
         // Check if the user already exists
         const existingUser = await usersCollection.findOne({ email });
         if (existingUser) {
           return res.status(400).json({ message: "User already exists" });
         }
-
         // Hash the password using bcrypt
         const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
 
@@ -476,11 +369,20 @@ app.delete("/bidHistory/:id", async (req, res) => {
           isLocked: false,
           lockoutUntil: null,
         });
-
         res.status(201).json({ message: "User registered successfully" });
       } catch (error) {
         console.error("Error during registration:", error);
         res.status(500).json({ message: "Server error during registration" });
+      }
+    });
+
+    app.get("/users", async (req, res) => {
+      try {
+        // Fetch users from the database
+        const result = await usersCollection.find().toArray();
+        res.json(result); // Send the users as JSON response
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching users", error });
       }
     });
 
@@ -489,12 +391,10 @@ app.delete("/bidHistory/:id", async (req, res) => {
       try {
         // Check if user already exists
         const existingUser = await usersCollection.findOne({ email });
-    
         if (existingUser) {
-          return res.status(200).json({ message: "User already exists" });
+          return res.status(400).json({ message: "User already exists" });
         }
-    
-        // Insert new user
+        // Insert the new user
         await usersCollection.insertOne({
           name,
           email,
@@ -505,7 +405,7 @@ app.delete("/bidHistory/:id", async (req, res) => {
           isLocked: false,
           lockoutUntil: null,
         });
-    
+
         res.status(201).json({ message: "User registered successfully" });
       } catch (error) {
         console.error("Error during registration:", error);
@@ -513,83 +413,15 @@ app.delete("/bidHistory/:id", async (req, res) => {
       }
     });
 
-    // app.get("/users", async (req, res) => {
-    //   try {
-    //     const result = await productsCollection.find().toArray();
-    //     res.json(result);
-    //   } catch (error) {
-    //     res.status(500).json({ message: "Error fetching products", error });
-    //   }
-    // });
-
-    app.get("/users", async (req, res) => {
-      try {
-        // Fetch users from the database
-        const result = await usersCollection.find().toArray();
-        res.json(result);  // Send the users as JSON response
-      } catch (error) {
-        res.status(500).json({ message: "Error fetching users", error });
-      }
-    });
-    
-    
-
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
-<<<<<<< HEAD
       const { bidId, amount, user, email, sellerId, sellerEmail, productName } =
         req.body;
       // console.log("seller user", user, sellerEmail);
-=======
-      const { amount, user, email, sellerId, sellerEmail, productName } = req.body;
-    
-      if (!ObjectId.isValid(id)) {
-        return res.status(400).send({ error: "Invalid product ID format" });
-      }
-    
-      if (!amount || !user || !email || !sellerId || !sellerEmail || !productName) {
-        return res.status(400).send({ error: "Missing required bid fields" });
-      }
-    
-      const objectId = new ObjectId(id);
-      const now = new Date();
-    
->>>>>>> 74e00b6fe092cac1e7a8418d658f2a556e471bc9
       try {
-        const result = await productsCollection.updateOne(
-          { _id: objectId },
-          { $push: { bids: { amount, user, email, time: now } } }
-        );
-    
-        if (result.modifiedCount === 0) {
-          return res.status(404).send({ error: "Product not found or bid not added" });
+        if (!ObjectId.isValid(id)) {
+          return res.status(400).send({ error: "Invalid product ID format" });
         }
-    
-        const notification = {
-          userId: sellerId,
-          email: sellerEmail,
-          message: `${user} placed a bid of $${amount} on your product: ${productName}`,
-          createdAt: now,
-          read: false,
-        };
-    
-        await notificationsCollection.insertOne(notification);
-    
-        io.emit(`notification_${sellerEmail}`, notification);
-        io.emit("newBid", { id, amount, user, time: now });
-    
-        res.send(result);
-      } catch (error) {
-        console.error("Bid error:", error);
-        res.status(500).send({ error: "Failed to place bid" });
-      }
-    });
-    
-    // 🛠 Get All Users
-    app.get("/users", async (req, res) => {
-      try {
-        const users = await usersCollection.find().toArray();
-        res.json(users);
 
         const objectId = new ObjectId(id);
         const result = await productsCollection.updateOne(
@@ -608,14 +440,8 @@ app.delete("/bidHistory/:id", async (req, res) => {
         // console.log(" Notification Data:", notification);
         await notificationsCollection.insertOne(notification);
         io.emit(`notification_${sellerEmail}`, notification);
-        // console.log(
-        //   " Emitting notification to:",
-        //   `notification_${sellerEmail}`
-        // );
-
         io.emit("newBid", { id, amount, user, time: new Date() });
         res.send(result);
-
       } catch (error) {
         res.status(500).send({ error: "Failed to place bid" });
       }
@@ -709,25 +535,88 @@ app.delete("/bidHistory/:id", async (req, res) => {
         res.status(500).send({ error: "Failed to submit review" });
       }
     });
+
+    //bid History related API
+
+    app.get("/bidHistory/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log("Fetching bid history for email:", email);
+
+      try {
+        const products = await productsCollection
+          .find({
+            bids: { $elemMatch: { email: email } },
+          })
+          .toArray();
+
+        const bidHistory = [];
+
+        products.forEach((product) => {
+          // console.log("Product:", product._id);
+          const userBids = product.bids.filter((bid) => bid.email === email);
+          userBids.forEach((bid) => {
+            bidHistory.push({
+              productName: product.productName,
+              name: bid.user,
+              email: bid.email,
+              bidAmount: bid.amount,
+              timestamp: bid.time,
+              bidId: bid.bidId,
+              _id: product._id,
+            });
+
+            // console.log("Bid:", _id);
+          });
+          // console.log("Bid:", _id);
+        });
+
+        res.status(200).json(bidHistory);
+      } catch (error) {
+        console.error("Error fetching bid history", error);
+        res.status(500).json({ message: "Failed to fetch bid history" });
+      }
+    });
+
+    // 🛠 Delete Bid
+    app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
+      const { productId, bidId } = req.params;
+      console.log("Deleting bid for product ID:", bidId, productId);
+
+      try {
+        const result = await productsCollection.updateOne(
+          { _id: new ObjectId(productId) },
+          { $pull: { bids: { bidId: bidId } } }
+        );
+
+        if (result.modifiedCount > 0) {
+          res
+            .status(200)
+            .send({ success: true, message: "Bid removed successfully." });
+        } else {
+          res
+            .status(404)
+            .send({ success: false, message: "No matching bid found." });
+        }
+      } catch (error) {
+        res
+          .status(500)
+          .send({ success: false, message: "Server error", error });
+      }
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
-
-
-    
-
     // Not closing client to keep the server running
-
   }
 }
-  
-run().catch(console.dir);
+
+run().catch(console.error);
 
 app.get("/", (req, res) => {
   res.send("Auctoria is waiting for an exclusive bid!");
 });
 
-
+// 🛠 Start the Server
 server.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
