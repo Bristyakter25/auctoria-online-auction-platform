@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../../providers/AuthProvider";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 const BidHistory = () => {
   const [bids, setBids] = useState();
@@ -30,24 +31,46 @@ const BidHistory = () => {
   }, [bidHistory]);
 
 
-  const handleDelete = async ( productId, bidId) => {
-    const confirm = window.confirm("Are you sure you want to delete this bid?");
-    if (!confirm) return;
-    console.log("Deleting bid with amount:", bidId,);
-  
-    try {
-     
-      const res = await axios.delete(`http://localhost:5000/deleteBid/${productId}/${bidId}`);
-      if (res.data.success) {
-        toast.success("Bid deleted successfully");
-      } else {
-        toast.error(res.data.message);
+
+  const handleDelete = async (productId, bidId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.delete(`http://localhost:5000/deleteBid/${productId}/${bidId}`);
+          
+          if (res.data.success) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your bid has been deleted.",
+              icon: "success",
+            });
+            refetch(); 
+          } 
+        } catch (error) {
+          console.error("Failed to delete bid:", error);
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to delete bid.",
+            icon: "error",
+          });
+        }
       }
-      refetch();
-    } catch (error) {
-      console.error("Failed to delete bid:", error);
-    }
+    });
   };
+  
+  
+
+
+
+
 
   if (loading) return <p>Loading...</p>;
 

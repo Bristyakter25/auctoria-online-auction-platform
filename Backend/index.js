@@ -246,6 +246,7 @@ async function run() {
 
 
 
+
 app.get("/bidHistory/:email", async (req, res) => {
   const email = req.params.email;
   console.log("Fetching bid history for email:", email);
@@ -258,7 +259,7 @@ app.get("/bidHistory/:email", async (req, res) => {
     const bidHistory = [];
 
     products.forEach((product) => {
-      // console.log("Product:", product._id);
+      console.log("Product:", product._id);
       const userBids = product.bids.filter((bid) => bid.email === email);
       userBids.forEach((bid) => {
         bidHistory.push({
@@ -271,6 +272,7 @@ app.get("/bidHistory/:email", async (req, res) => {
           _id: product._id,
         });
 
+        console.log("bid id", bid.bidId)
         // console.log("Bid:", _id);
       });
       // console.log("Bid:", _id);
@@ -288,7 +290,7 @@ app.get("/bidHistory/:email", async (req, res) => {
 
 app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
   const { productId, bidId   } = req.params;
-  console.log("Deleting bid for product ID:", bidId, productId );
+  console.log("Deleting bid for product ID:",  productId ,bidId );
 
   try {
     const result = await productsCollection.updateOne(
@@ -305,6 +307,7 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
     res.status(500).send({ success: false, message: "Server error", error });
   }
 });
+
   // 🛠 Get User Wishlist
     
 
@@ -547,7 +550,7 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
-      const { amount, user, email, sellerId, sellerEmail, productName } = req.body;
+      const {bidId, amount, user, email, sellerId, sellerEmail, productName } = req.body;
     
       if (!ObjectId.isValid(id)) {
         return res.status(400).send({ error: "Invalid product ID format" });
@@ -564,7 +567,7 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
       try {
         const result = await productsCollection.updateOne(
           { _id: objectId },
-          { $push: { bids: { amount, user, email, time: now } } }
+          { $push: { bids: {bidId, amount, user, email, time: now } } }
         );
     
         if (result.modifiedCount === 0) {
