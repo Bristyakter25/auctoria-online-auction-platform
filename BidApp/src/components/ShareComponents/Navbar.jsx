@@ -1,9 +1,9 @@
 
 import { useContext, useEffect, useState } from "react";
 import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import { AuthContext } from "../../providers/AuthProvider";
 
-import { useContext, useState } from "react";
+
+
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoMdHeartEmpty } from "react-icons/io";
