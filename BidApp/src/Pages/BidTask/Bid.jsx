@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import { MdCancel } from "react-icons/md";
 import Tabs from "./Tabs";
+// import { MdCancel } from "react-icons/md";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -18,9 +19,9 @@ const Bid = () => {
   const { user } = useContext(AuthContext);
   const item = {
     images: [
-      "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
-      "https://i.ibb.co/09jKmmg/Pulse-01-1200x.jpg",
-      "https://i.ibb.co/6F2D1s1/Smart-Watches.jpg",
+      // "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
+      // "https://i.ibb.co/09jKmmg/Pulse-01-1200x.jpg",
+      // "https://i.ibb.co/6F2D1s1/Smart-Watches.jpg",
     ],
   };
   const { id } = useParams();
@@ -56,27 +57,22 @@ const Bid = () => {
       if (productId === id) {
         setProduct((prev) => {
           if (!prev || !prev.bids) return prev;
-
+    
           const updatedBids = prev.bids.filter((bid) => bid._id !== bidId);
-
+          const newHighestBid = updatedBids.length > 0
+            ? Math.max(...updatedBids.map((b) => b.amount))
+            : 0;
+    
+          setCurrentBid(newHighestBid);
+    
           return {
             ...prev,
             bids: updatedBids,
           };
         });
-
-        setCurrentBid((prevBid) => {
-          setProduct((prev) => {
-            if (!prev || !prev.bids) return prevBid;
-
-            const remainingBids = prev.bids.filter((bid) => bid._id !== bidId);
-            return remainingBids.length > 0
-              ? Math.max(...remainingBids.map((b) => b.amount))
-              : 0;
-          });
-        });
       }
     });
+    
 
     return () => {
       socket.off("newBid");
@@ -103,8 +99,52 @@ const Bid = () => {
       });
       return;
     }
+
+
+    // try {
+    //   const res = await fetch(`http://localhost:5000/bid/${id}`, {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({
+    //       sellerId: product.sellerId,
+    //       sellerEmail: product.email,
+    //       amount: Number(bidAmount),
+    //       user: user?.displayName,
+    //       email: user?.email,
+    //       productName: product.productName,
+    //     }),
+    //   });
+    //   if (res.ok) {
+    //     toast.success("Your bid has been submitted successfully!", {
+    //       position: "top-right",
+    //     });
+    //     setBidAmount("");
+    //     setCurrentBid(Number(bidAmount));
+    //   } else {
+    //     toast.error("There was a problem submitting the bid!", {
+    //       position: "top-right",
+    //     });
+    //   }
+    // } catch (error) {
+    //   console.error("Error placing bid:", error);
+    //   toast.error("Server problem! Please try again later.", {
+    //     position: "top-right",
+    //   });
+    // }
+
+
     // const bidId = generateSellerId();
+
     try {
+      console.log("Sending bid:", {
+        sellerId: product.sellerId,
+        sellerEmail: product.email,
+        amount: Number(bidAmount),
+        user: user?.displayName,
+        email: user?.email,
+        productName: product.productName,
+      });
+    
       const res = await fetch(`http://localhost:5000/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -118,6 +158,7 @@ const Bid = () => {
           productName: product.productName,
         }),
       });
+    
       if (res.ok) {
         toast.success("Your bid has been submitted successfully!", {
           position: "top-right",
@@ -135,15 +176,10 @@ const Bid = () => {
         position: "top-right",
       });
     }
+    
   };
 
   if (!product) return <p className="text-center">Loading...</p>;
-
- 
-
-
-
-
 
   return (
     <div className="container mx-auto px-4 py-40">

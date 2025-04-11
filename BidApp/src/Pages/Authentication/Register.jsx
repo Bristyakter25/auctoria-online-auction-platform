@@ -1,9 +1,5 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-
-
-
- 
 import { useContext, useRef } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 
@@ -49,10 +45,12 @@ const Register = () => {
 
             const userData = {
               name,
+              
               email,
               photoURL,
               uid: loggedUser.uid, 
               createdAt: new Date(),
+              role: "user",
             };
   
             
