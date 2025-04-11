@@ -7,71 +7,65 @@ import Swal from "sweetalert2";
 
 const BidHistory = () => {
   const [bids, setBids] = useState();
-  console.log("Bids:", bids);
+  // console.log("Bids:", bids);
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
 
-  const {data:bidHistory =[],refetch} = useQuery({
-    queryKey: ['bidHistory', user?.email],
+  const { data: bidHistory = [], refetch } = useQuery({
+    queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/bidHistory/${user?.email}`);
+      const res = await axios.get(
+        `http://localhost:5000/bidHistory/${user?.email}`
+      );
       // console.log("Bids:", res.data);
       return res.data;
     },
-  })
+  });
   useEffect(() => {
     if (Array.isArray(bidHistory) && bidHistory.length > 0) {
       setBids(bidHistory);
       setLoading(false);
-    } 
-    else {
+    } else {
       setBids([]);
-      setLoading(false);
+      // setLoading(false);
     }
   }, [bidHistory]);
 
-
-
   const handleDelete = async (productId, bidId) => {
-    Swal.fire({
+    const result = await Swal.fire({
       title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      text: "You won't be able to revert this bid deletion!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const res = await axios.delete(`http://localhost:5000/deleteBid/${productId}/${bidId}`);
-          
-          if (res.data.success) {
-            Swal.fire({
-              title: "Deleted!",
-              text: "Your bid has been deleted.",
-              icon: "success",
-            });
-            refetch(); 
-          } 
-        } catch (error) {
-          console.error("Failed to delete bid:", error);
-          Swal.fire({
-            title: "Error!",
-            text: "Failed to delete bid.",
-            icon: "error",
-          });
-        }
-      }
     });
+
+    if (result.isConfirmed) {
+      try {
+        const res = await axios.delete(
+          `http://localhost:5000/deleteBid/${productId}/${bidId}`
+        );
+        if (res.data.success) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `${bids.productName} is deleted Bids`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          // Swal.fire("Deleted!", "Your bid has been deleted.", "success");
+          refetch();
+        } else {
+          Swal.fire("Error!", res.data.message, "error");
+        }
+      } catch (error) {
+        console.error("Failed to delete bid:", error);
+        Swal.fire("Oops!", "Something went wrong while deleting.", "error");
+      }
+    }
   };
-  
-  
-
-
-
-
-
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -93,8 +87,8 @@ const BidHistory = () => {
               </tr>
             </thead>
             <tbody>
-              {bids.map((bid) => (
-                <tr key={bid._id}>
+              {bids.map((bid, index) => (
+                <tr key={`${bid._id}-${index}`}>
                   <td className="border px-4 py-2">{bid.productName}</td>
                   <td className="border px-4 py-2">{bid.name}</td>
                   <td className="border px-4 py-2">{bid.email}</td>
@@ -105,7 +99,7 @@ const BidHistory = () => {
                   <td className="border px-4 py-2">
                     {/* Future delete button can go here */}
                     <button
-                      onClick={() => handleDelete(bid._id , bid.bidId)} // এখানে `amount` পাঠানো হচ্ছে
+                      onClick={() => handleDelete(bid._id, bid.bidId)}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Delete

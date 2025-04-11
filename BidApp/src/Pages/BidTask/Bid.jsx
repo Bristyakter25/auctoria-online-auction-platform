@@ -1,4 +1,3 @@
-
 import { useContext, useEffect, useState } from "react";
 import { FaGavel } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -6,9 +5,7 @@ import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
-import { MdCancel } from "react-icons/md";
 import Tabs from "./Tabs";
-// import { MdCancel } from "react-icons/md";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -19,24 +16,30 @@ const Bid = () => {
   const { user } = useContext(AuthContext);
   const item = {
     images: [
-      // "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
-      // "https://i.ibb.co/09jKmmg/Pulse-01-1200x.jpg",
-      // "https://i.ibb.co/6F2D1s1/Smart-Watches.jpg",
+      "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
+      "https://i.ibb.co/09jKmmg/Pulse-01-1200x.jpg",
+      "https://i.ibb.co/6F2D1s1/Smart-Watches.jpg",
     ],
   };
   const { id } = useParams();
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
   const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
-
+  console.log("product data", product);
   useEffect(() => {
+    console.log(`Fetching product with id: ${id}`);
     fetch(`http://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setProduct(data);
-        if (data.bids?.length > 0) {
-          setCurrentBid(Math.max(...data.bids.map((b) => b.amount)));
+        console.log("Fetched product data:", data);
+        if (data) {
+          setProduct(data);
+          if (data.bids?.length > 0) {
+            setCurrentBid(Math.max(...data.bids.map((b) => b.amount)));
+          }
+        } else {
+          console.error("No product data found");
         }
       })
       .catch((error) => console.error("Error fetching product:", error));
@@ -57,36 +60,39 @@ const Bid = () => {
       if (productId === id) {
         setProduct((prev) => {
           if (!prev || !prev.bids) return prev;
-    
+
           const updatedBids = prev.bids.filter((bid) => bid._id !== bidId);
-          const newHighestBid = updatedBids.length > 0
-            ? Math.max(...updatedBids.map((b) => b.amount))
-            : 0;
-    
-          setCurrentBid(newHighestBid);
-    
+
           return {
             ...prev,
             bids: updatedBids,
           };
         });
+
+        setCurrentBid((prevBid) => {
+          setProduct((prev) => {
+            if (!prev || !prev.bids) return prevBid;
+
+            const remainingBids = prev.bids.filter((bid) => bid._id !== bidId);
+            return remainingBids.length > 0
+              ? Math.max(...remainingBids.map((b) => b.amount))
+              : 0;
+          });
+        });
       }
     });
-    
 
     return () => {
       socket.off("newBid");
       socket.off("bidDeleted");
     };
   }, [id]);
- 
-
 
   const generateSellerId = () => {
     return Math.floor(10000 + Math.random() * 90000).toString();
   };
 
-  console.log('bid id', generateSellerId())
+  console.log("bid id", generateSellerId());
   const handleBid = async () => {
     if (!bidAmount || isNaN(bidAmount) || Number(bidAmount) <= 0) {
       toast.error("Please enter a valid bid amount!", {
@@ -100,53 +106,8 @@ const Bid = () => {
       });
       return;
     }
-
-
-    // try {
-    //   const res = await fetch(`http://localhost:5000/bid/${id}`, {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({
-    //       sellerId: product.sellerId,
-    //       sellerEmail: product.email,
-    //       amount: Number(bidAmount),
-    //       user: user?.displayName,
-    //       email: user?.email,
-    //       productName: product.productName,
-    //     }),
-    //   });
-    //   if (res.ok) {
-    //     toast.success("Your bid has been submitted successfully!", {
-    //       position: "top-right",
-    //     });
-    //     setBidAmount("");
-    //     setCurrentBid(Number(bidAmount));
-    //   } else {
-    //     toast.error("There was a problem submitting the bid!", {
-    //       position: "top-right",
-    //     });
-    //   }
-    // } catch (error) {
-    //   console.error("Error placing bid:", error);
-    //   toast.error("Server problem! Please try again later.", {
-    //     position: "top-right",
-    //   });
-    // }
-
-
     // const bidId = generateSellerId();
-
     try {
-      console.log("Sending bid:", {
-        bidId: generateSellerId(),
-        sellerId: product.sellerId,
-        sellerEmail: product.email,
-        amount: Number(bidAmount),
-        user: user?.displayName,
-        email: user?.email,
-        productName: product.productName,
-      });
-    
       const res = await fetch(`http://localhost:5000/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -160,7 +121,6 @@ const Bid = () => {
           productName: product.productName,
         }),
       });
-    
       if (res.ok) {
         toast.success("Your bid has been submitted successfully!", {
           position: "top-right",
@@ -174,11 +134,10 @@ const Bid = () => {
       }
     } catch (error) {
       console.error("Error placing bid:", error);
-      toast.error("Server problem! Please try again later.", {
+      toast.error("Server problem! Please try again later।", {
         position: "top-right",
       });
     }
-    
   };
 
   if (!product) return <p className="text-center">Loading...</p>;
@@ -192,7 +151,8 @@ const Bid = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           className="bg-white p-6 shadow-md rounded-lg border"
-        >           {/* Main Image */}
+        >
+          {/* Main Image */}
           <motion.img
             src={product.productImage}
             alt="Auction Item"
@@ -208,8 +168,9 @@ const Bid = () => {
                 key={index}
                 src={img}
                 alt="Thumbnail"
-                className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img ? "border-blue-600" : "border-gray-300"
-                  }`}
+                className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${
+                  selectedImage === img ? "border-blue-600" : "border-gray-300"
+                }`}
                 whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.3 }}
                 onClick={() => setSelectedImage(img)}
@@ -236,9 +197,6 @@ const Bid = () => {
             </p>{" "}
           </div>
           <p className="text-gray-500 text-sm mb-4"> {product.category}</p>
-
-       
-
 
           {/* Start & End Time */}
           <p className="text-gray-700">
@@ -288,14 +246,6 @@ const Bid = () => {
               <FaGavel /> Make a Bid
             </motion.button>
           )}
-
-          {/* Total Bids */}
-          {/* <p className="mt-4 text-blue-600 font-bold ">
-            Total Bids:{" "}
-            <span className="">
-              {product.bids?.length ? product.bids?.length : "0"}
-            </span>
-          </p> */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -319,7 +269,11 @@ const Bid = () => {
                         <p className="text-lg font-semibold text-gray-800">
                           ${bid.amount}
                         </p>
-                     
+                        {/* <button
+                          onClick={() => bid?._id && handleDeleteBid(bid._id)}
+                        >
+                          <MdCancel />
+                        </button> */}
                       </div>
                       <p className="text-sm text-gray-500">
                         Bid by: {bid.user}
