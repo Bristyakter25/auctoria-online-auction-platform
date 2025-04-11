@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 
 import RecentProductCard from "./RecentProductCard";
+
 
 
 const LatestAuctions = () => {
     
 
     const [recentProducts, setRecentProducts] = useState([]);
+    
 
   useEffect(() => {
     

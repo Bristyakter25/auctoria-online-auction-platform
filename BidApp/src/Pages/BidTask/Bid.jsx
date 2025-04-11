@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
+import Tabs from "./Tabs";
 // import { MdCancel } from "react-icons/md";
 
 const socket = io("http://localhost:5000", {
@@ -334,7 +335,7 @@ const Bid = () => {
           </motion.div>
         </motion.div>
       </div>
-      <Tabs sellerId={product._id} sellerEmail={product.email} />
+     <Tabs sellerId={product._id} sellerEmail={product.email}></Tabs>
     </div>
   );
 };

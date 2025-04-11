@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -7,11 +7,13 @@ import NotificationBell from "../../Pages/BidTask/NotificationBell";
 import auctionIcon from "../../assets/auction.png";
 import { WishlistContext } from "../../providers/wishListProvider";
 
+
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { wishlist } = useContext(WishlistContext);
+
   const handleSignOut = () => {
     signOutUser()
       .then(() => {
@@ -23,6 +25,7 @@ const Navbar = () => {
         alert("Error signing out, please try again.");
       });
   };
+ 
 
   return (
     <div className="navbar rounded-3xl p-4 flex justify-between items-center max-w-7xl mx-auto">

@@ -12,18 +12,7 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
   const [reviews, setReviews] = useState([]);
-  // {
-  //   userName: "Rahim",
-  //   rating: 4,
-  //   comment: "Excellent service!",
-  //   createdAt: new Date().toISOString(),
-  // },
-  // {
-  //   userName: "Karim",
-  //   rating: 5,
-  //   comment: "The seller was very kind!",
-  //   createdAt: new Date().toISOString(),
-  // },
+ 
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   console.log("review data", reviews);

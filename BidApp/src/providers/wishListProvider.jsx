@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext, useCallback } from "react";
+import {  useEffect, useState, useContext, useCallback, createContext } from "react";
 import { AuthContext } from "./AuthProvider";
 
 export const WishlistContext = createContext();
@@ -8,7 +8,7 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Refetch function defined once and reused
+  
   const fetchWishlist = useCallback(async () => {
     if (!user?.uid) {
       setWishlist([]);
@@ -39,7 +39,7 @@ export const WishlistProvider = ({ children }) => {
     }
   }, [user]);
 
-  // ✅ Auto-fetch on load
+ 
   useEffect(() => {
     fetchWishlist();
   }, [fetchWishlist]);
@@ -50,7 +50,7 @@ export const WishlistProvider = ({ children }) => {
         wishlist,
         setWishlist,
         loading,
-        refetchWishlist: fetchWishlist, // 👈 expose it here
+        refetchWishlist: fetchWishlist, 
       }}
     >
       {children}

@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "../../providers/AuthProvider";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 const BidHistory = () => {
   const [bids, setBids] = useState();
@@ -25,7 +26,7 @@ const BidHistory = () => {
     } 
     else {
       setBids([]);
-      setLoading(false);
+      
     }
   }, [bidHistory]);
 
@@ -50,10 +51,26 @@ const BidHistory = () => {
   };
 
   if (loading) return <p>Loading...</p>;
+  const totalAmountToPay = bids?.reduce((total, bid) => {
+    
+    if (bid.email === user?.email) {
+      total += bid.bidAmount; 
+    }
+    return total;
+  }, 0);
+  
+  
 
   return (
     <div className="p-6">
+      <div className="flex justify-between">
       <h2 className="text-2xl font-bold mb-4">My Bid History</h2>
+      <Link to='/dashboard/pay' state={{ totalPrice: totalAmountToPay  }}><button className="btn btn-primary">pay</button></Link>
+      <div className="text-xl font-semibold mb-4 text-green-700">
+  Total Amount to Pay: ${totalAmountToPay?.toFixed(2)}
+</div>
+
+      </div>
       {bids.length === 0 ? (
         <p>No bids found.</p>
       ) : (
@@ -82,7 +99,7 @@ const BidHistory = () => {
                   <td className="border px-4 py-2">
                     {/* Future delete button can go here */}
                     <button
-                      onClick={() => handleDelete(bid._id , bid.bidId)} // এখানে `amount` পাঠানো হচ্ছে
+                      onClick={() => handleDelete(bid._id , bid.bidId)} 
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Delete
