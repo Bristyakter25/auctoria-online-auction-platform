@@ -6,6 +6,9 @@ const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+
+
 const app = express();
 const port = process.env.PORT || 5000;
 const server = http.createServer(app);
@@ -323,21 +326,32 @@ async function run() {
         if (user.password !== password) {
           const failedAttempts = (user.failedAttempts || 0) + 1;
           let updateFields = { failedAttempts };
-          // Compare hashed password using bcrypt
-          const isMatch = await bcrypt.compare(password, user.password);
-          if (!isMatch) {
-            const failedAttempts = (user.failedAttempts || 0) + 1;
-            let updateFields = { failedAttempts };
-            console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
-            // Lock account after 3 failed attempts
-            if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
-              updateFields.isLocked = true;
-              updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
-            }
-            console.log(
+    
+        // Compare hashed password using bcrypt
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+          const failedAttempts = (user.failedAttempts || 0) + 1;
+          let updateFields = { failedAttempts };
+
+          console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
+
+
+          // Lock account after 3 failed attempts
+          if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+            updateFields.isLocked = true;
+            updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
+
+          }
+          console.log(
               `Account for ${email} locked! Lockout until: ${updateFields.lockoutUntil}`
             );
           }
+
+
+          // Compare hashed password using bcrypt
+         
+
           await usersCollection.updateOne({ email }, { $set: updateFields });
           return res.status(401).json({
             message: `Invalid credentials. Attempt ${failedAttempts} of ${MAX_FAILED_ATTEMPTS}.`,
@@ -408,6 +422,39 @@ async function run() {
       }
     });
 
+
+    // payment functionalities
+    app.post("/create-payment-intent", async (req, res) => {
+      try {
+        let { price } = req.body;
+    
+        // Force to number
+        price = Number(price);
+    
+        if (isNaN(price)) {
+          return res.status(400).json({ error: "Invalid price value" });
+        }
+    
+        const amount = Math.round(price * 100); // always better than parseInt here
+    
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount,
+          currency: "usd",
+          payment_method_types: ["card"],
+        });
+    
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      } catch (error) {
+        console.error("Stripe Payment Intent Error:", error.message);
+        res.status(500).json({ error: "Failed to create payment intent" });
+      }
+    });
+    
+
+    
+
     app.get("/users", async (req, res) => {
       try {
         // Fetch users from the database
@@ -417,7 +464,6 @@ async function run() {
         res.status(500).json({ message: "Error fetching users", error });
       }
     });
-
     app.post("/users", async (req, res) => {
       const { name, email, photoURL, uid, createdAt, role } = req.body;
       // console.log("Received user data:", req.body);

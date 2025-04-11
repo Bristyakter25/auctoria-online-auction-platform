@@ -15,6 +15,7 @@ import UpdateBid from "../components/sellerComponents/updateBid";
 import Bid from "../Pages/BidTask/Bid";
 
 import BidHistory from "../Pages/BidTask/BidHistory";
+import Payment from "../components/paymentFunctions/Payment";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,9 @@ export const router = createBrowserRouter([
       { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "profile", element: <Profile /> },
       { path: "updatedBidInfo", element: <UpdateBid /> },
+      {
+        path:"pay",element: <Payment></Payment>
+      }
     ],
   },
 ]);

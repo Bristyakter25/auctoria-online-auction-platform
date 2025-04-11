@@ -12,7 +12,12 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
   const axiosPublic = UseAxiosPublic();
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
+
+  const [reviews, setReviews] = useState([]);
+ 
+
   // const [reviews, setReviews] = useState([]);
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   // console.log("review data", reviews);

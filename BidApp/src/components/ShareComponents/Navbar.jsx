@@ -1,4 +1,10 @@
+
+import { useContext, useEffect, useState } from "react";
+import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { AuthContext } from "../../providers/AuthProvider";
+
 import { useContext, useState } from "react";
+
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
@@ -8,18 +14,23 @@ import { WishlistContext } from "../../providers/wishListProvider";
 import NotificationBell from "../../Pages/BidTask/NotificationBell";
 import auctionIcon from "../../assets/auction.png";
 
+
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
   const { wishlist } = useContext(WishlistContext);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
 
   const handleSignOut = () => {
     signOutUser().then(() => {
       navigate("/login");
     });
   };
+ 
 
   const navLinks = (
     <>
