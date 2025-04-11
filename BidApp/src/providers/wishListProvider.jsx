@@ -1,4 +1,14 @@
+
 import {  useEffect, useState, useContext, useCallback, createContext } from "react";
+
+// import {
+//   createContext,
+//   useEffect,
+//   useState,
+//   useContext,
+//   useCallback,
+// } from "react";
+
 import { AuthContext } from "./AuthProvider";
 
 export const WishlistContext = createContext();
@@ -8,7 +18,11 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
   
+
+  // console.log("wishList is", wishlist);
+
   const fetchWishlist = useCallback(async () => {
     if (!user?.uid) {
       setWishlist([]);

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { FaCircleUser } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
@@ -11,18 +12,22 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
   const axiosPublic = UseAxiosPublic();
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
+
   const [reviews, setReviews] = useState([]);
  
+
+  // const [reviews, setReviews] = useState([]);
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  console.log("review data", reviews);
+  // console.log("review data", reviews);
   const reviewMutation = useMutation({
     mutationFn: (data) =>
       axiosPublic.post("/reviews", data).then((res) => res.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries("reviews");
       if (data.insertedId) {
-        setReviews((prev) => [...prev, newReview]);
+        // setReviews((prev) => [...prev, newReview]);
         toast.success("Review added!");
         setRating(0);
         setComment("");
@@ -42,13 +47,13 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
     comment,
     createdAt: new Date().toISOString(),
   };
-  console.log("reviews data", newReview);
+  // console.log("reviews data", newReview);
   const handleSubmit = async () => {
     if (!rating || !comment.trim()) {
       return toast.error("Please rate and comment.");
     }
     reviewMutation.mutate(newReview);
-    refetch();
+    // refetch();
   };
   //   const email = sellerEmail;
   const { data: clientReviews = [], refetch } = useQuery({
@@ -60,29 +65,29 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
     },
     enabled: !!sellerEmail,
   });
-  useEffect(() => {
-    if (clientReviews.length > 0) {
-      setReviews(clientReviews);
-    }
-  }, [clientReviews]);
+  console.log("review data", clientReviews);
 
   return (
     <div className="w-full lg:flex justify-between gap-4 space-y-3 lg:space-y-0">
       <div className=" lg:w-7/12">
         <h3 className="text-2xl font-semibold mb-4">All Reviews</h3>
         {/* <div className="divider"></div> */}
-        {reviews.length > 0 ? (
+        {clientReviews.length > 0 ? (
           <div className="space-y-4">
-            {reviews.map((review, index) => (
+            {clientReviews.map((review, index) => (
               <div
                 key={index}
                 className=" rounded-md flex items-center bg-gray-50 "
               >
                 <div>
-                  <img
+                  {/* <img
                     className="hidden object-cover w-12 h-12 mr-5 rounded-full sm:block border"
-                    src={user?.photoURL}
+                    src={<FaUser size={}/>}
                     alt="avatar"
+                  /> */}
+                  <FaCircleUser
+                    size={36}
+                    className="text-gray-500 items-center"
                   />
                 </div>
                 <div className="w-full p-3 mx-3">
