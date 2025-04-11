@@ -5,7 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
-// const nodemailer = require("nodemailer");
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -412,13 +412,10 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
             updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
 
           }
-    
-
-            console.log(
+          console.log(
               `Account for ${email} locked! Lockout until: ${updateFields.lockoutUntil}`
             );
           }
-
 
           await usersCollection.updateOne({ email }, { $set: updateFields });
           return res.status(401).json({
@@ -498,6 +495,36 @@ app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
         res.status(500).json({ message: "Server error during registration" });
       }
     });
+
+    // payment functionalities
+    app.post("/create-payment-intent", async (req, res) => {
+      try {
+        let { price } = req.body;
+    
+        // Force to number
+        price = Number(price);
+    
+        if (isNaN(price)) {
+          return res.status(400).json({ error: "Invalid price value" });
+        }
+    
+        const amount = Math.round(price * 100); // always better than parseInt here
+    
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount,
+          currency: "usd",
+          payment_method_types: ["card"],
+        });
+    
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      } catch (error) {
+        console.error("Stripe Payment Intent Error:", error.message);
+        res.status(500).json({ error: "Failed to create payment intent" });
+      }
+    });
+    
 
     app.post("/users", async (req, res) => {
       const { name, email, photoURL, uid, createdAt,role } = req.body;
