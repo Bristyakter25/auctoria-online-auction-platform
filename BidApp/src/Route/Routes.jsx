@@ -14,18 +14,27 @@ import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
 import Bid from "../Pages/BidTask/Bid";
 
+import BidHistory from "../Pages/BidTask/BidHistory";
+import Payment from "../components/paymentFunctions/Payment";
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />, 
+    element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Register /> },
       { path: "/addProduct", element: <AddProduct /> },
+      { path: "bid-history", element: <BidHistory></BidHistory> },
+
       { path: "/allAuctions", element: <AllAuctions /> },
       { path: "/profile", element: <Profile /> },
       { path: "/bid/:id", element: <Bid /> },
+      {
+        path: "/wishlist",
+        element: <WishList></WishList>,
+      },
     ],
   },
   {
@@ -38,10 +47,13 @@ export const router = createBrowserRouter([
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
       { path: "manageUsers", element: <ManageUsers /> },
-      // { path: "wishList", element: <WishList /> },
       { path: "wishList", element: <WishList /> },
+      { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "profile", element: <Profile /> },
       { path: "updatedBidInfo", element: <UpdateBid /> },
+      {
+        path:"pay",element: <Payment></Payment>
+      }
     ],
   },
 ]);

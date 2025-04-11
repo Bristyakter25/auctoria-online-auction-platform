@@ -21,12 +21,13 @@ const AllAuctions = () => {
   }, []);
 
   useEffect(() => {
-    let results = allAuctions.filter(auction =>
-      auction?.productName?.toLowerCase().includes(searchTerm.toLowerCase()) // ✅ Prevent undefined error
+    let results = allAuctions.filter(
+      (auction) =>
+        auction?.productName?.toLowerCase().includes(searchTerm.toLowerCase()) // ✅ Prevent undefined error
     );
 
     if (category !== "All") {
-      results = results.filter(auction => auction.category === category);
+      results = results.filter((auction) => auction.category === category);
     }
 
     setFilteredAuctions(results);
@@ -34,7 +35,9 @@ const AllAuctions = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold text-center mt-10 pt-10 mb-5">All Auctions</h2>
+      <h2 className="text-3xl font-bold text-center mt-10 pt-10 mb-5">
+        All Auctions
+      </h2>
 
       {/* Search & Filter Section */}
       <div className="text-center my-5 flex flex-wrap justify-center gap-4">
@@ -62,9 +65,9 @@ const AllAuctions = () => {
       </div>
 
       {/* Auction List */}
-      <div className="w-[900px] mx-auto">
+      <div className="max-w-3xl mx-auto gap-4 space-y-3 ">
         {filteredAuctions.length > 0 ? (
-          filteredAuctions.map(auction => (
+          filteredAuctions.map((auction) => (
             <AllAuctionCard key={auction._id} auction={auction} />
           ))
         ) : (

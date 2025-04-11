@@ -1,51 +1,55 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
-
-
- 
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 
-import auctionImage from "../../assets/auction-image.svg"; 
+import auctionImage from "../../assets/auction-image.svg";
 import Swal from "sweetalert2";
 import SocialLogin from "./SocialLogin";
-
-
+import { sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../firebase/firebase.init";
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const {createUser,updateUserProfile} = useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
+
+  const emailRef = useRef();
 
   const handleRegister = (e) => {
     e.preventDefault();
-  
+
     const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const photoURL = e.target.photoURL.value;
-  
-    console.log(name, email, password, photoURL);
-  
+    const role = e.target.role.value;
+
+    console.log(name, email, password, photoURL,role);
+
     createUser(email, password)
       .then((result) => {
         const loggedUser = result.user;
-  
+
         updateUserProfile(name, photoURL)
           .then(() => {
             console.log("User profile updated successfully");
-  
-            // Step 1: Prepare user data for MongoDB
+
+            // send verification email
+            sendEmailVerification(auth.currentUser).then(() => {
+              console.log("email verification send");
+            });
+
             const userData = {
               name,
+
               email,
               photoURL,
-              uid: loggedUser.uid, 
+              uid: loggedUser.uid,
               createdAt: new Date(),
+              role,
             };
-  
-            // Step 2: Send user data to MongoDB
+
             fetch("http://localhost:5000/users", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -58,7 +62,7 @@ const Register = () => {
                 } else {
                   console.log("User stored in MongoDB:", data);
                 }
-  
+
                 // Step 3: Show success message and navigate
                 Swal.fire({
                   position: "top-end",
@@ -96,7 +100,19 @@ const Register = () => {
         });
       });
   };
-  
+
+  const handleForgetPassword = () => {
+    console.log(emailRef.current.value);
+    const email = emailRef.current.value;
+    if (!email) {
+      alert("please provide valid email address first");
+    } else {
+      sendPasswordResetEmail(auth, email).then(() => {
+        alert("Password Reset email is sent please check your email");
+      });
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="flex w-full max-w-full min-h-screen bg-white px-10 overflow-hidden">
@@ -111,11 +127,7 @@ const Register = () => {
 
         {/* Right Side Register Form */}
         <motion.div
-
-    
-
           initial={{ opacity: 0, y: -600 }}
-
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
           className="w-1/2 p-12 space-y-6 flex flex-col justify-center"
@@ -125,34 +137,27 @@ const Register = () => {
           </h2>
 
           <form onSubmit={handleRegister} className="space-y-6">
-
-      
-
             <div>
               <label className="block text-sm font-medium text-gray-600">
                 Full Name
               </label>
               <input
                 type="text"
-
                 className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Enter your full name"
                 name="name"
-
-                
-
                 required
               />
             </div>
-           
+
             <div>
               <label className="block text-sm font-medium text-gray-600">
                 Email
               </label>
               <input
                 type="email"
-
                 className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                ref={emailRef}
                 placeholder="Enter your email"
                 name="email"
                 required
@@ -164,33 +169,46 @@ const Register = () => {
               </label>
               <input
                 type="password"
-
                 className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Create a password"
                 name="password"
-
-                
                 required
               />
             </div>
 
             <div className="form-control">
-            <label  className="block text-sm font-medium text-gray-600">
-              Photo URL
-            </label>
-          <input
-            type="url"
-            name="photoURL"
-            placeholder="Enter your PhotoUrl"
-            className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
-          />
-        </div>
+              <label className="block text-sm font-medium text-gray-600">
+                Photo URL
+              </label>
+              <input
+                type="url"
+                name="photoURL"
+                placeholder="Enter your PhotoUrl"
+                className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600">
+                Role
+              </label>
+              <select class="select mt-1 max-w-xs border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                name="role"
+                required>
+                <option disabled selected>
+                 Choose your role
+                </option>
+                <option>seller</option>
+                <option>user</option>
+                
+              </select>
+            </div>
+
+            <div onClick={handleForgetPassword}>
+              <a className="link link-hover">Forgot password?</a>
+            </div>
             <button
               type="submit"
-
               className="w-full px-4 py-3 text-white bg-blue-500 rounded-md hover:bg-blue-600 text-lg"
-
-              
             >
               Register
             </button>
@@ -206,14 +224,11 @@ const Register = () => {
             <Link
               to="/login"
               className="text-teal-600 hover:underline font-semibold"
-
             >
               Login
             </Link>
           </p>
-         
         </motion.div>
-        
       </div>
     </div>
   );

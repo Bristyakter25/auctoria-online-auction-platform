@@ -3,12 +3,15 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { IoEye } from "react-icons/io5";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { useNavigate } from "react-router-dom"; // ✅ Import navigate
+import { WishlistContext } from "../../providers/wishListProvider";
+import Swal from "sweetalert2";
 
 const RecentProductCard = ({ recentProduct }) => {
   const { productName, description, productImage, startingBid, auctionStartDate, _id } = recentProduct;
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate(); // ✅ Define navigate
+  const navigate = useNavigate(); 
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { refetchWishlist} = useContext(WishlistContext);
   const userId = user?.uid;
 
   // ✅ Check if the product is already in the wishlist on component mount
@@ -57,7 +60,14 @@ const RecentProductCard = ({ recentProduct }) => {
 
       if (response.ok) {
         setIsWishlisted(true); // Update state immediately
-        alert("Product added to wishlist!");
+       Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "This Product is successfully Wish Listed!",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        refetchWishlist();
 
         // Re-fetch wishlist to ensure state consistency
         const updatedWishlistResponse = await fetch(`http://localhost:5000/wishlist/${userId}`);

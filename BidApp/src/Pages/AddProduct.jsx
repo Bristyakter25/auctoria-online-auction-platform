@@ -1,7 +1,9 @@
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import Swal from "sweetalert2";
-
+import { motion } from "framer-motion";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import { MdAddCircleOutline } from "react-icons/md";
 const AddProduct = () => {
   const { user } = useContext(AuthContext);
   console.log("inside add ", user?.email, user?.uid);
@@ -17,13 +19,13 @@ const AddProduct = () => {
       sellerId: sellerId,
       email: user?.email,
       productName: form.productName.value,
-      category: form.category.value, // New field
+      category: form.category.value,
       description: form.description.value,
       startingBid: form.startingBid.value,
       auctionStartDate: form.auctionStartDate.value,
       productImage: form.productImage.value,
-      location: form.location.value, // New field
-      status: form.status.value, // New field
+      location: form.location.value,
+      status: form.status.value,
     };
 
     console.log(productData);
@@ -49,122 +51,157 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="lg:max-w-lg mx-auto mt-10">
-      <h1 className="text-3xl font-bold text-center mb-10">
-        Add New Auction Product
-      </h1>
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="lg:max-w-4xl mx-auto mt-20 p-6 rounded-xl"
+    >
+      <div className="text-center lg:mb-">
+        <h1 className="lg:text-3xl text-2xl font-bold text-gray-600 flex justify-center items-center gap-2">
+          <MdAddCircleOutline className="" /> Add New Auction Product
+        </h1>
+      </div>
+
       <form
         onSubmit={handleSubmitProduct}
-        className="space-y-4 bg-white dark:bg-purple-700 p-6 rounded shadow"
+        className="bg-white p-8 rounded-2xl shadow-xl"
       >
-        <div>
-          <label className="block font-medium">Product Name</label>
-          <input
-            type="text"
-            name="productName"
-            className="input dark:text-black input-bordered w-full"
-            placeholder="Enter product name"
-            required
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block font-semibold text-gray-600">
+              Product Name
+            </label>
+            <input
+              type="text"
+              name="productName"
+              className="input input-bordered w-full dark:text-black"
+              placeholder="Enter product name"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-600">
+              Category
+            </label>
+            <select
+              name="category"
+              className="select select-bordered w-full dark:text-black"
+              required
+            >
+              <option disabled selected>
+                Select category
+              </option>
+              <option>Antiques</option>
+              <option>Electronics</option>
+              <option>Collectibles</option>
+              <option>Jewelry</option>
+              <option>Watches</option>
+              <option>Art</option>
+              <option>Luxury Bags</option>
+              <option>Cars</option>
+            </select>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block font-semibold text-gray-600">
+              Description
+            </label>
+            <textarea
+              name="description"
+              className="textarea textarea-bordered w-full dark:text-black"
+              placeholder="Enter product description"
+              required
+            ></textarea>
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-600">
+              Starting Bid
+            </label>
+            <input
+              type="number"
+              name="startingBid"
+              className="input input-bordered w-full dark:text-black"
+              placeholder="Enter starting bid price"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-600">
+              Auction Start Date
+            </label>
+            <input
+              type="datetime-local"
+              name="auctionStartDate"
+              className="input input-bordered w-full dark:text-black"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-600">
+              Product Image URL
+            </label>
+            <input
+              type="url"
+              name="productImage"
+              className="input input-bordered w-full dark:text-black"
+              placeholder="Enter product image URL"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-600">
+              Location
+            </label>
+            <input
+              type="text"
+              name="location"
+              className="input input-bordered w-full dark:text-black"
+              placeholder="Enter auction location"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-gray-600">Status</label>
+            <select
+              name="status"
+              className="select select-bordered w-full dark:text-black"
+              required
+            >
+              <option disabled selected>
+                Select status
+              </option>
+              <option>Active</option>
+              <option>Upcoming</option>
+              <option>Live</option>
+            </select>
+          </div>
+          {/* <motion.div whileHover={{ scale: 1.02 }} className="mt-6">
+            <button
+              type="submit"
+              className="btn bg-teal-400 hover:to-teal-500 text-gray-700 w-full font-semibold"
+            >
+              Add Auction Product
+            </button>
+          </motion.div> */}
         </div>
 
-        {/* New Category Field */}
-        <div>
-          <label className="block font-medium">Category</label>
-          <select
-            name="category"
-            className="input dark:text-black input-bordered w-full"
-            required
-          >
-            <option value="Antiques">Antiques</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Collectibles">Collectibles</option>
-            <option value="Jewelry">Jewelry</option>
-            <option value="Watches">Watches</option>
-            <option value="Art">Art</option>
-            <option value="Luxury Bags">Luxury Bags</option>
-            <option value="Cars">Cars</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block font-medium">Description</label>
-          <textarea
-            name="description"
-            className="textarea dark:text-black textarea-bordered w-full"
-            placeholder="Enter product description"
-            required
-          ></textarea>
-        </div>
-
-        <div>
-          <label className="block font-medium">Starting Bid</label>
-          <input
-            type="number"
-            name="startingBid"
-            className="input dark:text-black input-bordered w-full"
-            placeholder="Enter starting bid price"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Auction Start Date</label>
-          <input
-            type="datetime-local"
-            name="auctionStartDate"
-            className="input dark:text-black input-bordered w-full"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Product Image URL</label>
-          <input
-            type="url"
-            name="productImage"
-            className="input dark:text-black input-bordered w-full"
-            placeholder="Enter product image URL"
-            required
-          />
-        </div>
-
-        {/* New Location Field */}
-        <div>
-          <label className="block font-medium">Location</label>
-          <input
-            type="text"
-            name="location"
-            className="input dark:text-black input-bordered w-full"
-            placeholder="Enter auction location"
-            required
-          />
-        </div>
-
-        {/* New Status Field */}
-        <div>
-          <label className="block font-medium">Status</label>
-          <select
-            name="status"
-            className="input dark:text-black input-bordered w-full"
-            required
-          >
-            <option value="Active">Active</option>
-            <option value="Upcoming">Upcoming</option>
-            <option value="Live">Live</option>
-          </select>
-        </div>
-
-        <div>
+        <motion.div whileHover={{ scale: 1.02 }} className="mt-6">
           <button
             type="submit"
-            className="btn bg-[#7E60BF] hover:text-black text-white w-full"
+            className="btn text-xl bg-teal-400 hover:to-teal-500 text-gray-700 w-full font-semibold"
           >
-            Add Auction Product
+            Add to Product
           </button>
-        </div>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 export default AddProduct;
