@@ -43,6 +43,9 @@ const Navbar = () => {
           <NavLink to="/allAuctions" className="hover:text-blue-500">
             All Auctions
           </NavLink>
+          <NavLink to="bid-history" className="hover:text-blue-500">
+          bid-history
+          </NavLink>
          
 
           {user ? (

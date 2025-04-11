@@ -49,6 +49,9 @@ const Navbar = () => {
         <NavLink to="/addProduct" className="hover:text-blue-500">
           Add Product
         </NavLink>
+        <NavLink to="bid-history" className="hover:text-blue-500">
+          bid-history
+          </NavLink>
         {user && (
           <NavLink to="/dashboard/auctionChart" className="hover:text-blue-500">
             Dashboard

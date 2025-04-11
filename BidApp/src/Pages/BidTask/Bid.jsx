@@ -92,6 +92,7 @@ const Bid = () => {
     return Math.floor(10000 + Math.random() * 90000).toString();
   };
 
+  console.log("bid id", generateSellerId());
   const handleBid = async () => {
     if (!bidAmount || isNaN(bidAmount) || Number(bidAmount) <= 0) {
       toast.error("Please enter a valid bid amount!", {
