@@ -91,7 +91,7 @@ axiosSecure.post('/create-payment-intent', {price: totalPrice})
           },
         }}
       />
-      <button type="submit" disabled={!stripe || !clientSecret}>
+      <button className="btn btn-primary my-5" type="submit" disabled={!stripe || !clientSecret}>
         Pay
       </button>
       <p className="text-red-600">{error}</p>

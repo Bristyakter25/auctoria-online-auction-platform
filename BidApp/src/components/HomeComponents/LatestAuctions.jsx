@@ -12,7 +12,7 @@ const LatestAuctions = () => {
 
   useEffect(() => {
     
-    fetch("http://localhost:5000/recentProducts")
+    fetch("https://auctoria-online-auction-platform.onrender.com/recentProducts")
    
       .then((res) => res.json())
       .then((data) => {

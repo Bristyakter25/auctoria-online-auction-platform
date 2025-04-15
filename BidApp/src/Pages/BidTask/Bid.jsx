@@ -11,7 +11,7 @@ import Tabs from "./Tabs";
 
 
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -33,7 +33,7 @@ const Bid = () => {
   console.log("product data", product);
   useEffect(() => {
     console.log(`Fetching product with id: ${id}`);
-    fetch(`http://localhost:5000/addProducts/${id}`)
+    fetch(`https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched product data:", data);
@@ -112,7 +112,7 @@ const Bid = () => {
     }
     // const bidId = generateSellerId();
     try {
-      const res = await fetch(`http://localhost:5000/bid/${id}`, {
+      const res = await fetch(`https://auctoria-online-auction-platform.onrender.com/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -21,7 +21,7 @@ const RecentProductCard = ({ recentProduct }) => {
     // Fetch wishlist from backend to ensure it's for the logged-in user
     const fetchWishlist = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/wishlist/${userId}`);
+        const response = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -50,7 +50,7 @@ const RecentProductCard = ({ recentProduct }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/addToWishlist", {
+      const response = await fetch("https://auctoria-online-auction-platform.onrender.com/addToWishlist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +70,7 @@ const RecentProductCard = ({ recentProduct }) => {
         refetchWishlist();
 
         // Re-fetch wishlist to ensure state consistency
-        const updatedWishlistResponse = await fetch(`http://localhost:5000/wishlist/${userId}`);
+        const updatedWishlistResponse = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`);
         const updatedData = await updatedWishlistResponse.json();
         const isProductInWishlist = updatedData.wishlist.some(product => product._id === _id);
         setIsWishlisted(isProductInWishlist);
