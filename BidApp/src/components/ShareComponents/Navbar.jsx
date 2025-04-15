@@ -58,12 +58,12 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="bg-white shadow sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-yellow-50 to-green-50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <img src={auctionIcon} alt="logo" className="w-10 h-10" />
-          <span className="text-2xl font-bold text-indigo-600">Auctoria</span>
+          <span className="text-2xl font-extrabold text-green-700">Auctoria</span>
         </div>
 
         {/* Desktop Nav */}
