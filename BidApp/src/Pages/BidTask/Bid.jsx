@@ -296,7 +296,7 @@ const Bid = () => {
           </motion.div>
         </motion.div>
       </div>
-     <Tabs sellerId={product._id} sellerEmail={product.email}></Tabs>
+     <Tabs sellerId={product._id} sellerEmail={product.email} product={product}></Tabs>
     </div>
   );
 };
