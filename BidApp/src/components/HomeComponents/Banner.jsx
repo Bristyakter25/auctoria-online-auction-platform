@@ -7,7 +7,7 @@ import pic5 from "../../assets/vintage items picture/vintage auction.jpeg"
 
 const Banner = () => { 
   return (
-    <div className="bg-gradient-to-r from-yellow-100 via-white to-green-100 h-full py-40 px-16 relative overflow-hidden">
+    <div className="bg-gradient-to-r from-yellow-100 via-lime-100 to-green-200 h-full py-40 px-16 relative overflow-hidden">
       
       <div className="absolute bottom-0 left-0 w-full h-24">
         <svg viewBox="0 0 1440 100" className="w-full h-full" preserveAspectRatio="none">

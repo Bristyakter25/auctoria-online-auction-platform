@@ -31,8 +31,10 @@ const Dashboard = () => {
  <div className="divider"></div>
  {/* Organizer Dashboard (Admin) */}
  {role=='admin' && <div>
+         <ul className="menu">
          <h2 className="text-center my-5 font-bold text-xl dark:text-[#A294F9] text-[#4635B1]">Admins Dashboard</h2>
-         <li className="text-xl"><NavLink to="/dashboard/manageUsers"><FaUsers />Manage Users</NavLink></li>
+         <li className="text-xl"><NavLink to="/dashboard/manageUsers"><FaHospitalUser /> Manage Users</NavLink></li>
+         </ul>
         </div>}
  {/* Seller Dashboard */}
   {role=='seller' && <ul className="menu">
