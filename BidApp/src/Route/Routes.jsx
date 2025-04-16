@@ -9,13 +9,14 @@ import AddProduct from "../Pages/AddProduct";
 import AllAuctions from "../Pages/AllAuctions";
 import AuctionChart from "../Pages/Dashboard/AuctionChart";
 import Profile from "../components/HomeComponents/profile";
-import ManageUsers from "../Pages/Dashboard/ManageUsers";
+
 import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
 import Bid from "../Pages/BidTask/Bid";
 
 import BidHistory from "../Pages/BidTask/BidHistory";
 import Payment from "../components/paymentFunctions/Payment";
+import ManageUsers from "../Pages/Dashboard/AdminRoutes/ManageUsers";
 
 export const router = createBrowserRouter([
   {
@@ -46,7 +47,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
-      { path: "manageUsers", element: <ManageUsers /> },
+      { path: "manageUsers", element: <ManageUsers></ManageUsers> },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "profile", element: <Profile /> },
