@@ -9,10 +9,10 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthContext } from "../../providers/AuthProvider";
 import { WishlistContext } from "../../providers/wishListProvider";
 import NotificationBell from "../../Pages/BidTask/NotificationBell";
 import auctionIcon from "../../assets/auction.png";
+import { AuthContext } from "../../providers/AuthProvider";
 
 
 const Navbar = () => {
