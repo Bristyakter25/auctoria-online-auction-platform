@@ -19,7 +19,7 @@ const BidHistory = () => {
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:5000/bidHistory/${user?.email}`
+        `https://auctoria-online-auction-platform.onrender.com/bidHistory/${user?.email}`
       );
       // console.log("Bids:", res.data);
       return res.data;
@@ -53,7 +53,7 @@ const BidHistory = () => {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(
-          `http://localhost:5000/deleteBid/${productId}/${bidId}`
+          `https://auctoria-online-auction-platform.onrender.com/deleteBid/${productId}/${bidId}`
         );
         if (res.data.success) {
           Swal.fire({
@@ -123,11 +123,7 @@ const BidHistory = () => {
                   <td className="border px-4 py-2">
                     {/* Future delete button can go here */}
                     <button
-<<<<<<< HEAD
-                      onClick={() => handleDelete(bid._id , bid.bidId)} 
-=======
                       onClick={() => handleDelete(bid._id, bid.bidId)}
->>>>>>> 49e2ada0098f3893ab125829d72130aa0f46e692
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Delete

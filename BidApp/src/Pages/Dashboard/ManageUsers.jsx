@@ -4,7 +4,7 @@ const ManageUsers = () => {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-      fetch("http://localhost:5000/users") 
+      fetch("https://auctoria-online-auction-platform.onrender.com/users") 
         .then((res) => res.json())
         .then((data) => setUsers(data))
         .catch((error) => console.error("Error fetching users:", error));
