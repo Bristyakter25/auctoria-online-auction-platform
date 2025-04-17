@@ -25,8 +25,10 @@ const Home = () => {
         <LatestAuctions></LatestAuctions>
         <Question />
         <FeaturedProducts></FeaturedProducts>
-        <GetInKnow></GetInKnow>
-        <MeetCards />
+        {/* <GetInKnow></GetInKnow> */}
+        <AboutSection></AboutSection>
+        {/* <MeetCards /> */}
+        <AuctionProcess></AuctionProcess>
         <Partners />
         <BiddingMadness />
         <ContactForm />

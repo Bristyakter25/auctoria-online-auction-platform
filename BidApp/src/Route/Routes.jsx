@@ -9,14 +9,16 @@ import AddProduct from "../Pages/AddProduct";
 import AllAuctions from "../Pages/AllAuctions";
 import AuctionChart from "../Pages/Dashboard/AuctionChart";
 import Profile from "../components/HomeComponents/profile";
-
+import ManageUsers from "../Pages/Dashboard/ManageUsers";
 import WishList from "../Pages/WishList";
 import UpdateBid from "../components/sellerComponents/updateBid";
 import Bid from "../Pages/BidTask/Bid";
 
 import BidHistory from "../Pages/BidTask/BidHistory";
 import Payment from "../components/paymentFunctions/Payment";
-import ManageUsers from "../Pages/Dashboard/AdminRoutes/ManageUsers";
+import PageBanner from "../Pages/About Us/PageBanner";
+import AboutHome from "../Pages/About Us/AboutHome";
+import ProductHistory from "../Pages/BidTask/ProductHistory";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +26,8 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "about-us", element: <AboutHome></AboutHome> },
+
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Register /> },
       { path: "/addProduct", element: <AddProduct /> },
@@ -47,9 +51,10 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
-      { path: "manageUsers", element: <ManageUsers></ManageUsers> },
+      { path: "manageUsers", element: <ManageUsers /> },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
+      { path: "product-history", element: <ProductHistory></ProductHistory> },
       { path: "profile", element: <Profile /> },
       { path: "updatedBidInfo", element: <UpdateBid /> },
       {

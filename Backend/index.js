@@ -174,6 +174,28 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+
+
+  
+    app.get("/addProduct", async (req, res) => {
+      const email = req.query.email; 
+      console.log("email:", email);
+    
+      if (!email) {
+        return res.status(400).send({ message: "Email query parameter is required." });
+      }
+    
+      try {
+        const result = await productsCollection.find({ email }).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch products", error });
+      }
+    });
+    
+
+
+
     // 🛠 Add Product
     app.post("/addProducts", async (req, res) => {
       const productData = req.body;
