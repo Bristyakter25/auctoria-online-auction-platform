@@ -28,7 +28,7 @@ const NotificationBell = ({ user }) => {
     queryKey: ["notifications", userEmail],
     queryFn: async () => {
       const res = await axiosPublic.get(`/notification/${userEmail}`);
-      // console.log("user data", res.data);
+      console.log("user data", res.data);
       return res.data;
     },
     enabled: !!userEmail,

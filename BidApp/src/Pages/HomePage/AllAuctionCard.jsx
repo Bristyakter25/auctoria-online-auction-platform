@@ -10,7 +10,9 @@ import { WishlistContext } from "../../providers/wishListProvider";
 
 const AllAuctionCard = ({ auction }) => {
   const navigate = useNavigate();
-  const { _id, bids, productName, description, productImage } = auction;
+  const { _id, bids, productName, description, productImage, category } =
+    auction;
+  console.log("category", category);
   const { user } = useContext(AuthContext);
   const userId = user?.uid;
 
@@ -109,7 +111,7 @@ const AllAuctionCard = ({ auction }) => {
     >
       <div className="h-full">
         <img
-          className="object-cover w-full h-64 rounded-t-xl"
+          className="object-cover object-fill w-full h-64 items-center rounded-t-xl"
           src={productImage}
           alt={productName}
         />

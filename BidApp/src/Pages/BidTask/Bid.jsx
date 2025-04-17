@@ -6,6 +6,8 @@ import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
+import SuggestedBid from "./SuggestedBid";
+import AuctionWinnerExpired from "./AuctionWinnerExpired";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -26,7 +28,7 @@ const Bid = () => {
   const [bidAmount, setBidAmount] = useState("");
   const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
-  console.log("product data", product);
+  console.log("product data", product.category);
   useEffect(() => {
     console.log(`Fetching product with id: ${id}`);
     fetch(`http://localhost:5000/addProducts/${id}`)
@@ -156,7 +158,7 @@ const Bid = () => {
           <motion.img
             src={product.productImage}
             alt="Auction Item"
-            className="w-full h-80 object-fill rounded-lg"
+            className="w-full h-[320px] object-fill rounded-lg"
             whileHover={{ scale: 1 }}
             transition={{ duration: 0.8 }}
           />
@@ -218,6 +220,7 @@ const Bid = () => {
 
           {/* Bid Input Field */}
           <div className="mt-4">
+            <SuggestedBid category={product.category} />
             <input
               type="number"
               className="w-full p-2 border rounded-md"
@@ -228,7 +231,7 @@ const Bid = () => {
           </div>
 
           {/* Make a Bid Button */}
-          {product.endingSoonNotified === true ? (
+          {new Date(product.auctionEndTime) < new Date() ? (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleBid}
@@ -292,6 +295,7 @@ const Bid = () => {
           </motion.div>
         </motion.div>
       </div>
+      <AuctionWinnerExpired />
       <Tabs sellerId={product._id} sellerEmail={product.email} />
     </div>
   );
