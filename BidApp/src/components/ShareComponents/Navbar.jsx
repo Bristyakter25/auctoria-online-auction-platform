@@ -1,5 +1,5 @@
 
-import { useContext, useEffect, useState } from "react";
+import { useContext,  useState } from "react";
 import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 
@@ -13,6 +13,7 @@ import { WishlistContext } from "../../providers/wishListProvider";
 import NotificationBell from "../../Pages/BidTask/NotificationBell";
 import auctionIcon from "../../assets/auction.png";
 import ThemeToggle from "../HomeComponents/ThemeToggle";
+import { AuthContext } from "../../providers/AuthProvider";
 
 
 const Navbar = () => {
