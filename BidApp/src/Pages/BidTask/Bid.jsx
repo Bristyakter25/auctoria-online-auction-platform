@@ -154,7 +154,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border"
+          className=" p-6 shadow-md rounded-lg border"
         >
           {/* Main Image */}
           <motion.img
@@ -187,7 +187,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border relative "
+          className=" p-6 shadow-md rounded-lg border relative "
         >
           <div className="text-2xl font-bold mb-2 flex items-center ">
             {" "}
@@ -196,7 +196,7 @@ const Bid = () => {
   border-b-[28px] border-b-transparent absolute -top-5 -right-1 -rotate-45 "
             ></div>
             <h2 className="w-8/12 ">{product.productName} </h2>
-            <p className="text-lg text-gray-900 flex justify-center items-center -top-1 right-1 absolute">
+            <p className="text-lg text-gray-600 flex justify-center items-center -top-1 right-1 absolute">
               {product.bids?.length}
             </p>{" "}
           </div>
@@ -254,7 +254,7 @@ const Bid = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white   "
+            className="   "
           >
             <h3 className="text-xl font-bold text-gray-600 mb-3 mt-3">
               Latest Bids
@@ -267,10 +267,10 @@ const Bid = () => {
                   .map((bid, index) => (
                     <div
                       key={index}
-                      className="bg-white p-4 shadow-md rounded-lg border border-gray-200"
+                      className=" p-4 shadow-md rounded-lg border border-gray-200"
                     >
                       <div className="flex items-center justify-between">
-                        <p className="text-lg font-semibold text-gray-800">
+                        <p className="text-lg font-semibold text-gray-600">
                           ${bid.amount}
                         </p>
                         {/* <button

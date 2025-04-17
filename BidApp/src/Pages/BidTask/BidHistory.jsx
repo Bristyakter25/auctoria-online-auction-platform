@@ -86,7 +86,7 @@ const BidHistory = () => {
   
 
   return (
-    <div className="p-6">
+    <div className="p-6 mt-20">
       <div className="flex justify-between">
       <h2 className="text-2xl font-bold mb-4">My Bid History</h2>
       <Link to='/dashboard/pay' state={{ totalPrice: totalAmountToPay  }}><button className="btn btn-primary">pay</button></Link>
@@ -100,7 +100,7 @@ const BidHistory = () => {
       ) : (
         <div className="overflow-x-auto">
           <table className="table-auto w-full border">
-            <thead className="bg-gray-100">
+            <thead className="">
               <tr>
                 <th className="border px-4 py-2">Product Name</th>
                 <th className="border px-4 py-2"> Name</th>
@@ -123,11 +123,7 @@ const BidHistory = () => {
                   <td className="border px-4 py-2">
                     {/* Future delete button can go here */}
                     <button
-<<<<<<< HEAD
-                      onClick={() => handleDelete(bid._id , bid.bidId)} 
-=======
                       onClick={() => handleDelete(bid._id, bid.bidId)}
->>>>>>> 49e2ada0098f3893ab125829d72130aa0f46e692
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Delete

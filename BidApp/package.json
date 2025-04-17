@@ -34,7 +34,9 @@
     "shadcn-ui": "^0.9.5",
     "socket.io-client": "^4.8.1",
     "sort-by": "^1.2.0",
-    "sweetalert2": "^11.17.2"
+    "sweetalert2": "^11.17.2",
+    "swiper": "^11.2.6",
+    "tailwind-clip-path": "^1.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

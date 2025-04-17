@@ -105,7 +105,7 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-xl shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden border"
+      className="rounded-xl shadow-xl hover:shadow-2xl transition duration-300  overflow-hidden border"
     >
       <div className="h-full">
         <img
