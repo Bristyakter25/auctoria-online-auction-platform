@@ -46,6 +46,7 @@ io.on("connection", (socket) => {
     console.error("❌ Connection Error:", error);
   });
 });
+// app.set("io", io);
 
 const uri = `mongodb+srv://auctoria:${process.env.DB_PASS}@cluster0.t199j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const client = new MongoClient(uri, {
@@ -176,15 +177,14 @@ async function run() {
         if (!productData) {
           return res.status(400).json({ message: "Missing fields" });
         }
-        if (productData.auctionStartDate) {
-          const startTime = new Date(productData.auctionStartDate);
+        // if (productData.auctionStartDate) {
+        //   const startTime = new Date(productData.auctionStartDate);
 
-          // const auctionEndTime = new Date(startTime);
-          // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
-          const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
-
-          productData.auctionEndTime = auctionEndTime.toISOString();
-        }
+        //   // const auctionEndTime = new Date(startTime);
+        //   // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
+        //   const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
+        //   productData.auctionEndTime = auctionEndTime.toISOString();
+        // }
         productData.endingSoonNotified = false;
         const result = await productsCollection.insertOne(productData);
         const notification = {
@@ -371,16 +371,16 @@ async function run() {
       res.json({ isLocked: false });
     });
 
-    app.get("/debug-user/:email", async (req, res) => {
-      const email = req.params.email;
-      try {
-        const user = await usersCollection.findOne({ email });
-        res.json(user);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        res.status(500).json({ message: "Server error" });
-      }
-    });
+    // app.get("/debug-user/:email", async (req, res) => {
+    //   const email = req.params.email;
+    //   try {
+    //     const user = await usersCollection.findOne({ email });
+    //     res.json(user);
+    //   } catch (error) {
+    //     console.error("Error fetching user:", error);
+    //     res.status(500).json({ message: "Server error" });
+    //   }
+    // });
 
     app.post("/signup", async (req, res) => {
       const { email, password } = req.body;
@@ -449,6 +449,145 @@ async function run() {
       }
     });
 
+    app.get("/winner-auction", async (req, res) => {
+      try {
+        const nowISOString = new Date().toISOString();
+        const query = {
+          auctionEndTime: { $lte: nowISOString },
+          status: { $ne: "expired" },
+        };
+
+        // const query = {
+        //   auctionEndTime: { $lte: now },
+        //   status: { $ne: "expired" },
+        // };
+
+        const products = await productsCollection.find(query).toArray();
+        console.log("Matched Products:", products);
+        const winners = [];
+        console.log("winner auction", winners);
+        for (const product of products) {
+          const bids = product.bids || [];
+
+          if (bids.length > 0) {
+            const highestBid = bids.reduce((max, bid) =>
+              bid.amount > max.amount ? bid : max
+            );
+            console.log("Highest bid:", highestBid);
+            await productsCollection.updateOne(
+              { _id: product._id },
+              {
+                $set: {
+                  status: "expired",
+                  winner: highestBid.email,
+                  winningBid: highestBid.amount,
+                },
+              }
+            );
+            const notification = {
+              userId: highestBid.bidId || "",
+              email: highestBid.email,
+              message: `Congrats! You won the auction for "${product.productName}" with ৳${highestBid.amount}`,
+              createdAt: new Date(),
+              read: false,
+            };
+            await notificationsCollection.insertOne(notification);
+            console.log("expired auction notification", notification);
+            // try {
+            //   const result = await notificationsCollection.insertOne(
+            //     notification
+            //   );
+            //   console.log("Notification inserted successfully:", result);
+            // } catch (insertError) {
+            //   console.error("Error during insertOne:", insertError);
+            // }
+            // io.emit(`notification_${highestBid.email}`, notification);
+            winners.push({
+              _id: product._id,
+              productName: product.productName,
+              winnerEmail: highestBid.email,
+              winningBid: highestBid.amount,
+            });
+          } else {
+            await productsCollection.updateOne(
+              { _id: product._id },
+              { $set: { status: "expired" } }
+            );
+          }
+        }
+        console.log("expired auction expiredAuction", products.length);
+        // res.send({ totalExpired: products.length });
+        res.send(winners);
+      } catch (error) {
+        console.error("Auction Expiry Error:", error);
+        res
+          .status(500)
+          .json({ error: "Something went wrong while expiring auctions" });
+      }
+    });
+
+    // bid suggest related API
+
+    app.get("/suggest-bid/:category", async (req, res) => {
+      const category = req.params.category;
+
+      try {
+        const categoryProducts = await productsCollection
+          .find({ category: category })
+          .toArray();
+        if (categoryProducts.length === 0) {
+          return res
+            .status(404)
+            .json({ message: "there is no category product" });
+        }
+        let totalStartingPrice = 0;
+        let totalBidAmount = 0;
+        let totalBids = 0;
+        categoryProducts.forEach((product) => {
+          const startingBid = parseFloat(
+            product.basePrice || product.startingBid || 0
+          );
+          totalStartingPrice += startingBid;
+
+          if (product.bids && Array.isArray(product.bids)) {
+            product.bids.forEach((bid) => {
+              const bidAmount = parseFloat(bid.amount);
+              if (!isNaN(bidAmount)) {
+                totalBidAmount += bidAmount;
+                totalBids++;
+              }
+            });
+          }
+        });
+
+        const averageStartingPrice =
+          categoryProducts.length > 0
+            ? totalStartingPrice / categoryProducts.length
+            : 0;
+        const averageBid =
+          totalBids > 0 ? totalBidAmount / totalBids : averageStartingPrice;
+        const suggestedBidBaseOnStartingPrice = averageStartingPrice * 1.05;
+        const suggestedBidBaseOnBids = averageBid * 1.03;
+
+        const suggestedBid = Math.round(
+          Math.max(
+            suggestedBidBaseOnStartingPrice,
+            suggestedBidBaseOnBids,
+            averageStartingPrice
+          )
+        );
+        io.emit("suggestedBidUpdate", {
+          category,
+          suggestedBid,
+        });
+
+        res.send({ category, suggestedBid });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "problem to make suggest bid" });
+      }
+    });
+
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
       const { bidId, amount, user, email, sellerId, sellerEmail, productName } =
@@ -464,7 +603,7 @@ async function run() {
           { _id: objectId },
           { $push: { bids: { bidId, amount, user, email, time: new Date() } } }
         );
-        console.log("Bid time:", new Date());
+        // console.log("Bid time:", new Date());
         // notification for Seller when user Bid the product
         const notification = {
           userId: sellerId,
