@@ -1,11 +1,14 @@
 
-import { useContext,  useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+
+
+
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthContext } from "../../providers/AuthProvider";
 import { WishlistContext } from "../../providers/wishListProvider";
 import NotificationBell from "../../Pages/BidTask/NotificationBell";
 import auctionIcon from "../../assets/auction.png";
@@ -40,9 +43,9 @@ const Navbar = () => {
       <NavLink to="/addProduct" className="hover:text-indigo-600 text-indigo-500 block py-1">
         Add Product
       </NavLink>
-      <NavLink to="/bid-history" className="hover:text-indigo-600  text-indigo-500 block py-1">
+      {/* <NavLink to="/bid-history" className="hover:text-indigo-500 block py-1">
         Bid History
-      </NavLink>
+      </NavLink> */}
       {user && (
         <NavLink
           to="/dashboard/auctionChart"
@@ -55,12 +58,12 @@ const Navbar = () => {
   );
 
   return (
-    <nav className=" bg-white dark:bg-gray-900 shadow sticky  top-0 z-50">
+    <nav className="bg-gradient-to-r from-yellow-50 to-green-50 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <img src={auctionIcon} alt="logo" className="w-10 h-10" />
-          <span className="text-2xl font-bold text-indigo-600">Auctoria</span>
+          <span className="text-2xl font-extrabold text-green-700">Auctoria</span>
         </div>
 
         {/* Desktop Nav */}

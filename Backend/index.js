@@ -135,7 +135,7 @@ async function run() {
     });
     app.get("/users", async (req, res) => {
       try {
-        const result = await productsCollection.find().toArray();
+        const result = await usersCollection.find().toArray();
         res.json(result);
       } catch (error) {
         res.status(500).json({ message: "Error fetching products", error });
@@ -155,6 +155,8 @@ async function run() {
         res.status(500).json({ error: "Failed to fetch recent products" });
       }
     });
+
+    
 
     app.get("/featuredProducts", async (req, res) => {
       try {
@@ -407,16 +409,16 @@ async function run() {
       res.json({ isLocked: false });
     });
 
-    app.get("/debug-user/:email", async (req, res) => {
-      const email = req.params.email;
-      try {
-        const user = await usersCollection.findOne({ email });
-        res.json(user);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        res.status(500).json({ message: "Server error" });
-      }
-    });
+    // app.get("/debug-user/:email", async (req, res) => {
+    //   const email = req.params.email;
+    //   try {
+    //     const user = await usersCollection.findOne({ email });
+    //     res.json(user);
+    //   } catch (error) {
+    //     console.error("Error fetching user:", error);
+    //     res.status(500).json({ message: "Server error" });
+    //   }
+    // });
 
     app.post("/signup", async (req, res) => {
       const { email, password } = req.body;
@@ -516,6 +518,21 @@ async function run() {
         res.status(500).json({ message: "Server error during registration" });
       }
     });
+
+    // Delete a user
+    app.delete('/users/:id', async (req, res) => {
+      const id = req.params.id;
+      const user = await usersCollection.findOne({ _id: new ObjectId(id) });
+    
+      if (user?.role === 'admin') {
+        return res.status(403).send({ message: 'Cannot delete admin user' });
+      }
+    
+      const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+    
+    
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;

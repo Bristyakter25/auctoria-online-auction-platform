@@ -19,7 +19,7 @@ const BidHistory = () => {
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:5000/bidHistory/${user?.email}`
+        `https://auctoria-online-auction-platform.onrender.com/bidHistory/${user?.email}`
       );
       // console.log("Bids:", res.data);
       return res.data;
@@ -53,7 +53,7 @@ const BidHistory = () => {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(
-          `http://localhost:5000/deleteBid/${productId}/${bidId}`
+          `https://auctoria-online-auction-platform.onrender.com/deleteBid/${productId}/${bidId}`
         );
         if (res.data.success) {
           Swal.fire({
@@ -86,15 +86,21 @@ const BidHistory = () => {
   
 
   return (
-    <div className="p-6 mt-20">
+
+   
+    <div className="p-6 py-40">
+
       <div className="flex justify-between">
       <h2 className="text-2xl font-bold mb-4">My Bid History</h2>
-      <Link to='/dashboard/pay' state={{ totalPrice: totalAmountToPay  }}><button className="btn btn-primary">pay</button></Link>
-      <div className="text-xl font-semibold mb-4 text-green-700">
+     
+      <div className="text-xl font-semibold mb-4 text-green-700 mr-5">
   Total Amount to Pay: ${totalAmountToPay?.toFixed(2)}
+  <Link to='/dashboard/pay' state={{ totalPrice: totalAmountToPay  }}><button className="btn btn-primary ml-5">pay</button></Link>
 </div>
 
+
       </div>
+      
       {bids.length === 0 ? (
         <p>No bids found.</p>
       ) : (
@@ -123,7 +129,9 @@ const BidHistory = () => {
                   <td className="border px-4 py-2">
                     {/* Future delete button can go here */}
                     <button
-                      onClick={() => handleDelete(bid._id, bid.bidId)}
+
+                      onClick={() => handleDelete(bid._id , bid.bidId)} 
+
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                     >
                       Delete
