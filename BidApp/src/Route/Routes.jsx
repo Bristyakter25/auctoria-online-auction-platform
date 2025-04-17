@@ -16,6 +16,9 @@ import Bid from "../Pages/BidTask/Bid";
 
 import BidHistory from "../Pages/BidTask/BidHistory";
 import Payment from "../components/paymentFunctions/Payment";
+import PageBanner from "../Pages/About Us/PageBanner";
+import AboutHome from "../Pages/About Us/AboutHome";
+import ProductHistory from "../Pages/BidTask/ProductHistory";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +26,8 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "about-us", element: <AboutHome></AboutHome> },
+
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Register /> },
       { path: "/addProduct", element: <AddProduct /> },
@@ -49,6 +54,7 @@ export const router = createBrowserRouter([
       { path: "manageUsers", element: <ManageUsers /> },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
+      { path: "product-history", element: <ProductHistory></ProductHistory> },
       { path: "profile", element: <Profile /> },
       { path: "updatedBidInfo", element: <UpdateBid /> },
       {

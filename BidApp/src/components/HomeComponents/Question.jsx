@@ -2,7 +2,7 @@ const Question = () => {
   return (
     <div>
       <div>
-        <h2 className="font-bold text-center text-black text-5xl pt-10 pb-5">
+        <h2 className="font-bold text-center text-5xl pt-10 pb-5">
           {" "}
           Frequently Asked Questions
         </h2>

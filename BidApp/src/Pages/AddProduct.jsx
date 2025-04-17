@@ -30,7 +30,7 @@ const AddProduct = () => {
 
     console.log(productData);
 
-    fetch("http://localhost:5000/addProducts", {
+    fetch("https://auctoria-online-auction-platform.onrender.com/addProducts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const AddProduct = () => {
 
       <form
         onSubmit={handleSubmitProduct}
-        className="bg-white p-8 rounded-2xl shadow-xl"
+        className=" p-8 rounded-2xl shadow-xl"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>

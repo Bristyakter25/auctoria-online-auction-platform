@@ -18,7 +18,7 @@ const Dashboard = () => {
   <div className="flex  w-full  h-full">
  
  {/* Sidebar */}
- <div className="bg-slate-200 lg:px-8 lg:py-10 min-h-screen">
+ <div className="bg-slate-500 lg:px-8 lg:py-10 min-h-screen">
    <ul className="menu">
      <h2 className="text-center my-5 font-bold text-xl dark:text-[#5d5881] text-[#4635B1]">Menu</h2>
      <li className="text-xl"><NavLink to="/dashboard/auctionChart"><FaChartBar /> Auction Chart</NavLink></li>
@@ -31,8 +31,10 @@ const Dashboard = () => {
  <div className="divider"></div>
  {/* Organizer Dashboard (Admin) */}
  {role=='admin' && <div>
+         <ul className="menu">
          <h2 className="text-center my-5 font-bold text-xl dark:text-[#A294F9] text-[#4635B1]">Admins Dashboard</h2>
-         <li className="text-xl"><NavLink to="/dashboard/manageUsers"><FaUsers />Manage Users</NavLink></li>
+         <li className="text-xl"><NavLink to="/dashboard/manageUsers"><FaHospitalUser /> Manage Users</NavLink></li>
+         </ul>
         </div>}
  {/* Seller Dashboard */}
   {role=='seller' && <ul className="menu">
@@ -40,6 +42,7 @@ const Dashboard = () => {
      <li className="text-xl"><NavLink to='/addProduct'><MdOutlineAddToQueue />
      Add Product</NavLink></li>
      <li className="text-xl"><NavLink to='/dashboard/updateBidInfo'><GrCircleInformation />Update Bid Information </NavLink></li>
+     <li  className="text-xl"><NavLink to="/dashboard/product-history"><BsBox2Heart />Product History</NavLink></li>
    </ul>}
 <div className="divider"></div>
  
@@ -47,6 +50,7 @@ const Dashboard = () => {
 <h2 className=" my-5 font-bold text-xl dark:text-[#A294F9] text-[#4635B1]">Users Dashboard</h2>
 <li  className="text-xl"><NavLink to="/dashboard/wishList"><BsBox2Heart />Wish Listed Products</NavLink></li>
 <li  className="text-xl"><NavLink to="/dashboard/bid-history"><BsBox2Heart />BidHistory</NavLink></li>
+
 </ul>}
 </div>
 {/* Main Content */}

@@ -11,7 +11,7 @@ import Tabs from "./Tabs";
 
 
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -33,7 +33,7 @@ const Bid = () => {
   console.log("product data", product);
   useEffect(() => {
     console.log(`Fetching product with id: ${id}`);
-    fetch(`http://localhost:5000/addProducts/${id}`)
+    fetch(`https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched product data:", data);
@@ -112,7 +112,7 @@ const Bid = () => {
     }
     // const bidId = generateSellerId();
     try {
-      const res = await fetch(`http://localhost:5000/bid/${id}`, {
+      const res = await fetch(`https://auctoria-online-auction-platform.onrender.com/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -154,7 +154,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border"
+          className=" p-6 shadow-md rounded-lg border"
         >
           {/* Main Image */}
           <motion.img
@@ -187,7 +187,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border relative "
+          className=" p-6 shadow-md rounded-lg border relative "
         >
           <div className="text-2xl font-bold mb-2 flex items-center ">
             {" "}
@@ -196,7 +196,7 @@ const Bid = () => {
   border-b-[28px] border-b-transparent absolute -top-5 -right-1 -rotate-45 "
             ></div>
             <h2 className="w-8/12 ">{product.productName} </h2>
-            <p className="text-lg text-gray-900 flex justify-center items-center -top-1 right-1 absolute">
+            <p className="text-lg text-gray-600 flex justify-center items-center -top-1 right-1 absolute">
               {product.bids?.length}
             </p>{" "}
           </div>
@@ -254,7 +254,7 @@ const Bid = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white   "
+            className="   "
           >
             <h3 className="text-xl font-bold text-gray-600 mb-3 mt-3">
               Latest Bids
@@ -267,10 +267,10 @@ const Bid = () => {
                   .map((bid, index) => (
                     <div
                       key={index}
-                      className="bg-white p-4 shadow-md rounded-lg border border-gray-200"
+                      className=" p-4 shadow-md rounded-lg border border-gray-200"
                     >
                       <div className="flex items-center justify-between">
-                        <p className="text-lg font-semibold text-gray-800">
+                        <p className="text-lg font-semibold text-gray-600">
                           ${bid.amount}
                         </p>
                         {/* <button
@@ -296,7 +296,7 @@ const Bid = () => {
           </motion.div>
         </motion.div>
       </div>
-     <Tabs sellerId={product._id} sellerEmail={product.email}></Tabs>
+     <Tabs sellerId={product._id} sellerEmail={product.email} product={product}></Tabs>
     </div>
   );
 };

@@ -19,7 +19,7 @@ const BidHistory = () => {
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `http://localhost:5000/bidHistory/${user?.email}`
+        `https://auctoria-online-auction-platform.onrender.com/bidHistory/${user?.email}`
       );
       // console.log("Bids:", res.data);
       return res.data;
@@ -53,7 +53,7 @@ const BidHistory = () => {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(
-          `http://localhost:5000/deleteBid/${productId}/${bidId}`
+          `https://auctoria-online-auction-platform.onrender.com/deleteBid/${productId}/${bidId}`
         );
         if (res.data.success) {
           Swal.fire({
@@ -86,7 +86,10 @@ const BidHistory = () => {
   
 
   return (
+
+   
     <div className="p-6 py-40">
+
       <div className="flex justify-between">
       <h2 className="text-2xl font-bold mb-4">My Bid History</h2>
      
@@ -103,7 +106,7 @@ const BidHistory = () => {
       ) : (
         <div className="overflow-x-auto">
           <table className="table-auto w-full border">
-            <thead className="bg-gray-100">
+            <thead className="">
               <tr>
                 <th className="border px-4 py-2">Product Name</th>
                 <th className="border px-4 py-2"> Name</th>

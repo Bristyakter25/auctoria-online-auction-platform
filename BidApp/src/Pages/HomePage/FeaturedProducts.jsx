@@ -8,7 +8,7 @@ const FeaturedProducts = () => {
   const [filteredAuctions, setFilteredAuctions] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/featuredProducts")
+    fetch("https://auctoria-online-auction-platform.onrender.com/featuredProducts")
       .then((res) => res.json())
       .then((data) => {
         setFeaturedAuctions(data);
