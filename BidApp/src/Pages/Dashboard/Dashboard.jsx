@@ -12,8 +12,8 @@ import useRole from "../../hooks/useRole";
 
 
 const Dashboard = () => {
-  const [role,isLoading] = useRole()
-  console.log(role, "role", isLoading);
+  const [role,isLoading] = useRole();
+  // console.log(role, "role", isLoading);
     return (
   <div className="flex  w-full  h-full">
  
@@ -34,6 +34,7 @@ const Dashboard = () => {
          <ul className="menu">
          <h2 className="text-center my-5 font-bold text-xl dark:text-[#A294F9] text-[#4635B1]">Admins Dashboard</h2>
          <li className="text-xl"><NavLink to="/dashboard/manageUsers"><FaHospitalUser /> Manage Users</NavLink></li>
+         <li className="text-xl"><NavLink to="/dashboard/analytics"><FaHospitalUser /> Analytics</NavLink></li>
          </ul>
         </div>}
  {/* Seller Dashboard */}

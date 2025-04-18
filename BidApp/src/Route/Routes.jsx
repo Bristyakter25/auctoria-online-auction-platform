@@ -20,6 +20,7 @@ import PageBanner from "../Pages/About Us/PageBanner";
 import AboutHome from "../Pages/About Us/AboutHome";
 import ProductHistory from "../Pages/BidTask/ProductHistory";
 import ManageUsers from "../Pages/Dashboard/AdminRoutes/ManageUsers";
+import Analytics from "../Pages/Dashboard/AdminRoutes/Analytics";
 
 export const router = createBrowserRouter([
   {
@@ -52,7 +53,14 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
-      { path: "manageUsers", element: <ManageUsers /> },
+
+      { path: "manageUsers", element: <ManageUsers></ManageUsers> },
+      {path: "analytics",
+        element:<Analytics></Analytics>
+      },
+
+     
+
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "product-history", element: <ProductHistory></ProductHistory> },
