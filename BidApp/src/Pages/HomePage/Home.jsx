@@ -14,6 +14,9 @@ import GetInKnow from "./GetInKnow";
 
 import EidGreeting from "../Eid/EidGreetings";
 import Banner from "../../components/HomeComponents/Banner";
+import AboutSection from "../../components/HomeComponents/AboutSection";
+import AuctionProcess from "../About Us/AuctionProcess";
+import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
 
 const Home = () => {
   return (
@@ -25,9 +28,12 @@ const Home = () => {
         <LatestAuctions></LatestAuctions>
         <Question />
         <FeaturedProducts></FeaturedProducts>
-        <GetInKnow></GetInKnow>
-        <MeetCards />
-        <Partners />
+        {/* <GetInKnow></GetInKnow> */}
+        <AboutSection></AboutSection>
+        {/* <MeetCards /> */}
+        <AuctionProcess></AuctionProcess>
+        {/* <Partners /> */}
+        <TrustedPartners></TrustedPartners>
         <BiddingMadness />
         <ContactForm />
       </div>

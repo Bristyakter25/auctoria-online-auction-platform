@@ -1,12 +1,26 @@
 import { useEffect, useState } from "react";
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  TwitterShareButton,
+  LinkedinShareButton,
+} from "react-share";
 import { motion } from "framer-motion";
 import SellerReview from "./SellerReview";
 import AuctionHistory from "./AuctionHistory";
+
+import {
+  FaFacebookSquare,
+  FaLinkedin,
+  FaShareSquare,
+  FaTwitter,
+} from "react-icons/fa";
+import AuctionWinner from "./AuctionWinner";
 // import AdmissionForm from "../../Components/Dropdown/AdminDashboard/Student/AdmissionForm";
 // import ParentsForm from "../../Components/Dropdown/AdminDashboard/Student/ParentsForm";
 
-const tabs = ["Item Details", "Auction History", "Reviews"];
-const Tabs = ({ sellerId, sellerEmail }) => {
+const tabs = ["Item Details", "History", "Reviews", "Winner", "Share"];
+const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
   //   console.log("seller email", sellerEmail);
   const [activeTab, setActiveTab] = useState("Item Details");
   const [studentId, setStudentId] = useState(null);
@@ -15,13 +29,13 @@ const Tabs = ({ sellerId, sellerEmail }) => {
   //     // console.log("Student ID:", studentId);
   //   }, [studentId]);
   return (
-    <div className="w-full max-w-7xl mx-auto p-3">
-      <div className="flex space-x-4 border-b border-gray-200">
+    <div className="container max-w-7xl mx-auto p-3">
+      <div className="flex lg:space-x-4 border-b border-gray-200 ">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-3 cursor-pointer text-lg font-semibold transition-all ${
+            className={`px-3 py-3 cursor-pointer text-base lg:text-lg font-semibold transition-all ${
               activeTab === tab
                 ? "border-b-2 border-teal-300 text-gray-600"
                 : "text-gray-600"
@@ -46,7 +60,7 @@ const Tabs = ({ sellerId, sellerEmail }) => {
           </>
         )}
 
-        {activeTab === "Auction History" && (
+        {activeTab === "Bid History" && (
           <>
             {" "}
             <AuctionHistory />{" "}
@@ -56,6 +70,52 @@ const Tabs = ({ sellerId, sellerEmail }) => {
           <>
             <SellerReview sellerId={sellerId} sellerEmail={sellerEmail} />
           </>
+        )}
+        {activeTab === "Winner" && (
+          <>
+            <AuctionWinner product={product} setProduct={setProduct} />
+          </>
+        )}
+
+        {activeTab === "Share" && (
+          <div className="flex flex-col gap-4">
+            {/* Facebook Share */}
+            <FacebookShareButton
+              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+              quote={product?.productName || ""}
+              hashtag="#AuctionItem"
+            >
+              <div className="btn btn-sm btn-outline btn-success flex items-center gap-2">
+                <FaFacebookSquare />
+                Share on Facebook
+              </div>
+            </FacebookShareButton>
+
+            {/* Twitter Share */}
+            <TwitterShareButton
+              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+              title={product?.productName || ""}
+              hashtags={["Auction", "OnlineBidding"]}
+            >
+              <div className="btn btn-sm btn-outline btn-info flex items-center gap-2">
+                <FaTwitter />
+                Share on Twitter
+              </div>
+            </TwitterShareButton>
+
+            {/* LinkedIn Share */}
+            <LinkedinShareButton
+              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+              title={product?.productName || ""}
+              summary={`Check out this item: ${product?.productName}`}
+              source="Auctoria Auction"
+            >
+              <div className="btn btn-sm btn-outline btn-primary flex items-center gap-2">
+                <FaLinkedin />
+                Share on LinkedIn
+              </div>
+            </LinkedinShareButton>
+          </div>
         )}
       </motion.div>
     </div>

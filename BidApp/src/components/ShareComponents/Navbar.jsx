@@ -1,19 +1,15 @@
-
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-
-
-
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthContext } from "../../providers/AuthProvider";
 import { WishlistContext } from "../../providers/wishListProvider";
 import NotificationBell from "../../Pages/BidTask/NotificationBell";
 import auctionIcon from "../../assets/auction.png";
-
+import ThemeToggle from "../HomeComponents/ThemeToggle";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
@@ -21,35 +17,33 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
 
   const handleSignOut = () => {
     signOutUser().then(() => {
       navigate("/login");
     });
   };
- 
 
   const navLinks = (
     <>
-      <NavLink to="/" className="hover:text-indigo-500 block py-1">
+      <NavLink to="/" className="hover:text-teal-500 block py-1">
         Home
       </NavLink>
-      <NavLink to="/allAuctions" className="hover:text-indigo-500 block py-1">
+      <NavLink to="/allAuctions" className="hover:text-teal-500 block py-1">
         Auctions
       </NavLink>
-      <NavLink to="/addProduct" className="hover:text-indigo-500 block py-1">
+      <NavLink to="/addProduct" className="hover:text-teal-500 block py-1">
         Add Product
       </NavLink>
-      {/* <NavLink to="/bid-history" className="hover:text-indigo-500 block py-1">
+      <NavLink to="/bid-history" className="hover:text-teal-500 block py-1">
         Bid History
-      </NavLink> */}
+      </NavLink>{" "}
+      */
       {user && (
         <NavLink
           to="/dashboard/auctionChart"
-          className="hover:text-indigo-500 block py-1"
+          className="hover:text-teal-500 block py-1"
         >
           Dashboard
         </NavLink>
@@ -63,7 +57,7 @@ const Navbar = () => {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <img src={auctionIcon} alt="logo" className="w-10 h-10" />
-          <span className="text-2xl font-extrabold text-green-700">Auctoria</span>
+          <span className="text-2xl font-bold text-teal-500">Auctoria</span>
         </div>
 
         {/* Desktop Nav */}
@@ -80,7 +74,7 @@ const Navbar = () => {
           >
             <IoMdHeartEmpty
               size={24}
-              className="text-gray-700 hover:text-blue-500"
+              className="text-gray-700 hover:text-teal-500"
             />
             {wishlist.length > 0 && (
               <span className="absolute -top-0 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
@@ -90,29 +84,35 @@ const Navbar = () => {
           </Link>
 
           {user ? (
-            <div className="relative">
-              <img
-                src={user.photoURL || "/default-profile.png"}
-                alt="avatar"
-                className="w-10 h-10 rounded-full border cursor-pointer"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              />
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-md overflow-hidden w-40 z-50">
-                  <Link
-                    to="/profile"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Profile
-                  </Link>
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
+            <div className="flex items-center">
+              <div className="relative">
+                <img
+                  src={user.photoURL || "/default-profile.png"}
+                  alt="avatar"
+                  className="w-10 h-10 rounded-full border cursor-pointer"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                />
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2  shadow-lg rounded-md overflow-hidden w-40 z-50">
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2   hover:bg-gray-100"
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div>
+                <ThemeToggle></ThemeToggle>
+              </div>
             </div>
           ) : (
             <div className="flex items-center gap-2">
