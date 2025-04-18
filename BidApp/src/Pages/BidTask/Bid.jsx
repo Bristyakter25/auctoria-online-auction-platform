@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
-import AuctionWinnerExpired from "./AuctionWinnerExpired";
+import AuctionWinner from "./AuctionWinner";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],

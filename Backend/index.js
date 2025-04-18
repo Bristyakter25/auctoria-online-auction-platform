@@ -479,8 +479,10 @@ async function run() {
               {
                 $set: {
                   status: "expired",
-                  winner: highestBid.email,
+                  winner: highestBid.user,
                   winningBid: highestBid.amount,
+                  winningProduct: product.productName,
+                  winningTime: new Date(),
                 },
               }
             );
@@ -491,6 +493,7 @@ async function run() {
               createdAt: new Date(),
               read: false,
             };
+
             await notificationsCollection.insertOne(notification);
             console.log("expired auction notification", notification);
             // try {
@@ -501,7 +504,7 @@ async function run() {
             // } catch (insertError) {
             //   console.error("Error during insertOne:", insertError);
             // }
-            // io.emit(`notification_${highestBid.email}`, notification);
+            io.emit(`notification_${highestBid.email}`, notification);
             winners.push({
               _id: product._id,
               productName: product.productName,
