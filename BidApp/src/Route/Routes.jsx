@@ -17,6 +17,7 @@ import Bid from "../Pages/BidTask/Bid";
 import BidHistory from "../Pages/BidTask/BidHistory";
 import Payment from "../components/paymentFunctions/Payment";
 import ManageUsers from "../Pages/Dashboard/AdminRoutes/ManageUsers";
+import Analytics from "../Pages/Dashboard/AdminRoutes/Analytics";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,9 @@ export const router = createBrowserRouter([
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
       { path: "manageUsers", element: <ManageUsers></ManageUsers> },
+      {path: "analytics",
+        element:<Analytics></Analytics>
+      },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "profile", element: <Profile /> },
