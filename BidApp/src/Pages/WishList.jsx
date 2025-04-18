@@ -13,7 +13,7 @@ const WishList = () => {
 
     setLoading(true); 
 
-    fetch(`http://localhost:5000/wishlist/${user.uid}`)
+    fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${user.uid}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch wishlist");
@@ -46,7 +46,7 @@ const WishList = () => {
       {error && <p className="text-center text-red-500">{error}</p>} {/* Display error message if any */}
 
       {wishListProducts.length > 0 ? (
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-x-4 w-[1000px] mx-auto">
+        <div className="grid gap-y-5 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-x-4 w-[1000px] mx-auto">
           {wishListProducts.map((wishListProduct) => (
             <WishListCard key={wishListProduct._id} wishListProduct={wishListProduct} />
           ))}

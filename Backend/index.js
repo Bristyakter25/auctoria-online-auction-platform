@@ -5,6 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -133,7 +134,7 @@ async function run() {
     });
     app.get("/users", async (req, res) => {
       try {
-        const result = await productsCollection.find().toArray();
+        const result = await usersCollection.find().toArray();
         res.json(result);
       } catch (error) {
         res.status(500).json({ message: "Error fetching products", error });
@@ -408,6 +409,64 @@ async function run() {
       }
     });
 
+    // payment functionalities
+    app.post("/create-payment-intent", async (req, res) => {
+      try {
+        let { price } = req.body;
+
+        // Force to number
+        price = Number(price);
+
+        if (isNaN(price)) {
+          return res.status(400).json({ error: "Invalid price value" });
+        }
+
+        const amount = Math.round(price * 100); // always better than parseInt here
+
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount,
+          currency: "usd",
+          payment_method_types: ["card"],
+        });
+
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      } catch (error) {
+        console.error("Stripe Payment Intent Error:", error.message);
+        res.status(500).json({ error: "Failed to create payment intent" });
+      }
+    });
+
+    // payment functionalities
+    app.post("/create-payment-intent", async (req, res) => {
+      try {
+        let { price } = req.body;
+
+        // Force to number
+        price = Number(price);
+
+        if (isNaN(price)) {
+          return res.status(400).json({ error: "Invalid price value" });
+        }
+
+        const amount = Math.round(price * 100); // always better than parseInt here
+
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount,
+          currency: "usd",
+          payment_method_types: ["card"],
+        });
+
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      } catch (error) {
+        console.error("Stripe Payment Intent Error:", error.message);
+        res.status(500).json({ error: "Failed to create payment intent" });
+      }
+    });
+
     app.get("/users", async (req, res) => {
       try {
         // Fetch users from the database
@@ -417,7 +476,6 @@ async function run() {
         res.status(500).json({ message: "Error fetching users", error });
       }
     });
-
     app.post("/users", async (req, res) => {
       const { name, email, photoURL, uid, createdAt, role } = req.body;
       // console.log("Received user data:", req.body);
@@ -589,6 +647,19 @@ async function run() {
         console.error(err);
         res.status(500).json({ error: "problem to make suggest bid" });
       }
+    });
+
+    // Delete a user
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const user = await usersCollection.findOne({ _id: new ObjectId(id) });
+
+      if (user?.role === "admin") {
+        return res.status(403).send({ message: "Cannot delete admin user" });
+      }
+
+      const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
     });
 
     app.post("/bid/:id", async (req, res) => {

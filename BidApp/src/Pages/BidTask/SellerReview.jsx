@@ -12,7 +12,12 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
   const axiosPublic = UseAxiosPublic();
   const queryClient = useQueryClient();
   const { user } = useContext(AuthContext);
+
+  const [reviews, setReviews] = useState([]);
+ 
+
   // const [reviews, setReviews] = useState([]);
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   // console.log("review data", reviews);
@@ -109,7 +114,7 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
           <p className="text-gray-500">No reviews yet.</p>
         )}
       </div>
-      <div className="lg:w-5/12 h-[400px] p-6 bg-white rounded-xl shadow-md border">
+      <div className="lg:w-5/12 h-[400px] p-6  rounded-xl shadow-md border">
         <h2 className="text-2xl font-bold mb-4 text-center">Seller Reviews</h2>
 
         <div className="mb-6">
