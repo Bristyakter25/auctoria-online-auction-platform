@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import SellerReview from "./SellerReview";
 import AuctionHistory from "./AuctionHistory";
+import AuctionWinner from "./AuctionWinner";
 // import AdmissionForm from "../../Components/Dropdown/AdminDashboard/Student/AdmissionForm";
 // import ParentsForm from "../../Components/Dropdown/AdminDashboard/Student/ParentsForm";
 
-const tabs = ["Item Details", "Auction History", "Reviews"];
-const Tabs = ({ sellerId, sellerEmail }) => {
+const tabs = ["Item Details", "History", "Reviews", "Winner"];
+const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
   //   console.log("seller email", sellerEmail);
   const [activeTab, setActiveTab] = useState("Item Details");
   const [studentId, setStudentId] = useState(null);
@@ -15,13 +16,13 @@ const Tabs = ({ sellerId, sellerEmail }) => {
   //     // console.log("Student ID:", studentId);
   //   }, [studentId]);
   return (
-    <div className="w-full max-w-7xl mx-auto p-3">
-      <div className="flex space-x-4 border-b border-gray-200">
+    <div className="container max-w-7xl mx-auto p-3">
+      <div className="flex lg:space-x-4 border-b border-gray-200 ">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-3 cursor-pointer text-lg font-semibold transition-all ${
+            className={`px-3 py-3 cursor-pointer text-base lg:text-lg font-semibold transition-all ${
               activeTab === tab
                 ? "border-b-2 border-teal-300 text-gray-600"
                 : "text-gray-600"
@@ -46,7 +47,7 @@ const Tabs = ({ sellerId, sellerEmail }) => {
           </>
         )}
 
-        {activeTab === "Auction History" && (
+        {activeTab === "Bid History" && (
           <>
             {" "}
             <AuctionHistory />{" "}
@@ -55,6 +56,11 @@ const Tabs = ({ sellerId, sellerEmail }) => {
         {activeTab === "Reviews" && (
           <>
             <SellerReview sellerId={sellerId} sellerEmail={sellerEmail} />
+          </>
+        )}
+        {activeTab === "Winner" && (
+          <>
+            <AuctionWinner product={product} setProduct={setProduct} />
           </>
         )}
       </motion.div>

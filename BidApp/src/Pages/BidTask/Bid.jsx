@@ -28,7 +28,7 @@ const Bid = () => {
   const [bidAmount, setBidAmount] = useState("");
   const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
-  console.log("product data", product.category);
+  console.log("product data", product);
   useEffect(() => {
     console.log(`Fetching product with id: ${id}`);
     fetch(`http://localhost:5000/addProducts/${id}`)
@@ -220,7 +220,12 @@ const Bid = () => {
 
           {/* Bid Input Field */}
           <div className="mt-4">
-            <SuggestedBid category={product.category} />
+            {product.status === "expired" ? (
+              ""
+            ) : (
+              <SuggestedBid category={product.category} />
+            )}
+
             <input
               type="number"
               className="w-full p-2 border rounded-md"
@@ -263,40 +268,56 @@ const Bid = () => {
                 [...product.bids]
                   .sort((a, b) => b.amount - a.amount)
                   .slice(0, 3)
-                  .map((bid, index) => (
-                    <div
-                      key={index}
-                      className="bg-white p-4 shadow-md rounded-lg border border-gray-200"
-                    >
-                      <div className="flex items-center justify-between">
-                        <p className="text-lg font-semibold text-gray-800">
-                          ${bid.amount}
-                        </p>
-                        {/* <button
-                          onClick={() => bid?._id && handleDeleteBid(bid._id)}
+                  .map((bid, index) => {
+                    const isWinningBid =
+                      product.status === "expired" && index === 0;
+                    return (
+                      <div
+                        key={index}
+                        className={`p-4 shadow-md rounded-lg border transition duration-300 ${
+                          isWinningBid
+                            ? "bg-teal-100 border-teal-400"
+                            : "bg-white border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p
+                            className={`text-lg font-semibold ${
+                              isWinningBid ? "text-amber-700" : "text-gray-800"
+                            }`}
+                          >
+                            ৳{bid.amount}
+                          </p>
+                          {isWinningBid && (
+                            <span className="text-xs bg-teal-400 text-white px-2 py-1 rounded-full">
+                              Winner 👑
+                            </span>
+                          )}
+                        </div>
+                        <p
+                          className={`text-sm mt-1 ${
+                            isWinningBid ? "font-medium" : "text-gray-500"
+                          }`}
                         >
-                          <MdCancel />
-                        </button> */}
+                          Bidder: {bid.user}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-500">
-                        Bid by: {bid.user}
-                      </p>
-                      {/* <p className="text-xs text-gray-400">
-                        {bid.time
-                          ? new Date(bid?.time).toLocaleString()
-                          : "Loading..."}
-                      </p> */}
-                    </div>
-                  ))
+                    );
+                  })
               ) : (
-                <p className="text-gray-500">No bids placed yet.</p>
+                <p className="text-gray-500">There is no Bid।</p>
               )}
             </div>
           </motion.div>
         </motion.div>
       </div>
-      <AuctionWinnerExpired />
-      <Tabs sellerId={product._id} sellerEmail={product.email} />
+      {/* <AuctionWinner /> */}
+      <Tabs
+        sellerId={product._id}
+        sellerEmail={product.email}
+        product={product}
+        setProduct={setProduct}
+      />
     </div>
   );
 };
