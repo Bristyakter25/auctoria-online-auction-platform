@@ -240,6 +240,33 @@ async function run() {
       }
     });
 
+    // Get Popular Product based on bid
+    
+    app.get("/popularProducts", async (req, res) => {
+      try {
+        const result = await productsCollection.aggregate([
+          {
+            $addFields: {
+              totalBids: { $size: { $ifNull: ["$bids", []] } } // ✅ handles missing or null bids
+            }
+          },
+          {
+            $sort: { totalBids: -1 }
+          },
+          {
+            $limit: 10
+          }
+        ]).toArray();
+    
+        res.send(result);
+      } catch (err) {
+        console.error("Error fetching popular products:", err);
+        res.status(500).send({ message: "Server error", error: err });
+      }
+    });
+    
+
+
     // 🛠 Get User Wishlist
     // Ensure ObjectId is imported from MongoDB
 
