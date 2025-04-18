@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
+const cron = require("node-cron");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -507,23 +508,19 @@ async function run() {
       }
     });
 
-    app.get("/winner-auction", async (req, res) => {
+    // Automatic Notification send to Auction Winner
+    cron.schedule("*/1 * * * *", async () => {
+      console.log("⏰ Running auction expiry check...");
+      // app.get("/winner-auction", async (req, res) => {
       try {
         const nowISOString = new Date().toISOString();
         const query = {
           auctionEndTime: { $lte: nowISOString },
           status: { $ne: "expired" },
         };
-
-        // const query = {
-        //   auctionEndTime: { $lte: now },
-        //   status: { $ne: "expired" },
-        // };
-
         const products = await productsCollection.find(query).toArray();
-        console.log("Matched Products:", products);
         const winners = [];
-        console.log("winner auction", winners);
+        // console.log("winner auction", winners);
         for (const product of products) {
           const bids = product.bids || [];
 
@@ -551,17 +548,8 @@ async function run() {
               createdAt: new Date(),
               read: false,
             };
-
             await notificationsCollection.insertOne(notification);
             console.log("expired auction notification", notification);
-            // try {
-            //   const result = await notificationsCollection.insertOne(
-            //     notification
-            //   );
-            //   console.log("Notification inserted successfully:", result);
-            // } catch (insertError) {
-            //   console.error("Error during insertOne:", insertError);
-            // }
             io.emit(`notification_${highestBid.email}`, notification);
             winners.push({
               _id: product._id,
@@ -578,13 +566,14 @@ async function run() {
         }
         console.log("expired auction expiredAuction", products.length);
         // res.send({ totalExpired: products.length });
-        res.send(winners);
+        // res.send(winners);
       } catch (error) {
         console.error("Auction Expiry Error:", error);
         res
           .status(500)
           .json({ error: "Something went wrong while expiring auctions" });
       }
+      // });
     });
 
     // bid suggest related API
