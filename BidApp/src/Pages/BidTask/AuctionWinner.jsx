@@ -28,6 +28,9 @@ const AuctionWinner = ({ product, setProduct }) => {
   const handleCheckExpired = async () => {
     await refetch();
   };
+  // setInterval(() => {
+  //   handleCheckExpired;
+  // }, 5000);
 
   return (
     <>
@@ -86,6 +89,9 @@ const AuctionWinner = ({ product, setProduct }) => {
           <p className="text-center text-3xl font-bold">
             There is no data in my Pocket!!
           </p>
+          <button onClick={handleCheckExpired} className="btn btn-info">
+            Check
+          </button>
         </>
       )}
     </>
