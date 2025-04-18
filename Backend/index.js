@@ -71,11 +71,12 @@ async function run() {
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
-    const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    const bidHistoryCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
+    const paymentCollection = client.db("Auctoria").collection('payments')
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -437,6 +438,35 @@ async function run() {
       }
     });
 
+    // // payment functionalities
+    // app.post("/create-payment-intent", async (req, res) => {
+    //   try {
+    //     let { price } = req.body;
+
+    //     // Force to number
+    //     price = Number(price);
+
+    //     if (isNaN(price)) {
+    //       return res.status(400).json({ error: "Invalid price value" });
+    //     }
+
+    //     const amount = Math.round(price * 100); // always better than parseInt here
+
+    //     const paymentIntent = await stripe.paymentIntents.create({
+    //       amount,
+    //       currency: "usd",
+    //       payment_method_types: ["card"],
+    //     });
+
+    //     res.send({
+    //       clientSecret: paymentIntent.client_secret,
+    //     });
+    //   } catch (error) {
+    //     console.error("Stripe Payment Intent Error:", error.message);
+    //     res.status(500).json({ error: "Failed to create payment intent" });
+    //   }
+    // });
+
     // payment functionalities
     app.post("/create-payment-intent", async (req, res) => {
       try {
@@ -466,34 +496,30 @@ async function run() {
       }
     });
 
-    // payment functionalities
-    app.post("/create-payment-intent", async (req, res) => {
-      try {
-        let { price } = req.body;
-
-        // Force to number
-        price = Number(price);
-
-        if (isNaN(price)) {
-          return res.status(400).json({ error: "Invalid price value" });
-        }
-
-        const amount = Math.round(price * 100); // always better than parseInt here
-
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount,
-          currency: "usd",
-          payment_method_types: ["card"],
-        });
-
-        res.send({
-          clientSecret: paymentIntent.client_secret,
-        });
-      } catch (error) {
-        console.error("Stripe Payment Intent Error:", error.message);
-        res.status(500).json({ error: "Failed to create payment intent" });
-      }
+    app.post('/payments', async (req, res) => {
+      const payment = req.body;
+      const paymentResult = await paymentCollection.insertOne(payment);
+    
+      console.log('payment info', payment);
+    
+      const query = {
+        "bids.bidId": { $in: payment.cartIds } // direct match, since bidId is a string
+      };
+    
+      const deleteResult = await productsCollection.deleteMany(query);
+    
+      res.send({ paymentResult, deleteResult });
     });
+    
+
+app.get("/payments",async(req,res)=>{
+  try{
+    const result = await paymentCollection.find().toArray();
+    res.json(result);
+  }  catch (error) {
+    res.status(500).json({ message: "Error fetching payments", error });
+  }
+})
 
     app.get("/users", async (req, res) => {
       try {
