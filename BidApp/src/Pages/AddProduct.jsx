@@ -22,7 +22,8 @@ const AddProduct = () => {
       category: form.category.value,
       description: form.description.value,
       startingBid: form.startingBid.value,
-      auctionStartDate: form.auctionStartDate.value,
+      auctionStartDate: new Date(form.auctionStartDate.value),
+      auctionEndTime: new Date(form.auctionEndTime.value),
       productImage: form.productImage.value,
       location: form.location.value,
       status: form.status.value,
@@ -118,7 +119,7 @@ const AddProduct = () => {
 
           <div>
             <label className="block font-semibold text-gray-600">
-              Starting Bid
+              Based Price
             </label>
             <input
               type="number"
@@ -150,6 +151,17 @@ const AddProduct = () => {
               name="productImage"
               className="input input-bordered w-full dark:text-black"
               placeholder="Enter product image URL"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-semibold text-gray-600">
+              Auction End Date
+            </label>
+            <input
+              type="datetime-local"
+              name="auctionEndTime"
+              className="input input-bordered w-full dark:text-black"
               required
             />
           </div>

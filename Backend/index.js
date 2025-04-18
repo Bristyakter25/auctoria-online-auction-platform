@@ -5,9 +5,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
-
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -49,6 +47,7 @@ io.on("connection", (socket) => {
     console.error("❌ Connection Error:", error);
   });
 });
+// app.set("io", io);
 
 const uri = `mongodb+srv://auctoria:${process.env.DB_PASS}@cluster0.t199j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const client = new MongoClient(uri, {
@@ -156,8 +155,6 @@ async function run() {
       }
     });
 
-    
-
     app.get("/featuredProducts", async (req, res) => {
       try {
         const result = await productsCollection
@@ -174,28 +171,6 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
-
-  
-    app.get("/addProduct", async (req, res) => {
-      const email = req.query.email; 
-      console.log("email:", email);
-    
-      if (!email) {
-        return res.status(400).send({ message: "Email query parameter is required." });
-      }
-    
-      try {
-        const result = await productsCollection.find({ email }).toArray();
-        res.send(result);
-      } catch (error) {
-        res.status(500).send({ message: "Failed to fetch products", error });
-      }
-    });
-    
-
-
-
     // 🛠 Add Product
     app.post("/addProducts", async (req, res) => {
       const productData = req.body;
@@ -203,15 +178,14 @@ async function run() {
         if (!productData) {
           return res.status(400).json({ message: "Missing fields" });
         }
-        if (productData.auctionStartDate) {
-          const startTime = new Date(productData.auctionStartDate);
+        // if (productData.auctionStartDate) {
+        //   const startTime = new Date(productData.auctionStartDate);
 
-          // const auctionEndTime = new Date(startTime);
-          // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
-          const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
-
-          productData.auctionEndTime = auctionEndTime.toISOString();
-        }
+        //   // const auctionEndTime = new Date(startTime);
+        //   // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
+        //   const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
+        //   productData.auctionEndTime = auctionEndTime.toISOString();
+        // }
         productData.endingSoonNotified = false;
         const result = await productsCollection.insertOne(productData);
         const notification = {
@@ -350,32 +324,21 @@ async function run() {
         if (user.password !== password) {
           const failedAttempts = (user.failedAttempts || 0) + 1;
           let updateFields = { failedAttempts };
-    
-        // Compare hashed password using bcrypt
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-          const failedAttempts = (user.failedAttempts || 0) + 1;
-          let updateFields = { failedAttempts };
-
-          console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
-
-
-          // Lock account after 3 failed attempts
-          if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
-            updateFields.isLocked = true;
-            updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
-
-          }
-          console.log(
+          // Compare hashed password using bcrypt
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
+            const failedAttempts = (user.failedAttempts || 0) + 1;
+            let updateFields = { failedAttempts };
+            console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
+            // Lock account after 3 failed attempts
+            if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+              updateFields.isLocked = true;
+              updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
+            }
+            console.log(
               `Account for ${email} locked! Lockout until: ${updateFields.lockoutUntil}`
             );
           }
-
-
-          // Compare hashed password using bcrypt
-         
-
           await usersCollection.updateOne({ email }, { $set: updateFields });
           return res.status(401).json({
             message: `Invalid credentials. Attempt ${failedAttempts} of ${MAX_FAILED_ATTEMPTS}.`,
@@ -446,27 +409,26 @@ async function run() {
       }
     });
 
-
     // payment functionalities
     app.post("/create-payment-intent", async (req, res) => {
       try {
         let { price } = req.body;
-    
+
         // Force to number
         price = Number(price);
-    
+
         if (isNaN(price)) {
           return res.status(400).json({ error: "Invalid price value" });
         }
-    
+
         const amount = Math.round(price * 100); // always better than parseInt here
-    
+
         const paymentIntent = await stripe.paymentIntents.create({
           amount,
           currency: "usd",
           payment_method_types: ["card"],
         });
-    
+
         res.send({
           clientSecret: paymentIntent.client_secret,
         });
@@ -475,9 +437,35 @@ async function run() {
         res.status(500).json({ error: "Failed to create payment intent" });
       }
     });
-    
 
-    
+    // payment functionalities
+    app.post("/create-payment-intent", async (req, res) => {
+      try {
+        let { price } = req.body;
+
+        // Force to number
+        price = Number(price);
+
+        if (isNaN(price)) {
+          return res.status(400).json({ error: "Invalid price value" });
+        }
+
+        const amount = Math.round(price * 100); // always better than parseInt here
+
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount,
+          currency: "usd",
+          payment_method_types: ["card"],
+        });
+
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      } catch (error) {
+        console.error("Stripe Payment Intent Error:", error.message);
+        res.status(500).json({ error: "Failed to create payment intent" });
+      }
+    });
 
     app.get("/users", async (req, res) => {
       try {
@@ -519,20 +507,160 @@ async function run() {
       }
     });
 
+    app.get("/winner-auction", async (req, res) => {
+      try {
+        const nowISOString = new Date().toISOString();
+        const query = {
+          auctionEndTime: { $lte: nowISOString },
+          status: { $ne: "expired" },
+        };
+
+        // const query = {
+        //   auctionEndTime: { $lte: now },
+        //   status: { $ne: "expired" },
+        // };
+
+        const products = await productsCollection.find(query).toArray();
+        console.log("Matched Products:", products);
+        const winners = [];
+        console.log("winner auction", winners);
+        for (const product of products) {
+          const bids = product.bids || [];
+
+          if (bids.length > 0) {
+            const highestBid = bids.reduce((max, bid) =>
+              bid.amount > max.amount ? bid : max
+            );
+            console.log("Highest bid:", highestBid);
+            await productsCollection.updateOne(
+              { _id: product._id },
+              {
+                $set: {
+                  status: "expired",
+                  winner: highestBid.user,
+                  winningBid: highestBid.amount,
+                  winningProduct: product.productName,
+                  winningTime: new Date(),
+                },
+              }
+            );
+            const notification = {
+              userId: highestBid.bidId || "",
+              email: highestBid.email,
+              message: `Congrats! You won the auction for "${product.productName}" with ৳${highestBid.amount}`,
+              createdAt: new Date(),
+              read: false,
+            };
+
+            await notificationsCollection.insertOne(notification);
+            console.log("expired auction notification", notification);
+            // try {
+            //   const result = await notificationsCollection.insertOne(
+            //     notification
+            //   );
+            //   console.log("Notification inserted successfully:", result);
+            // } catch (insertError) {
+            //   console.error("Error during insertOne:", insertError);
+            // }
+            io.emit(`notification_${highestBid.email}`, notification);
+            winners.push({
+              _id: product._id,
+              productName: product.productName,
+              winnerEmail: highestBid.email,
+              winningBid: highestBid.amount,
+            });
+          } else {
+            await productsCollection.updateOne(
+              { _id: product._id },
+              { $set: { status: "expired" } }
+            );
+          }
+        }
+        console.log("expired auction expiredAuction", products.length);
+        // res.send({ totalExpired: products.length });
+        res.send(winners);
+      } catch (error) {
+        console.error("Auction Expiry Error:", error);
+        res
+          .status(500)
+          .json({ error: "Something went wrong while expiring auctions" });
+      }
+    });
+
+    // bid suggest related API
+
+    app.get("/suggest-bid/:category", async (req, res) => {
+      const category = req.params.category;
+
+      try {
+        const categoryProducts = await productsCollection
+          .find({ category: category })
+          .toArray();
+        if (categoryProducts.length === 0) {
+          return res
+            .status(404)
+            .json({ message: "there is no category product" });
+        }
+        let totalStartingPrice = 0;
+        let totalBidAmount = 0;
+        let totalBids = 0;
+        categoryProducts.forEach((product) => {
+          const startingBid = parseFloat(
+            product.basePrice || product.startingBid || 0
+          );
+          totalStartingPrice += startingBid;
+
+          if (product.bids && Array.isArray(product.bids)) {
+            product.bids.forEach((bid) => {
+              const bidAmount = parseFloat(bid.amount);
+              if (!isNaN(bidAmount)) {
+                totalBidAmount += bidAmount;
+                totalBids++;
+              }
+            });
+          }
+        });
+
+        const averageStartingPrice =
+          categoryProducts.length > 0
+            ? totalStartingPrice / categoryProducts.length
+            : 0;
+        const averageBid =
+          totalBids > 0 ? totalBidAmount / totalBids : averageStartingPrice;
+        const suggestedBidBaseOnStartingPrice = averageStartingPrice * 1.05;
+        const suggestedBidBaseOnBids = averageBid * 1.03;
+
+        const suggestedBid = Math.round(
+          Math.max(
+            suggestedBidBaseOnStartingPrice,
+            suggestedBidBaseOnBids,
+            averageStartingPrice
+          )
+        );
+        io.emit("suggestedBidUpdate", {
+          category,
+          suggestedBid,
+        });
+
+        res.send({ category, suggestedBid });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "problem to make suggest bid" });
+      }
+    });
+
     // Delete a user
-    app.delete('/users/:id', async (req, res) => {
+    app.delete("/users/:id", async (req, res) => {
       const id = req.params.id;
       const user = await usersCollection.findOne({ _id: new ObjectId(id) });
-    
-      if (user?.role === 'admin') {
-        return res.status(403).send({ message: 'Cannot delete admin user' });
+
+      if (user?.role === "admin") {
+        return res.status(403).send({ message: "Cannot delete admin user" });
       }
-    
+
       const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
       res.send(result);
     });
-    
-    
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
@@ -549,7 +677,7 @@ async function run() {
           { _id: objectId },
           { $push: { bids: { bidId, amount, user, email, time: new Date() } } }
         );
-        console.log("Bid time:", new Date());
+        // console.log("Bid time:", new Date());
         // notification for Seller when user Bid the product
         const notification = {
           userId: sellerId,
