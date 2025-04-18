@@ -13,10 +13,10 @@ const CheckOutForm = () => {
     const elements = useElements();
 const axiosSecure = useAxiosSecure();
 const location = useLocation();
-const {totalPrice} = location.state;
+const {totalPrice, cart} = location.state;
 const {user} =useContext(AuthContext);
     useEffect( () =>{
-axiosSecure.post('/create-payment-intent', {price: totalPrice})
+axiosSecure.post('/create-payment-intent', {price: totalPrice},{cart: cart})
 .then(res => {
     console.log(res.data.clientSecret);
     setClientSecret(res.data.clientSecret);
@@ -68,7 +68,21 @@ axiosSecure.post('/create-payment-intent', {price: totalPrice})
         console.log('payment intent',paymentIntent);
         if(paymentIntent.status === "succeeded")
             console.log('transaction id', paymentIntent.id);
-       setTransactionId(paymentIntent.id)
+       setTransactionId(paymentIntent.id);
+
+      //  save the info in DB
+      const payment = {
+        email: user.email,
+        price: totalPrice,
+        transactionId: paymentIntent.id,
+        date: new Date(),
+        cartIds: cart.map(item => item.bidId), // Send bidIds, not product _ids
+        status: "pending"
+      };
+      
+      const res = await axiosSecure.post('/payments',payment);
+      console.log("payment saved",res);
+
     }
     }
 

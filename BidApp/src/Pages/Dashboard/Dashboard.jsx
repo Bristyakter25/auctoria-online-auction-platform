@@ -18,9 +18,9 @@ const Dashboard = () => {
   <div className="flex  w-full  h-full">
  
  {/* Sidebar */}
- <div className="bg-slate-500 lg:px-8 lg:py-10 min-h-screen">
+ <div className="bg-purple-100 dark:bg-gray-600 dark:text-white lg:px-8 lg:py-10 min-h-screen">
    <ul className="menu">
-     <h2 className="text-center my-5 font-bold text-xl dark:text-[#5d5881] text-[#4635B1]">Menu</h2>
+     <h2 className="text-center my-5 font-bold text-xl  text-[#4635B1] dark:text-purple-300">Menu</h2>
      <li className="text-xl"><NavLink to="/dashboard/auctionChart"><FaChartBar /> Auction Chart</NavLink></li>
      <li className="text-xl"><NavLink to="/"><GrHome /> Home</NavLink></li>
      <li className="text-xl"><NavLink to='/allAuctions'><RiAuctionLine />All Auctions</NavLink></li>
@@ -32,7 +32,7 @@ const Dashboard = () => {
  {/* Organizer Dashboard (Admin) */}
  {role=='admin' && <div>
          <ul className="menu">
-         <h2 className="text-center my-5 font-bold text-xl dark:text-[#A294F9] text-[#4635B1]">Admins Dashboard</h2>
+         <h2 className="text-center my-5 font-bold text-xl  text-[#4635B1] dark:text-purple-300">Admins Dashboard</h2>
          <li className="text-xl"><NavLink to="/dashboard/manageUsers"><FaHospitalUser /> Manage Users</NavLink></li>
          <li className="text-xl"><NavLink to="/dashboard/analytics"><FaHospitalUser /> Analytics</NavLink></li>
          </ul>

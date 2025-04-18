@@ -118,7 +118,7 @@ const Analytics = () => {
   return (
     <div>
       <h2 className="text-3xl font-bold text-center my-5 py-5">Popular Products based on Bids!</h2>
-      <div className="w-full bg-white rounded-xl shadow-md p-6 border border-gray-200">
+      <div className="w-full bg-white  rounded-xl shadow-md p-6 border border-gray-200">
       <div className="flex justify-between items-center mb-4">
         <div>
           <p className="text-sm font-medium text-gray-500">Bids Analysis</p>
