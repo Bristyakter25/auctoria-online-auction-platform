@@ -15,7 +15,7 @@ const BidHistory = () => {
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `https://auctoria-online-auction-platform.onrender.com/bidHistory/${user?.email}`
+        `http://localhost:5000/bidHistory/${user?.email}`
       );
       return res.data;
     },
@@ -96,6 +96,7 @@ const BidHistory = () => {
                 <th className="border px-4 py-2">Amount</th>
                 <th className="border px-4 py-2">Time</th>
                 <th className="border px-4 py-2">Action</th>
+                <th className="border px-4 py-2">Image</th>
               </tr>
             </thead>
             <tbody>
@@ -105,6 +106,7 @@ const BidHistory = () => {
                   <td className="border px-4 py-2">{bid.name}</td>
                   <td className="border px-4 py-2">{bid.email}</td>
                   <td className="border px-4 py-2">${bid.bidAmount}</td>
+                
                   <td className="border px-4 py-2">
                     {new Date(bid.timestamp).toLocaleString()}
                   </td>
@@ -116,6 +118,10 @@ const BidHistory = () => {
                       Delete
                     </button>
                   </td>
+                  <td className="border px-4 py-2">
+  <img src={bid.productImage} alt={bid.productName} className="w-16 h-16 object-cover rounded" />
+</td>
+
                 </tr>
               ))}
             </tbody>
