@@ -32,9 +32,10 @@ const Dashboard = () => {
  {/* Organizer Dashboard (Admin) */}
  {role=='admin' && <div>
          <ul className="menu">
-         <h2 className="text-center my-5 font-bold text-xl  text-[#4635B1] dark:text-purple-300">Admins Dashboard</h2>
+         <h2 className="text-center my-5 font-bold text-xl text-[#4635B1] dark:text-purple-300">Admins Dashboard</h2>
          <li className="text-xl"><NavLink to="/dashboard/manageUsers"><FaHospitalUser /> Manage Users</NavLink></li>
          <li className="text-xl"><NavLink to="/dashboard/analytics"><FaHospitalUser /> Analytics</NavLink></li>
+         <li className="text-xl"><NavLink to="/dashboard/recentOrders"><FaHospitalUser /> Recent Orders</NavLink></li>
          </ul>
         </div>}
  {/* Seller Dashboard */}

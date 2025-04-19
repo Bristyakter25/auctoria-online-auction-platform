@@ -127,6 +127,7 @@ const Bid = () => {
             user: user?.displayName,
             email: user?.email,
             productName: product.productName,
+            productImage: product.productImage,
           }),
         }
       );

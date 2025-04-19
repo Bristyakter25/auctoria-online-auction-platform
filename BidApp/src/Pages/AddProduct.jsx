@@ -189,9 +189,9 @@ const AddProduct = () => {
               <option disabled selected>
                 Select status
               </option>
-              <option>Active</option>
-              <option>Upcoming</option>
-              <option>Live</option>
+              <option>active</option>
+              <option>upcoming</option>
+              <option>live</option>
             </select>
           </div>
           {/* <motion.div whileHover={{ scale: 1.02 }} className="mt-6">
