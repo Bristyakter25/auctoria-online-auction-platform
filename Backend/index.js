@@ -160,7 +160,7 @@ async function run() {
     app.get("/featuredProducts", async (req, res) => {
       try {
         const result = await productsCollection
-          .find({ status: "Active" })
+          .find({ status: "active" })
           .sort({ startingBid: -1 })
           .toArray();
         res.json(result);
@@ -498,18 +498,28 @@ async function run() {
 
     app.post('/payments', async (req, res) => {
       const payment = req.body;
-      const paymentResult = await paymentCollection.insertOne(payment);
     
-      console.log('payment info', payment);
+      try {
+        // Save the full payment object with product info
+        const paymentResult = await paymentCollection.insertOne(payment);
+        console.log('Payment info stored:', payment);
     
-      const query = {
-        "bids.bidId": { $in: payment.cartIds } // direct match, since bidId is a string
-      };
+        // Extract bidIds from products
+        const bidIdsToDelete = payment.products.map(p => p.bidId);
     
-      const deleteResult = await productsCollection.deleteMany(query);
+        // Delete those bids from product collection
+        const query = {
+          "bids.bidId": { $in: bidIdsToDelete }
+        };
+        const deleteResult = await productsCollection.deleteMany(query);
     
-      res.send({ paymentResult, deleteResult });
+        res.send({ paymentResult, deleteResult });
+      } catch (err) {
+        console.error("Payment storage error:", err.message);
+        res.status(500).send({ error: "Failed to process payment" });
+      }
     });
+    
     
 
 app.get("/payments",async(req,res)=>{
@@ -520,6 +530,32 @@ app.get("/payments",async(req,res)=>{
     res.status(500).json({ message: "Error fetching payments", error });
   }
 })
+
+
+// change the status handled by admin
+
+app.patch('/payments/:id', async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+
+  try {
+    const updatedOrder = await paymentCollection.updateOne(
+      { _id: new ObjectId(id) },  // Ensure id is valid and properly cast to ObjectId
+      { $set: { status } }
+    );
+
+    if (updatedOrder.modifiedCount === 0) {
+      return res.status(404).json({ error: 'Order not found or already updated' });
+    }
+
+    res.json({ message: 'Order status updated' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    res.status(500).json({ error: 'Error updating order status' });
+  }
+});
+
+
 
     app.get("/users", async (req, res) => {
       try {
@@ -854,6 +890,7 @@ app.get("/payments",async(req,res)=>{
               timestamp: bid.time,
               bidId: bid.bidId,
               _id: product._id,
+              productImage: product.productImage,
             });
 
             // console.log("Bid:", _id);
