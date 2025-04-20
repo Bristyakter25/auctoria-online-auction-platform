@@ -38,13 +38,13 @@ const Navbar = () => {
       </NavLink>
       <NavLink to="/bid-history" className="hover:text-teal-500 block py-1">
         Bid History
-      </NavLink>
-     
+      </NavLink>{" "}
       {user && (
         <NavLink
           to="/dashboard/auctionChart"
           className="hover:text-teal-500 block py-1"
-        >Dashboard
+        >
+          Dashboard
         </NavLink>
       )}
     </>

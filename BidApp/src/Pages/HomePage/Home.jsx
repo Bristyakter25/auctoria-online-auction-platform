@@ -21,10 +21,9 @@ import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
 const Home = () => {
   return (
     <div className="w-full">
-     
       <Banner></Banner>
       <div className="lg:max-w-7xl mx-auto">
-        <EidGreeting />
+        {/* <EidGreeting /> */}
         <LatestAuctions></LatestAuctions>
         <Question />
         <FeaturedProducts></FeaturedProducts>
@@ -33,9 +32,10 @@ const Home = () => {
         {/* <MeetCards /> */}
         <AuctionProcess></AuctionProcess>
         {/* <Partners /> */}
-        <TrustedPartners></TrustedPartners>
+        
         <BiddingMadness />
         <ContactForm />
+        <TrustedPartners></TrustedPartners>
       </div>
     </div>
   );

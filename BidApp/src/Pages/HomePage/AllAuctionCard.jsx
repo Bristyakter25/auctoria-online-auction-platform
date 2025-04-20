@@ -20,7 +20,7 @@ const AllAuctionCard = ({ auction }) => {
     status,
     winner,
   } = auction;
-  console.log("category", category);
+  // console.log("category", category);
   const { user } = useContext(AuthContext);
   const userId = user?.uid;
 
@@ -33,7 +33,7 @@ const AllAuctionCard = ({ auction }) => {
     const fetchWishlist = async () => {
       try {
         const response = await fetch(
-          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
         const data = await response.json();
 
@@ -69,16 +69,13 @@ const AllAuctionCard = ({ auction }) => {
     };
 
     try {
-      const response = await fetch(
-        "https://auctoria-online-auction-platform.onrender.com/addToWishlist",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(wishlistItem),
-        }
-      );
+      const response = await fetch("http://localhost:5000/addToWishlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(wishlistItem),
+      });
 
       if (response.ok) {
         setIsWishlisted(true);
@@ -93,7 +90,7 @@ const AllAuctionCard = ({ auction }) => {
 
         // Re-fetch wishlist to ensure state consistency
         const updatedWishlistResponse = await fetch(
-          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
         const updatedData = await updatedWishlistResponse.json();
         const isProductInWishlist = updatedData.wishlist.some(
@@ -127,6 +124,7 @@ const AllAuctionCard = ({ auction }) => {
           alt={productName}
         />
 
+
 <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
   <p className="flex items-center gap-2 text-sm">
     {status === "expired" ? (
@@ -146,6 +144,27 @@ const AllAuctionCard = ({ auction }) => {
     )}
   </p>
 </div>
+
+
+        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
+          <div className="flex items-center gap-2 text-sm">
+            {status === "expired" ? (
+              <>
+                <FaUser className="text-gray-500" size={16} />
+                <p className="text-gray-600 font-bold">Winner {winner}</p>
+              </>
+            ) : bids?.length > 0 ? (
+              <>
+                <FaGavel className="text-gray-500" />
+                <p className="text-gray-600 font-bold">{`${bids.length} Bids`}</p>
+              </>
+            ) : (
+              <>
+                <p className="text-gray-600 font-bold">No bids yet</p>
+              </>
+            )}
+          </div>
+        </div>
 
 
         <div className="px-4 h-[80px]">

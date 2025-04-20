@@ -5,6 +5,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/ShareComponents/LoadingSpinner ";
 
 const BidHistory = () => {
   const [bids, setBids] = useState([]);
@@ -24,6 +25,11 @@ const BidHistory = () => {
   useEffect(() => {
     if (Array.isArray(bidHistory)) {
       setBids(bidHistory);
+      setLoading(false);
+    } else {
+      setBids([]);
+
+      // setLoading(false);
     }
     setLoading(false);
   }, [bidHistory]);
@@ -42,7 +48,7 @@ const BidHistory = () => {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(
-          `https://auctoria-online-auction-platform.onrender.com/deleteBid/${productId}/${bidId}`
+          `http://localhost:5000/deleteBid/${productId}/${bidId}`
         );
         if (res.data.success) {
           Swal.fire({
@@ -61,9 +67,7 @@ const BidHistory = () => {
       }
     }
   };
-
-  if (loading) return <p>Loading...</p>;
-
+  if (loading) return <LoadingSpinner></LoadingSpinner>;
   const totalAmountToPay = bids?.reduce((total, bid) => {
     if (bid.email === user?.email) {
       total += bid.bidAmount;
@@ -75,10 +79,11 @@ const BidHistory = () => {
     <div className="p-6 py-40">
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4">My Bid History</h2>
+
         <div className="text-xl font-semibold mb-4 text-green-700 mr-5">
           Total Amount to Pay: ${totalAmountToPay?.toFixed(2)}
-          <Link to="/dashboard/pay" state={{ totalPrice: totalAmountToPay, cart: bids }}>
-            <button className="btn btn-primary ml-5">Pay</button>
+          <Link to="/dashboard/pay" state={{ totalPrice: totalAmountToPay }}>
+            <button className="btn btn-primary ml-5">pay</button>
           </Link>
         </div>
       </div>
@@ -106,7 +111,7 @@ const BidHistory = () => {
                   <td className="border px-4 py-2">{bid.name}</td>
                   <td className="border px-4 py-2">{bid.email}</td>
                   <td className="border px-4 py-2">${bid.bidAmount}</td>
-                
+
                   <td className="border px-4 py-2">
                     {new Date(bid.timestamp).toLocaleString()}
                   </td>
@@ -119,9 +124,12 @@ const BidHistory = () => {
                     </button>
                   </td>
                   <td className="border px-4 py-2">
-  <img src={bid.productImage} alt={bid.productName} className="w-16 h-16 object-cover rounded" />
-</td>
-
+                    <img
+                      src={bid.productImage}
+                      alt={bid.productName}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>

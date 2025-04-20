@@ -22,20 +22,21 @@ const ProductHistory = () => {
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className=" dark:bg-gray-800">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                <th className="px-6 py-3 text-left  font-bold  uppercase tracking-wider">
                   Image
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                <th className="px-6 py-3 text-left  font-bold  uppercase tracking-wider">
                   Product Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                <th className="px-6 py-3 text-left  font-bold  uppercase tracking-wider">
                   Category
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+              
+                <th className="px-6 py-3 text-left  font-bold uppercase tracking-wider">
                   Location
+                </th>
+                <th className="px-6 py-3 text-left  font-bold  uppercase tracking-wider">
+                  Status
                 </th>
               </tr>
             </thead>
@@ -49,15 +50,19 @@ const ProductHistory = () => {
                       className="w-12 h-12 object-cover rounded-md"
                     />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm ">
+                  <td className="px-6 py-4 whitespace-nowrap  ">
                     {product.productName}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm ">
+                  <td className="px-6 py-4 whitespace-nowrap  ">
                     {product.category}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                
+                  <td className="px-6 py-4 whitespace-nowrap ">
+                    {product.location}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap ">
                     <span
-                      className={`inline-flex px-2 text-xs font-semibold leading-5 rounded-full ${
+                      className={`inline-flex px-2  font-semibold leading-5 rounded-full ${
                         product.status === "available"
                           ? "bg-green-100 text-green-800"
                           : "bg-red-100 text-red-800"
@@ -65,9 +70,6 @@ const ProductHistory = () => {
                     >
                       {product.status}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm ">
-                    {product.location}
                   </td>
                 </tr>
               ))}

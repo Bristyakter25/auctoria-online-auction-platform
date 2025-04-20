@@ -10,7 +10,7 @@ const AllAuctions = () => {
   const [filteredAuctions, setFilteredAuctions] = useState([]);
 
   useEffect(() => {
-    fetch("https://auctoria-online-auction-platform.onrender.com/addProducts")
+    fetch("http://localhost:5000/addProducts")
       .then((res) => res.json())
       .then((data) => {
         setAllAuctions(data);
