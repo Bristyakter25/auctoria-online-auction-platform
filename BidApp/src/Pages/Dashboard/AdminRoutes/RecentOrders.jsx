@@ -2,13 +2,13 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-// Function to fetch all orders data
+
 const fetchOrders = async () => {
   const response = await axios.get("http://localhost:5000/payments");
   return response.data;
 };
 
-// ✅ Updated mutation function to accept an object
+
 const updateOrderStatus = async ({ orderId, status }) => {
   const response = await axios.patch(`http://localhost:5000/payments/${orderId}`, { status });
   return response.data;
@@ -17,13 +17,13 @@ const updateOrderStatus = async ({ orderId, status }) => {
 const RecentOrders = () => {
   const queryClient = useQueryClient();
 
-  // Fetch orders using react-query
+  
   const { data: orders, error, isLoading } = useQuery({
     queryKey: ["orders"],
     queryFn: fetchOrders,
   });
 
-  // Mutation to update order status
+  
   const mutation = useMutation({
     mutationFn: updateOrderStatus,
     onSuccess: () => {
@@ -35,7 +35,7 @@ const RecentOrders = () => {
   if (isLoading) return <p>Loading orders...</p>;
   if (error) return <p>Error fetching orders: {error.message}</p>;
 
-  // ✅ Updated handlers to send both orderId and status
+ 
   const handleMarkAsComplete = (orderId) => {
     mutation.mutate({ orderId, status: "completed" });
   };
@@ -46,7 +46,7 @@ const RecentOrders = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Recent Orders</h2>
+      <h2 className="text-3xl  mt-5 text-center font-bold mb-4">Recent Orders</h2>
       {orders.length === 0 ? (
         <p>No recent orders found.</p>
       ) : (
