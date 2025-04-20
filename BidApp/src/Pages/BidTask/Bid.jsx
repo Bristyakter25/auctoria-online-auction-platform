@@ -243,13 +243,13 @@ const [showModal, setShowModal] = useState(false);
           <motion.img
             src={product.productImage}
             alt="Auction Item"
-            className="w-full h-[320px] object-fill rounded-lg"
+            className="w-full mt-24 h-[420px] object-fill rounded-lg"
             whileHover={{ scale: 1 }}
             transition={{ duration: 0.8 }}
           />
 
           {/* Thumbnails */}
-          <div className="flex gap-2 mt-4 col-reverse">
+          {/* <div className="flex gap-2 mt-4 col-reverse">
             {item.images.map((img, index) => (
               <motion.img
                 key={index}
@@ -263,7 +263,7 @@ const [showModal, setShowModal] = useState(false);
                 onClick={() => setSelectedImage(img)}
               />
             ))}
-          </div>
+          </div> */}
         </motion.div>
         {/* Left Side: Bidding Info */}
         <motion.div
