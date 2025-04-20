@@ -44,7 +44,7 @@ const Bid = () => {
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
-  
+
   // const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
   console.log("product data", product);
@@ -167,37 +167,50 @@ const Bid = () => {
     }
   };
 
-  
-
   if (!product) return <p className="text-center">Loading...</p>;
 
   return (
-    <div className="container mx-auto px-4 py-40">
+    <div className="container mx-auto px-4 py-32">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Right Side: Images & Thumbnails */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg border"
+          className=" p-6 shadow-md rounded-lg bg-teal-50"
         >
           {/* Main Image */}
-          <div className="flex items-center justify-center w-full h-[450px]">
-  <motion.img
-    src={product.productImage}
-    alt="Auction Item"
-    className="w-full h-[400px] object-cover rounded-lg"
-    whileHover={{ scale: 1 }}
-    transition={{ duration: 0.8 }}
-  />
-</div> 
+          <motion.img
+            src={product.productImage}
+            alt="Auction Item"
+            className="w-full h-[320px] object-fill rounded-lg"
+            whileHover={{ scale: 1 }}
+            transition={{ duration: 0.8 }}
+          />
+
+          {/* Thumbnails */}
+          <div className="flex gap-2 mt-4 col-reverse">
+            {item.images.map((img, index) => (
+              <motion.img
+                key={index}
+                src={img}
+                alt="Thumbnail"
+                className={`w-32 h-32 object-cover rounded-md cursor-pointer border-2 ${
+                  selectedImage === img ? "border-blue-600" : "border-gray-300"
+                }`}
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setSelectedImage(img)}
+              />
+            ))}
+          </div>
         </motion.div>
         {/* Left Side: Bidding Info */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg border relative "
+          className=" p-6 shadow-md rounded-lg border relative bg-gray-50"
         >
           <div className="text-2xl font-bold mb-2 flex items-center ">
             {" "}
@@ -205,40 +218,37 @@ const Bid = () => {
               className="w-0 h-0 border-t-[28px] border-t-transparent border-l-[28px] border-l-teal-300
   border-b-[28px] border-b-transparent absolute -top-6 -right-2 -rotate-45 p-1"
             ></div>
-            <h2 className="w-8/12 ">{product.productName} </h2>
-            <p className="text-lg flex justify-center items-center -top-1 right-1 absolute">
+            <h2 className="w-8/12 text-gary-600 dark:text-gray-700">
+              {product.productName}{" "}
+            </h2>
+            <p className="text-lg flex justify-center items-center -top-1 right-1 absolute text-gary-600 dark:text-gray-700">
               {product.bids?.length}
             </p>{" "}
           </div>
-          <p className="text-md mb-4"> {product.category}</p>
-
-          {/* Start & End Time */}
-          {/* <p className="text-gray-700">
-            <strong>Auction Start:</strong>{" "}
-            {new Date(product.auctionStartDate).toLocaleString()}
+          <p className="text-md mb-4 text-gary-600 dark:text-gray-700">
+            {" "}
+            {product.category}
           </p>
-          <p className="text-gray-600">
-            <strong>Auction ends:</strong>{" "}
-            {new Date(product.auctionEndTime).toLocaleString()}
-          </p> */}
-          <p className="">
-            <strong>Auction Ends:</strong> {formatDate(product.auctionEndTime)}
+          <p className="text-gary-600 dark:text-gray-700">
+            <strong>End Time:</strong> {formatDate(product.auctionEndTime)}
           </p>
-          <p className="text-sm mt-1 flex items-center gap-2">
+          <p className="text-sm mt-1 flex items-center gap-2 text-gary-600 dark:text-gray-700">
             <MdWatchLater size={24} />
             {calculateCountdown(product.auctionEndTime)}
           </p>
 
           {/* Current Bid */}
           <div className="mt-4">
-            <p className="text-sm font-semibold">Current Bid:</p>
-            <p className="text-3xl font-bold">
+            <p className="text-sm font-semibold text-gary-600 dark:text-gray-700">
+              Current Bid:
+            </p>
+            <p className="text-3xl font-bold text-gary-600 dark:text-gray-700">
               $ {currentBid || "No bids yet"}
             </p>
           </div>
 
           {/* Bid Input Field */}
-          <div className="mt-4 ">
+          <div className="mt-4 text-gary-600 dark:text-gray-700">
             {product.status === "expired" ? (
               ""
             ) : (
@@ -279,7 +289,9 @@ const Bid = () => {
             transition={{ duration: 0.5 }}
             className="   "
           >
-            <h3 className="text-xl font-bold mb-3 mt-3">Latest Bids</h3>
+            <h3 className="text-xl font-bold mb-3 mt-3 text-gary-600 dark:text-gray-700">
+              Latest Bids
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {product?.bids?.length > 0 ? (
                 [...product.bids]
