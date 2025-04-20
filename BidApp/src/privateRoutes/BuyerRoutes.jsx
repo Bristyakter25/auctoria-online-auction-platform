@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import useContextHooks from "../useHooks/useContextHooks";
 import useBuyer from "./useBuyer";
+import LoadingSpinner from "../components/ShareComponents/LoadingSpinner ";
 
 
 const BuyerRoutes = ({ children }) => {
@@ -8,7 +9,7 @@ const BuyerRoutes = ({ children }) => {
   const { user, loading } = useContextHooks();
   const [isBuyer, isBuyerLoading] = useBuyer();
   if (loading || isBuyerLoading) {
-    return <span className="loading loading-bars loading-xl"></span>;
+    return <LoadingSpinner></LoadingSpinner>;
   }
   if (user && isBuyer) {
     return children;

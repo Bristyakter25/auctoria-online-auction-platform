@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import WishListCard from "./WishListCard";
 import { AuthContext } from "../providers/AuthProvider";
+import LoadingSpinner from "../components/ShareComponents/LoadingSpinner ";
 
 const WishList = () => {
   const { user } = useContext(AuthContext);
@@ -33,9 +34,7 @@ const WishList = () => {
   }, [user]);
   if (loading) {
     return (
-      <div className="text-center mt-10">
-        <p>Loading your wishlist...</p>
-      </div>
+      <LoadingSpinner></LoadingSpinner>
     );
   }
 
