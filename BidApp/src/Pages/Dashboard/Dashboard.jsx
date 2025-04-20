@@ -36,6 +36,7 @@ const Dashboard = () => {
          <li className="text-xl"><NavLink to="/dashboard/manageUsers"><FaHospitalUser /> Manage Users</NavLink></li>
          <li className="text-xl"><NavLink to="/dashboard/analytics"><FaHospitalUser /> Analytics</NavLink></li>
          <li className="text-xl"><NavLink to="/dashboard/recentOrders"><FaHospitalUser /> Recent Orders</NavLink></li>
+         <li className="text-xl"><NavLink to="/dashboard/reviews"><FaHospitalUser /> Review & Feedback</NavLink></li>
          </ul>
         </div>}
  {/* Seller Dashboard */}

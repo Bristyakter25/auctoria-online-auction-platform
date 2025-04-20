@@ -38,17 +38,14 @@ const calculateCountdown = (endTime) => {
 
 const Bid = () => {
   const { user } = useContext(AuthContext);
-  const item = {
-    images: [
-      "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
-      "https://i.ibb.co/09jKmmg/Pulse-01-1200x.jpg",
-      "https://i.ibb.co/6F2D1s1/Smart-Watches.jpg",
-    ],
-  };
+  // const item = {
+  //   images: [],
+  // };
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
-  const [selectedImage, setSelectedImage] = useState(item.images[0]);
+
+  // const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
   console.log("product data", product);
   useEffect(() => {

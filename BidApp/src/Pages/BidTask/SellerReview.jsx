@@ -90,22 +90,35 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
                   />
                 </div>
                 <div className="w-full p-3 mx-3">
-                  <div className="flex items-center justify-between ">
-                    <p className="font-semibold">{review.reviewerName}</p>
-                    <div className="flex text-yellow-400">
-                      {[...Array(review.rating)].map((_, i) => (
-                        <FaStar key={i} />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-1">{review.comment}</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {review.createdAt
-                      ? new Date(review?.createdAt).toLocaleString()
-                      : "Loading..."}
-                    {/* {new Date(review.createdAt).toLocaleString()} */}
-                  </p>
-                </div>
+  <div className="flex items-center justify-between">
+    <p className="font-semibold">{review.reviewerName}</p>
+    <div className="flex text-yellow-400">
+      {[...Array(review.rating)].map((_, i) => (
+        <FaStar key={i} />
+      ))}
+    </div>
+  </div>
+  <p className="text-sm text-gray-600 mt-1">{review.comment}</p>
+  <p className="text-xs text-gray-400 mt-1">
+    {review.createdAt
+      ? new Date(review?.createdAt).toLocaleString()
+      : "Loading..."}
+  </p>
+  {/* Admin reply section */}
+  {review.adminReply && (
+    <div className="flex items-start mt-4 ml-5 bg-gray-100 p-3 rounded-lg">
+      <FaCircleUser size={25} className="text-gray-500 mr-3" />
+      <div>
+        <p className="font-semibold text-gray-700">Admin</p>
+        <p className="text-sm text-gray-600">{review.adminReply}</p>
+        
+      </div>
+    </div>
+  )}
+  
+  
+</div>
+
               </div>
             ))}
           </div>
