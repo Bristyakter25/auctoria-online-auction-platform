@@ -10,7 +10,7 @@ const BidInstruction = () => {
             <h2 className="text-5xl  font-bold mb-5">How To Bid</h2>
             
             <div className="flex items-center justify-center gap-x-3 text-center ">
-            <Link to="/" className="text-lg ">Home</Link>
+            <Link to="/" className="text-lg hover:text-green-600">Home</Link>
            <p className="mt-2 "> <FaLongArrowAltRight /></p>
             <p className="text-lg ">Bid Instruction</p>
             </div>

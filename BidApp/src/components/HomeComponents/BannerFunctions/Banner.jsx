@@ -26,7 +26,7 @@ const Banner = () => {
             Join us as we carve a path to success, driven by passion, powered by innovation, and we're here to turn them into reality.
           </p>
           <div className="flex gap-x-5 mt-36">
-            <Link to="/bidInstruction"><button className="btn px-8 py-6 font-bold">Start A Bid!</button></Link>
+            <Link to="/bidInstruction"><button className="btn font-bold px-8 py-6 hover:bg-green-700 hover:text-white">Start A Bid!</button></Link>
             <Link to="/allAuctions">
               <button className="btn font-bold px-8 py-6 hover:bg-green-700 hover:text-white">View All Auction</button>
             </Link>
