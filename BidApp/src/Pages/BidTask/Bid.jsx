@@ -38,17 +38,14 @@ const calculateCountdown = (endTime) => {
 
 const Bid = () => {
   const { user } = useContext(AuthContext);
-  const item = {
-    images: [
-      "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
-      "https://i.ibb.co/09jKmmg/Pulse-01-1200x.jpg",
-      "https://i.ibb.co/6F2D1s1/Smart-Watches.jpg",
-    ],
-  };
+  // const item = {
+  //   images: [],
+  // };
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
-  const [selectedImage, setSelectedImage] = useState(item.images[0]);
+  
+  // const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
   console.log("product data", product);
   useEffect(() => {
@@ -170,6 +167,8 @@ const Bid = () => {
     }
   };
 
+  
+
   if (!product) return <p className="text-center">Loading...</p>;
 
   return (
@@ -183,30 +182,15 @@ const Bid = () => {
           className=" p-6 shadow-md rounded-lg border"
         >
           {/* Main Image */}
-          <motion.img
-            src={product.productImage}
-            alt="Auction Item"
-            className="w-full h-[320px] object-fill rounded-lg"
-            whileHover={{ scale: 1 }}
-            transition={{ duration: 0.8 }}
-          />
-
-          {/* Thumbnails */}
-          <div className="flex gap-2 mt-4 col-reverse">
-            {item.images.map((img, index) => (
-              <motion.img
-                key={index}
-                src={img}
-                alt="Thumbnail"
-                className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${
-                  selectedImage === img ? "border-blue-600" : "border-gray-300"
-                }`}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => setSelectedImage(img)}
-              />
-            ))}
-          </div>
+          <div className="flex items-center justify-center w-full h-[450px]">
+  <motion.img
+    src={product.productImage}
+    alt="Auction Item"
+    className="w-full h-[400px] object-cover rounded-lg"
+    whileHover={{ scale: 1 }}
+    transition={{ duration: 0.8 }}
+  />
+</div> 
         </motion.div>
         {/* Left Side: Bidding Info */}
         <motion.div

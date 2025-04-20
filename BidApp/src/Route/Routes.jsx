@@ -22,6 +22,7 @@ import ProductHistory from "../Pages/BidTask/ProductHistory";
 import ManageUsers from "../Pages/Dashboard/AdminRoutes/ManageUsers";
 import Analytics from "../Pages/Dashboard/AdminRoutes/Analytics";
 import RecentOrders from "../Pages/Dashboard/AdminRoutes/RecentOrders";
+import Reviews from "../Pages/Dashboard/AdminRoutes/Reviews";
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ export const router = createBrowserRouter([
       {
         path:"recentOrders",
         element:<RecentOrders></RecentOrders>
+      },
+      {
+        path: "reviews",
+        element:<Reviews></Reviews>
       },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
