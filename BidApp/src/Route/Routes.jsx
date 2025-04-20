@@ -23,6 +23,7 @@ import ManageUsers from "../Pages/Dashboard/AdminRoutes/ManageUsers";
 import Analytics from "../Pages/Dashboard/AdminRoutes/Analytics";
 import RecentOrders from "../Pages/Dashboard/AdminRoutes/RecentOrders";
 import Reviews from "../Pages/Dashboard/AdminRoutes/Reviews";
+import ChatBox from "../Pages/BidTask/ChatBox";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: "/wishlist",
         element: <WishList></WishList>,
+      },
+      {
+        path: "/chatBox",
+        element:<ChatBox></ChatBox>
       },
     ],
   },

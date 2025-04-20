@@ -60,6 +60,7 @@ const AllAuctions = () => {
           <option value="Antiques">Antiques</option>
           <option value="Electronics">Electronics</option>
           <option value="Collectibles">Collectibles</option>
+          <option value="Cars">Cars</option>
           <option value="Jewelry">Jewelry</option>
           <option value="Watches">Watches</option>
           <option value="Art">Art</option>
