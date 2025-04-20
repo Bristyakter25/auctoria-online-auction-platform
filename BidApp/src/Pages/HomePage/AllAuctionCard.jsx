@@ -119,7 +119,7 @@ const AllAuctionCard = ({ auction }) => {
     >
       <div className="h-full">
         <img
-          className="object-cover object-fill w-full h-[200px] items-center rounded-t-xl"
+          className="object-cover w-full h-[200px] items-center rounded-t-xl"
           src={productImage}
           alt={productName}
         />

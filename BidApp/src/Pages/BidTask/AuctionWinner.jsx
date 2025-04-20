@@ -6,6 +6,7 @@ import { GiQueenCrown } from "react-icons/gi";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import { IoMdTime } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 const AuctionWinner = ({ product, setProduct }) => {
   const axiosPublic = useAxiosPublic();
@@ -76,9 +77,11 @@ const AuctionWinner = ({ product, setProduct }) => {
           </div>
 
           <div className="mt-6 flex justify-end">
+            <Link to='/bid-history' >
             <button className="btn btn-sm bg-teal-500 hover:bg-teal-600 text-white shadow-md">
               Payment
             </button>
+            </Link>
           </div>
         </motion.div>
       ) : (

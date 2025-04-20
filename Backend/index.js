@@ -71,11 +71,12 @@ async function run() {
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
-    const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    const bidHistoryCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
+    const paymentCollection = client.db("Auctoria").collection('payments')
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -159,7 +160,7 @@ async function run() {
     app.get("/featuredProducts", async (req, res) => {
       try {
         const result = await productsCollection
-          .find({ status: "Active" })
+          .find({ status: "active" })
           .sort({ startingBid: -1 })
           .toArray();
         res.json(result);
@@ -236,6 +237,33 @@ async function run() {
         res.status(500).json({ error: "Invalid product ID" });
       }
     });
+
+    // Get Popular Product based on bid
+    
+    app.get("/popularProducts", async (req, res) => {
+      try {
+        const result = await productsCollection.aggregate([
+          {
+            $addFields: {
+              totalBids: { $size: { $ifNull: ["$bids", []] } } // ✅ handles missing or null bids
+            }
+          },
+          {
+            $sort: { totalBids: -1 }
+          },
+          {
+            $limit: 10
+          }
+        ]).toArray();
+    
+        res.send(result);
+      } catch (err) {
+        console.error("Error fetching popular products:", err);
+        res.status(500).send({ message: "Server error", error: err });
+      }
+    });
+    
+
 
     // 🛠 Get User Wishlist
     // Ensure ObjectId is imported from MongoDB
@@ -410,6 +438,35 @@ async function run() {
       }
     });
 
+    // // payment functionalities
+    // app.post("/create-payment-intent", async (req, res) => {
+    //   try {
+    //     let { price } = req.body;
+
+    //     // Force to number
+    //     price = Number(price);
+
+    //     if (isNaN(price)) {
+    //       return res.status(400).json({ error: "Invalid price value" });
+    //     }
+
+    //     const amount = Math.round(price * 100); // always better than parseInt here
+
+    //     const paymentIntent = await stripe.paymentIntents.create({
+    //       amount,
+    //       currency: "usd",
+    //       payment_method_types: ["card"],
+    //     });
+
+    //     res.send({
+    //       clientSecret: paymentIntent.client_secret,
+    //     });
+    //   } catch (error) {
+    //     console.error("Stripe Payment Intent Error:", error.message);
+    //     res.status(500).json({ error: "Failed to create payment intent" });
+    //   }
+    // });
+
     // payment functionalities
     app.post("/create-payment-intent", async (req, res) => {
       try {
@@ -439,34 +496,66 @@ async function run() {
       }
     });
 
-    // payment functionalities
-    app.post("/create-payment-intent", async (req, res) => {
+    app.post('/payments', async (req, res) => {
+      const payment = req.body;
+    
       try {
-        let { price } = req.body;
-
-        // Force to number
-        price = Number(price);
-
-        if (isNaN(price)) {
-          return res.status(400).json({ error: "Invalid price value" });
-        }
-
-        const amount = Math.round(price * 100); // always better than parseInt here
-
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount,
-          currency: "usd",
-          payment_method_types: ["card"],
-        });
-
-        res.send({
-          clientSecret: paymentIntent.client_secret,
-        });
-      } catch (error) {
-        console.error("Stripe Payment Intent Error:", error.message);
-        res.status(500).json({ error: "Failed to create payment intent" });
+        // Save the full payment object with product info
+        const paymentResult = await paymentCollection.insertOne(payment);
+        console.log('Payment info stored:', payment);
+    
+        // Extract bidIds from products
+        const bidIdsToDelete = payment.products.map(p => p.bidId);
+    
+        // Delete those bids from product collection
+        const query = {
+          "bids.bidId": { $in: bidIdsToDelete }
+        };
+        const deleteResult = await productsCollection.deleteMany(query);
+    
+        res.send({ paymentResult, deleteResult });
+      } catch (err) {
+        console.error("Payment storage error:", err.message);
+        res.status(500).send({ error: "Failed to process payment" });
       }
     });
+    
+    
+
+app.get("/payments",async(req,res)=>{
+  try{
+    const result = await paymentCollection.find().toArray();
+    res.json(result);
+  }  catch (error) {
+    res.status(500).json({ message: "Error fetching payments", error });
+  }
+})
+
+
+// change the status handled by admin
+
+app.patch('/payments/:id', async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+
+  try {
+    const updatedOrder = await paymentCollection.updateOne(
+      { _id: new ObjectId(id) },  // Ensure id is valid and properly cast to ObjectId
+      { $set: { status } }
+    );
+
+    if (updatedOrder.modifiedCount === 0) {
+      return res.status(404).json({ error: 'Order not found or already updated' });
+    }
+
+    res.json({ message: 'Order status updated' });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    res.status(500).json({ error: 'Error updating order status' });
+  }
+});
+
+
 
     app.get("/users", async (req, res) => {
       try {
@@ -802,6 +891,7 @@ async function run() {
               timestamp: bid.time,
               bidId: bid.bidId,
               _id: product._id,
+              productImage: product.productImage,
             });
 
             // console.log("Bid:", _id);
