@@ -39,7 +39,6 @@ const Navbar = () => {
       <NavLink to="/bid-history" className="hover:text-teal-500 block py-1">
         Bid History
       </NavLink>{" "}
-      */
       {user && (
         <NavLink
           to="/dashboard/auctionChart"
