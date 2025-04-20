@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FaGavel } from "react-icons/fa";
+import { FaGavel, FaTimesCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -8,6 +8,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
 import AuctionWinner from "./AuctionWinner";
+import { MdWatchLater } from "react-icons/md";
 
 // import { MdCancel } from "react-icons/md";
 
@@ -15,6 +16,25 @@ const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  const options = { day: "numeric", month: "long", year: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+};
+
+const calculateCountdown = (endTime) => {
+  const now = new Date();
+  const end = new Date(endTime);
+  const diff = end - now;
+
+  if (diff <= 0) return "Auction Ended";
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / 1000 / 60) % 60);
+
+  return `${days}d ${hours}h ${minutes}m left`;
+};
 
 const Bid = () => {
   const { user } = useContext(AuthContext);
@@ -199,35 +219,42 @@ const Bid = () => {
             {" "}
             <div
               className="w-0 h-0 border-t-[28px] border-t-transparent border-l-[28px] border-l-teal-300
-  border-b-[28px] border-b-transparent absolute -top-5 -right-1 -rotate-45 "
+  border-b-[28px] border-b-transparent absolute -top-6 -right-2 -rotate-45 p-1"
             ></div>
             <h2 className="w-8/12 ">{product.productName} </h2>
-            <p className="text-lg text-gray-600 flex justify-center items-center -top-1 right-1 absolute">
+            <p className="text-lg flex justify-center items-center -top-1 right-1 absolute">
               {product.bids?.length}
             </p>{" "}
           </div>
-          <p className="text-gray-500 text-sm mb-4"> {product.category}</p>
+          <p className="text-md mb-4"> {product.category}</p>
 
           {/* Start & End Time */}
-          <p className="text-gray-700">
+          {/* <p className="text-gray-700">
             <strong>Auction Start:</strong>{" "}
             {new Date(product.auctionStartDate).toLocaleString()}
           </p>
           <p className="text-gray-600">
             <strong>Auction ends:</strong>{" "}
             {new Date(product.auctionEndTime).toLocaleString()}
+          </p> */}
+          <p className="">
+            <strong>Auction Ends:</strong> {formatDate(product.auctionEndTime)}
+          </p>
+          <p className="text-sm mt-1 flex items-center gap-2">
+            <MdWatchLater size={24} />
+            {calculateCountdown(product.auctionEndTime)}
           </p>
 
           {/* Current Bid */}
           <div className="mt-4">
-            <p className="text-sm font-semibold text-gray-600">Current Bid:</p>
+            <p className="text-sm font-semibold">Current Bid:</p>
             <p className="text-3xl font-bold">
               $ {currentBid || "No bids yet"}
             </p>
           </div>
 
           {/* Bid Input Field */}
-          <div className="mt-4">
+          <div className="mt-4 ">
             {product.status === "expired" ? (
               ""
             ) : (
@@ -268,9 +295,7 @@ const Bid = () => {
             transition={{ duration: 0.5 }}
             className="   "
           >
-            <h3 className="text-xl font-bold text-gray-600 mb-3 mt-3">
-              Latest Bids
-            </h3>
+            <h3 className="text-xl font-bold mb-3 mt-3">Latest Bids</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {product?.bids?.length > 0 ? (
                 [...product.bids]
@@ -313,7 +338,7 @@ const Bid = () => {
                     );
                   })
               ) : (
-                <p className="text-gray-500">There is no Bid।</p>
+                <p className="">There is no Bid।</p>
               )}
             </div>
           </motion.div>
