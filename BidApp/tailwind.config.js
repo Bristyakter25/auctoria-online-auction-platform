@@ -12,9 +12,10 @@ export default {
       },
     },
   },
-  plugins: [require('daisyui'), require('tailwind-clip-path'),],
+  plugins: [require('daisyui'), require('tailwind-clip-path')],
   daisyui: {
     themes: ["light", "dark"], // Configure DaisyUI themes
   },
 }
 
+// require('tailwind-clip-path')

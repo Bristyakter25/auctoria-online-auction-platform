@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import UseAxiosPublic from "../../hooks/useAxiosPublic";
 
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -21,14 +21,13 @@ const NotificationBell = ({ user }) => {
   const userEmail = user?.email;
   const handleClearNotifications = () => {
     setNotifications([]);
-    // toast.success("All notifications cleared!");
     toast.success("All notifications cleared!");
   };
   const { data: fetchedNotifications = [] } = useQuery({
     queryKey: ["notifications", userEmail],
     queryFn: async () => {
       const res = await axiosPublic.get(`/notification/${userEmail}`);
-      // console.log("user data", res.data);
+      console.log("user data", res.data);
       return res.data;
     },
     enabled: !!userEmail,
@@ -59,7 +58,7 @@ const NotificationBell = ({ user }) => {
       {/* Notification Bell */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 bg-gray-100 rounded-full cursor-pointer hover:text-blue-500 transition"
+        className="relative p-2 bg-gray-100 rounded-full cursor-pointer hover:text-teal-500 transition"
       >
         <IoNotificationsOutline size={24} />
         {notifications.length > 0 && (

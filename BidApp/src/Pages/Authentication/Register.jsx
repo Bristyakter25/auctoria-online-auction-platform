@@ -25,7 +25,7 @@ const Register = () => {
     const photoURL = e.target.photoURL.value;
     const role = e.target.role.value;
 
-    console.log(name, email, password, photoURL,role);
+    console.log(name, email, password, photoURL, role);
 
     createUser(email, password)
       .then((result) => {
@@ -50,7 +50,7 @@ const Register = () => {
               role,
             };
 
-            fetch("https://auctoria-online-auction-platform.onrender.com/users", {
+            fetch("http://localhost:5000/users", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(userData),
@@ -191,15 +191,16 @@ const Register = () => {
               <label className="block text-sm font-medium text-gray-600">
                 Role
               </label>
-              <select class="select mt-1 max-w-xs border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+              <select
+                class="select mt-1 max-w-xs border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 name="role"
-                required>
+                required
+              >
                 <option disabled selected>
-                 Choose your role
+                  Choose your role
                 </option>
                 <option>seller</option>
                 <option>user</option>
-                
               </select>
             </div>
 
