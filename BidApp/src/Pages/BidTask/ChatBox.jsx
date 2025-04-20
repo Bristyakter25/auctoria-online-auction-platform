@@ -1,81 +1,22 @@
-import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
-import { AuthContext } from "../../providers/AuthProvider";
-import { useContext } from "react";
 
-const socket = io("https://auctoria-online-auction-platform.onrender.com");
 
-const ChatBox = ({ sellerEmail, productId }) => {
-  const { user } = useContext(AuthContext);
-  const [message, setMessage] = useState("");
-  const [chat, setChat] = useState([]);
-
-  useEffect(() => {
-    if (user?.email) {
-      socket.emit("joinRoom", user.email);
-    }
-
-    socket.on("receiveMessage", (msg) => {
-      if (msg.productId === productId) {
-        setChat((prev) => [...prev, msg]);
-      }
-    });
-
-    return () => {
-      socket.off("receiveMessage");
-    };
-  }, [productId, user?.email]);
-
-  const handleSend = () => {
-    if (!message.trim()) return;
-    const newMessage = {
-      sender: user.email,
-      receiver: sellerEmail,
-      message,
-      productId,
-    };
-    socket.emit("privateMessage", newMessage);
-    setMessage("");
-  };
-
+const ChatBox = () => {
   return (
-    <div className="mt-6 border-t pt-4">
-      <h3 className="font-bold mb-2">Private Chat with Seller</h3>
-      <div className="h-40 overflow-y-auto border p-2 mb-2 rounded">
-        {chat.map((msg, index) => (
-          <div
-            key={index}
-            className={`mb-1 ${
-              msg.sender === user.email ? "text-right" : "text-left"
-            }`}
-          >
-            <p
-              className={`inline-block px-3 py-1 rounded-lg ${
-                msg.sender === user.email
-                  ? "bg-teal-200 text-black"
-                  : "bg-gray-200 text-black"
-              }`}
-            >
-              {msg.message}
-            </p>
-          </div>
-        ))}
-      </div>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          placeholder="Type message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 p-2 border rounded"
-        />
-        <button
-          onClick={handleSend}
-          className="bg-teal-400 hover:bg-teal-500 px-4 py-2 rounded text-white"
-        >
-          Send
-        </button>
-      </div>
+    <div>
+      {/* Open the modal using document.getElementById('ID').showModal() method */}
+<button className="btn" onClick={()=>document.getElementById('my_modal_5').showModal()}>open modal</button>
+<dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
+  <div className="modal-box">
+    <h3 className="font-bold text-lg">Hello!</h3>
+    <p className="py-4">Press ESC key or click the button below to close</p>
+    <div className="modal-action">
+      <form method="dialog">
+        {/* if there is a button in form, it will close the modal */}
+        <button className="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
     </div>
   );
 };

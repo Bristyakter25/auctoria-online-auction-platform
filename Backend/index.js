@@ -76,7 +76,12 @@ async function run() {
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
+<<<<<<< HEAD
+    const paymentCollection = client.db("Auctoria").collection('payments');
+    const messageCollection = client.db("Auctoria").collection('messages');
+=======
     const paymentCollection = client.db("Auctoria").collection("payments");
+>>>>>>> 2bc57f2c124836dbd82ad1f3c4c6be28094dd569
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -772,31 +777,31 @@ async function run() {
       }
     });
 
-    app.post("/messages", async (req, res) => {
-      const { sender, receiver, message, productId } = req.body;
+    // app.post("/messages", async (req, res) => {
+    //   const { sender, receiver, message, productId } = req.body;
     
-      if (!sender || !receiver || !message || !productId) {
-        return res.status(400).send({ error: "Missing required fields" });
-      }
+    //   if (!sender || !receiver || !message || !productId) {
+    //     return res.status(400).send({ error: "Missing required fields" });
+    //   }
     
-      const chatMessage = {
-        sender,
-        receiver,
-        message,
-        productId,
-        timestamp: new Date(),
-        read: false,
-      };
+    //   const chatMessage = {
+    //     sender,
+    //     receiver,
+    //     message,
+    //     productId,
+    //     timestamp: new Date(),
+    //     read: false,
+    //   };
     
-      try {
-        const result = await messagesCollection.insertOne(chatMessage);
-        io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
-        res.send(result);
-      } catch (error) {
-        console.error("Message store error:", error);
-        res.status(500).send({ error: "Failed to send message" });
-      }
-    });
+    //   try {
+    //     const result = await messagesCollection.insertOne(chatMessage);
+    //     io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
+    //     res.send(result);
+    //   } catch (error) {
+    //     console.error("Message store error:", error);
+    //     res.status(500).send({ error: "Failed to send message" });
+    //   }
+    // });
     
 
     app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
@@ -820,6 +825,32 @@ async function run() {
       }
     });
     
+// chat with seller
+app.post('/messages', async (req, res) => {
+  const { senderId, receiverId, productId, message } = req.body;
+
+  if (!senderId || !receiverId || !productId || !message) {
+    return res.status(400).send({ error: "Missing fields" });
+  }
+
+  const newMessage = {
+    senderId,
+    receiverId,
+    productId,
+    message,
+    timestamp: new Date(),
+  };
+
+  try {
+    const result = await messageCollection.insertOne(newMessage);
+    res.send(result);
+  } catch (error) {
+    console.error("Error inserting message:", error);
+    res.status(500).send({ error: "Server error while saving message" });
+  }
+});
+
+
 
     // about automatic send end time of bid to the bidder Users
     const AuctionEndingTimer = async () => {
