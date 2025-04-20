@@ -167,7 +167,7 @@ const Bid = () => {
     }
   };
 
-  if (!product) return <p className="text-center">Loading...</p>;
+  if (!product) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <div className="container mx-auto px-4 py-32">

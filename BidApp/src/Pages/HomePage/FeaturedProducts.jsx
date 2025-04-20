@@ -33,7 +33,7 @@ const FeaturedProducts = () => {
 
   return (
     <div className="">
-      <h2 className="lg:text-4xl text-3xl text-black mt-10 font-bold text-center mb-4">
+      <h2 className="lg:text-4xl text-3xl  mt-10 font-bold text-center mb-4">
         Featured Products
       </h2>
 

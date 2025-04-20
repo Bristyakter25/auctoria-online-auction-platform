@@ -32,9 +32,10 @@ const Home = () => {
         {/* <MeetCards /> */}
         <AuctionProcess></AuctionProcess>
         {/* <Partners /> */}
-        <TrustedPartners></TrustedPartners>
+        
         <BiddingMadness />
         <ContactForm />
+        <TrustedPartners></TrustedPartners>
       </div>
     </div>
   );
