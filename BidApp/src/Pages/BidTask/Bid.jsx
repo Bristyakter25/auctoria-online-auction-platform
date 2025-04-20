@@ -1,34 +1,51 @@
 import { useContext, useEffect, useState } from "react";
-import { FaGavel } from "react-icons/fa";
+import { FaGavel, FaTimesCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
+import SuggestedBid from "./SuggestedBid";
+import AuctionWinner from "./AuctionWinner";
+import { MdWatchLater } from "react-icons/md";
 
 // import { MdCancel } from "react-icons/md";
-
-
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  const options = { day: "numeric", month: "long", year: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+};
+
+const calculateCountdown = (endTime) => {
+  const now = new Date();
+  const end = new Date(endTime);
+  const diff = end - now;
+
+  if (diff <= 0) return "Auction Ended";
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / 1000 / 60) % 60);
+
+  return `${days}d ${hours}h ${minutes}m left`;
+};
 
 const Bid = () => {
   const { user } = useContext(AuthContext);
-  const item = {
-    images: [
-      "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
-      "https://i.ibb.co/09jKmmg/Pulse-01-1200x.jpg",
-      "https://i.ibb.co/6F2D1s1/Smart-Watches.jpg",
-    ],
-  };
+  // const item = {
+  //   images: [],
+  // };
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
-  const [selectedImage, setSelectedImage] = useState(item.images[0]);
+  
+  // const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
   console.log("product data", product);
   useEffect(() => {
@@ -104,6 +121,12 @@ const Bid = () => {
       });
       return;
     }
+    if (Number(bidAmount) <= product.startingBid) {
+      toast.error("Your bid must be at least max to the starting bid!", {
+        position: "top-right",
+      });
+      return;
+    }
     if (Number(bidAmount) <= currentBid) {
       toast.warning("Your bid must be higher than the current maximum bid!", {
         position: "top-right",
@@ -144,6 +167,8 @@ const Bid = () => {
     }
   };
 
+  
+
   if (!product) return <p className="text-center">Loading...</p>;
 
   return (
@@ -154,74 +179,72 @@ const Bid = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border"
+          className=" p-6 shadow-md rounded-lg border"
         >
           {/* Main Image */}
-          <motion.img
-            src={product.productImage}
-            alt="Auction Item"
-            className="w-full h-80 object-fill rounded-lg"
-            whileHover={{ scale: 1 }}
-            transition={{ duration: 0.8 }}
-          />
-
-          {/* Thumbnails */}
-          <div className="flex gap-2 mt-4 col-reverse">
-            {item.images.map((img, index) => (
-              <motion.img
-                key={index}
-                src={img}
-                alt="Thumbnail"
-                className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${
-                  selectedImage === img ? "border-blue-600" : "border-gray-300"
-                }`}
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => setSelectedImage(img)}
-              />
-            ))}
-          </div>
+          <div className="flex items-center justify-center w-full h-[450px]">
+  <motion.img
+    src={product.productImage}
+    alt="Auction Item"
+    className="w-full h-[400px] object-cover rounded-lg"
+    whileHover={{ scale: 1 }}
+    transition={{ duration: 0.8 }}
+  />
+</div> 
         </motion.div>
         {/* Left Side: Bidding Info */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border relative "
+          className=" p-6 shadow-md rounded-lg border relative "
         >
           <div className="text-2xl font-bold mb-2 flex items-center ">
             {" "}
             <div
               className="w-0 h-0 border-t-[28px] border-t-transparent border-l-[28px] border-l-teal-300
-  border-b-[28px] border-b-transparent absolute -top-5 -right-1 -rotate-45 "
+  border-b-[28px] border-b-transparent absolute -top-6 -right-2 -rotate-45 p-1"
             ></div>
             <h2 className="w-8/12 ">{product.productName} </h2>
-            <p className="text-lg text-gray-900 flex justify-center items-center -top-1 right-1 absolute">
+            <p className="text-lg flex justify-center items-center -top-1 right-1 absolute">
               {product.bids?.length}
             </p>{" "}
           </div>
-          <p className="text-gray-500 text-sm mb-4"> {product.category}</p>
+          <p className="text-md mb-4"> {product.category}</p>
 
           {/* Start & End Time */}
-          <p className="text-gray-700">
+          {/* <p className="text-gray-700">
             <strong>Auction Start:</strong>{" "}
             {new Date(product.auctionStartDate).toLocaleString()}
           </p>
           <p className="text-gray-600">
             <strong>Auction ends:</strong>{" "}
             {new Date(product.auctionEndTime).toLocaleString()}
+          </p> */}
+          <p className="">
+            <strong>Auction Ends:</strong> {formatDate(product.auctionEndTime)}
+          </p>
+          <p className="text-sm mt-1 flex items-center gap-2">
+            <MdWatchLater size={24} />
+            {calculateCountdown(product.auctionEndTime)}
           </p>
 
           {/* Current Bid */}
           <div className="mt-4">
-            <p className="text-sm font-semibold text-gray-600">Current Bid:</p>
+            <p className="text-sm font-semibold">Current Bid:</p>
             <p className="text-3xl font-bold">
               $ {currentBid || "No bids yet"}
             </p>
           </div>
 
           {/* Bid Input Field */}
-          <div className="mt-4">
+          <div className="mt-4 ">
+            {product.status === "expired" ? (
+              ""
+            ) : (
+              <SuggestedBid category={product.category} />
+            )}
+
             <input
               type="number"
               className="w-full p-2 border rounded-md"
@@ -232,7 +255,7 @@ const Bid = () => {
           </div>
 
           {/* Make a Bid Button */}
-          {product.endingSoonNotified === true ? (
+          {new Date(product.auctionEndTime) < new Date() ? (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleBid}
@@ -254,49 +277,64 @@ const Bid = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white   "
+            className="   "
           >
-            <h3 className="text-xl font-bold text-gray-600 mb-3 mt-3">
-              Latest Bids
-            </h3>
+            <h3 className="text-xl font-bold mb-3 mt-3">Latest Bids</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {product?.bids?.length > 0 ? (
                 [...product.bids]
                   .sort((a, b) => b.amount - a.amount)
                   .slice(0, 3)
-                  .map((bid, index) => (
-                    <div
-                      key={index}
-                      className="bg-white p-4 shadow-md rounded-lg border border-gray-200"
-                    >
-                      <div className="flex items-center justify-between">
-                        <p className="text-lg font-semibold text-gray-800">
-                          ${bid.amount}
-                        </p>
-                        {/* <button
-                          onClick={() => bid?._id && handleDeleteBid(bid._id)}
+                  .map((bid, index) => {
+                    const isWinningBid =
+                      product.status === "expired" && index === 0;
+                    return (
+                      <div
+                        key={index}
+                        className={`p-4 shadow-md rounded-lg border transition duration-300 ${
+                          isWinningBid
+                            ? "bg-teal-100 border-teal-400"
+                            : "bg-white border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p
+                            className={`text-lg font-semibold ${
+                              isWinningBid ? "text-amber-700" : "text-gray-800"
+                            }`}
+                          >
+                            ${bid.amount}
+                          </p>
+                          {isWinningBid && (
+                            <span className="text-xs bg-teal-400 text-white px-2 py-1 rounded-full">
+                              Winner 👑
+                            </span>
+                          )}
+                        </div>
+                        <p
+                          className={`text-sm mt-1 ${
+                            isWinningBid ? "font-medium" : "text-gray-500"
+                          }`}
                         >
-                          <MdCancel />
-                        </button> */}
+                          Bidder: {bid.user}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-500">
-                        Bid by: {bid.user}
-                      </p>
-                      {/* <p className="text-xs text-gray-400">
-                        {bid.time
-                          ? new Date(bid?.time).toLocaleString()
-                          : "Loading..."}
-                      </p> */}
-                    </div>
-                  ))
+                    );
+                  })
               ) : (
-                <p className="text-gray-500">No bids placed yet.</p>
+                <p className="">There is no Bid।</p>
               )}
             </div>
           </motion.div>
         </motion.div>
       </div>
-     <Tabs sellerId={product._id} sellerEmail={product.email}></Tabs>
+      {/* <AuctionWinner /> */}
+      <Tabs
+        sellerId={product._id}
+        sellerEmail={product.email}
+        product={product}
+        setProduct={setProduct}
+      />
     </div>
   );
 };

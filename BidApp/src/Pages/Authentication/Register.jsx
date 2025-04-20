@@ -25,7 +25,7 @@ const Register = () => {
     const photoURL = e.target.photoURL.value;
     const role = e.target.role.value;
 
-    console.log(name, email, password, photoURL,role);
+    console.log(name, email, password, photoURL, role);
 
     createUser(email, password)
       .then((result) => {
@@ -114,8 +114,8 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="flex w-full max-w-full min-h-screen bg-white px-10 overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen ">
+      <div className="flex w-full max-w-full min-h-screen  px-10 overflow-hidden">
         {/* Left Side Image */}
         <div className="w-1/2">
           <img
@@ -132,7 +132,7 @@ const Register = () => {
           transition={{ duration: 1 }}
           className="w-1/2 p-12 space-y-6 flex flex-col justify-center"
         >
-          <h2 className="text-3xl font-bold text-center text-gray-700">
+          <h2 className="text-3xl font-bold text-center ">
             Create an Auction Account
           </h2>
 
@@ -191,15 +191,16 @@ const Register = () => {
               <label className="block text-sm font-medium text-gray-600">
                 Role
               </label>
-              <select class="select mt-1 max-w-xs border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+              <select
+                class="select mt-1 max-w-xs border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 name="role"
-                required>
+                required
+              >
                 <option disabled selected>
-                 Choose your role
+                  Choose your role
                 </option>
                 <option>seller</option>
                 <option>user</option>
-                
               </select>
             </div>
 

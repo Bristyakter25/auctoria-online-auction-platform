@@ -22,40 +22,37 @@ const SocialLogin = () => {
           createdAt: new Date(),
         };
 
-    
-              fetch("http://localhost:5000/users", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(userData),
-              })
-                .then((res) => res.json())
-                .then((data) => {
-                  if (data.message === "User already exists") {
-                    console.log("User already exists in MongoDB.");
-                  } else {
-                    console.log("User stored in MongoDB:", data);
-                  }
-               
-                   Swal.fire({
-                  position: "top-end",
-                    icon: "success",
-                     title: "User created successfully.",
-                      showConfirmButton: false,
-                      timer: 1500,
-                    });
-                    navigate("/login");
-                  })
-                .catch((err) => {
-                  console.error("Error saving user:", err);
-                  Swal.fire("Oops!", "Failed to save user.", "error");
-                });
-              })
-          .catch((error) => {
-            console.error("Error checking user:", error);
-            Swal.fire("Oops!", "Error checking user in database.", "error");
+        fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.message === "User already exists") {
+              console.log("User already exists in MongoDB.");
+            } else {
+              console.log("User stored in MongoDB:", data);
+            }
+
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "User created successfully.",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            navigate("/login");
+          })
+          .catch((err) => {
+            console.error("Error saving user:", err);
+            Swal.fire("Oops!", "Failed to save user.", "error");
           });
-   
-     
+      })
+      .catch((error) => {
+        console.error("Error checking user:", error);
+        Swal.fire("Oops!", "Error checking user in database.", "error");
+      });
   };
 
   return (
@@ -64,7 +61,10 @@ const SocialLogin = () => {
         onClick={handleGoogleSignIn}
         className="w-full px-4 py-3 text-black bg-teal-300 rounded-md hover:bg-teal-400 text-lg font-semibold flex items-center justify-center gap-2"
       >
-        <span><FaGoogle /></span> Sign up with Google
+        <span>
+          <FaGoogle />
+        </span>{" "}
+        Sign up with Google
       </button>
     </div>
   );

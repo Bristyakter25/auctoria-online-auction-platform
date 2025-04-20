@@ -22,7 +22,8 @@ const AddProduct = () => {
       category: form.category.value,
       description: form.description.value,
       startingBid: form.startingBid.value,
-      auctionStartDate: form.auctionStartDate.value,
+      auctionStartDate: new Date(form.auctionStartDate.value),
+      auctionEndTime: new Date(form.auctionEndTime.value),
       productImage: form.productImage.value,
       location: form.location.value,
       status: form.status.value,
@@ -65,7 +66,7 @@ const AddProduct = () => {
 
       <form
         onSubmit={handleSubmitProduct}
-        className="bg-white p-8 rounded-2xl shadow-xl"
+        className=" p-8 rounded-2xl shadow-xl"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -118,7 +119,7 @@ const AddProduct = () => {
 
           <div>
             <label className="block font-semibold text-gray-600">
-              Starting Bid
+              Based Price
             </label>
             <input
               type="number"
@@ -153,6 +154,17 @@ const AddProduct = () => {
               required
             />
           </div>
+          <div>
+            <label className="block font-semibold text-gray-600">
+              Auction End Date
+            </label>
+            <input
+              type="datetime-local"
+              name="auctionEndTime"
+              className="input input-bordered w-full dark:text-black"
+              required
+            />
+          </div>
 
           <div>
             <label className="block font-semibold text-gray-600">
@@ -177,9 +189,9 @@ const AddProduct = () => {
               <option disabled selected>
                 Select status
               </option>
-              <option>Active</option>
-              <option>Upcoming</option>
-              <option>Live</option>
+              <option>active</option>
+              <option>upcoming</option>
+              <option>live</option>
             </select>
           </div>
           {/* <motion.div whileHover={{ scale: 1.02 }} className="mt-6">

@@ -33,7 +33,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-20">
+    <div className="max-w-lg mx-auto p-6  shadow-md rounded-lg mt-20">
       <h2 className="text-xl font-bold mb-4">Profile Settings</h2>
       <div className="flex flex-col items-center">
         <img
@@ -68,7 +68,7 @@ const Profile = () => {
       </div>
       <div className="mb-4">
         <label className="block text-gray-700">Email:</label>
-        <p className="p-2 border rounded-md bg-gray-100">{user?.email}</p>{" "}
+        <p className="p-2 border rounded-md ">{user?.email}</p>{" "}
         {/* Email is non-editable */}
       </div>
       <div className="flex justify-end">

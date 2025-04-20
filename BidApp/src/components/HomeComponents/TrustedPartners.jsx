@@ -1,27 +1,26 @@
 import React from 'react';
 
-const partners = [
-  { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
-  { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" },
-  { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" },
-  { name: "Facebook", logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" },
-];
+import Marquee from "react-fast-marquee";
 
 const TrustedPartners = () => {
-    return (
-        <section className="py-12 bg-gray-100 text-center">
-            <div className="max-w-6xl mx-auto px-4">
-                <h2 className="text-3xl font-bold mb-6 text-gray-800">Our Trusted Partners</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    {partners.map((partner, index) => (
-                        <div key={index} className="p-4 bg-white shadow-lg rounded-xl flex items-center justify-center">
-                            <img src={partner.logo} alt={partner.name} className="h-12 object-contain" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+  return (
+    <div className="bg-[#eaf4fc] py-40">
+      <h2 className="text-center text-xl font-semibold -mt-10 mb-8">
+        We Worked With Global Largest Brand
+      </h2>
+      <Marquee pauseOnHover speed={50} gradient={false}>
+        <div className="flex gap-16 items-center">
+          <img src="https://probid-wp.egenstheme.com/wp-content/uploads/2024/10/company-logo-01.png" alt="Beautico" className="h-12" />
+          <img src="https://probid-wp.egenstheme.com/wp-content/uploads/2024/10/company-logo-02.png" alt="Aploxn" className="h-12" />
+          <img src="https://probid-wp.egenstheme.com/wp-content/uploads/2024/10/company-logo-03.png" alt="Drivco" className="h-12" />
+          <img src="https://probid-wp.egenstheme.com/wp-content/uploads/2024/10/company-logo-04.png" alt="Scooby" className="h-12" />
+          <img src="https://probid-wp.egenstheme.com/wp-content/uploads/2024/10/company-logo-05.png" alt="PicsZen" className="h-12" />
+          <img src="https://probid-wp.egenstheme.com/wp-content/uploads/2024/10/company-logo-06.png" alt="Park Place" className="h-12" />
+        </div>
+      </Marquee>
+    </div>
+  );
 };
 
 export default TrustedPartners;
+

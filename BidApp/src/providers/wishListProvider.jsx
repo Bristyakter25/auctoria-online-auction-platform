@@ -1,5 +1,10 @@
-
-import {  useEffect, useState, useContext, useCallback, createContext } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  createContext,
+} from "react";
 
 // import {
 //   createContext,
@@ -17,9 +22,6 @@ export const WishlistProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
-
-
-  
 
   // console.log("wishList is", wishlist);
 
@@ -53,7 +55,6 @@ export const WishlistProvider = ({ children }) => {
     }
   }, [user]);
 
- 
   useEffect(() => {
     fetchWishlist();
   }, [fetchWishlist]);
@@ -64,7 +65,7 @@ export const WishlistProvider = ({ children }) => {
         wishlist,
         setWishlist,
         loading,
-        refetchWishlist: fetchWishlist, 
+        refetchWishlist: fetchWishlist,
       }}
     >
       {children}

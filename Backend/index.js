@@ -3,11 +3,10 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
+const cron = require("node-cron");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
-
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -49,6 +48,7 @@ io.on("connection", (socket) => {
     console.error("❌ Connection Error:", error);
   });
 });
+// app.set("io", io);
 
 const uri = `mongodb+srv://auctoria:${process.env.DB_PASS}@cluster0.t199j.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const client = new MongoClient(uri, {
@@ -71,11 +71,12 @@ async function run() {
 
     const productsCollection = client.db("Auctoria").collection("addProducts");
     const usersCollection = client.db("Auctoria").collection("users");
-    const bidHistroyCollection = client.db("Auctoria").collection("bids");
+    const bidHistoryCollection = client.db("Auctoria").collection("bids");
     const notificationsCollection = client
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
+    const paymentCollection = client.db("Auctoria").collection("payments");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -135,7 +136,7 @@ async function run() {
     });
     app.get("/users", async (req, res) => {
       try {
-        const result = await productsCollection.find().toArray();
+        const result = await usersCollection.find().toArray();
         res.json(result);
       } catch (error) {
         res.status(500).json({ message: "Error fetching products", error });
@@ -159,7 +160,7 @@ async function run() {
     app.get("/featuredProducts", async (req, res) => {
       try {
         const result = await productsCollection
-          .find({ status: "Active" })
+          .find({ status: "active" })
           .sort({ startingBid: -1 })
           .toArray();
         res.json(result);
@@ -179,15 +180,14 @@ async function run() {
         if (!productData) {
           return res.status(400).json({ message: "Missing fields" });
         }
-        if (productData.auctionStartDate) {
-          const startTime = new Date(productData.auctionStartDate);
+        // if (productData.auctionStartDate) {
+        //   const startTime = new Date(productData.auctionStartDate);
 
-          // const auctionEndTime = new Date(startTime);
-          // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
-          const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
-
-          productData.auctionEndTime = auctionEndTime.toISOString();
-        }
+        //   // const auctionEndTime = new Date(startTime);
+        //   // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
+        //   const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
+        //   productData.auctionEndTime = auctionEndTime.toISOString();
+        // }
         productData.endingSoonNotified = false;
         const result = await productsCollection.insertOne(productData);
         const notification = {
@@ -235,6 +235,33 @@ async function run() {
         res.json(product);
       } catch (error) {
         res.status(500).json({ error: "Invalid product ID" });
+      }
+    });
+
+    // Get Popular Product based on bid
+
+    app.get("/popularProducts", async (req, res) => {
+      try {
+        const result = await productsCollection
+          .aggregate([
+            {
+              $addFields: {
+                totalBids: { $size: { $ifNull: ["$bids", []] } }, // ✅ handles missing or null bids
+              },
+            },
+            {
+              $sort: { totalBids: -1 },
+            },
+            {
+              $limit: 10,
+            },
+          ])
+          .toArray();
+
+        res.send(result);
+      } catch (err) {
+        console.error("Error fetching popular products:", err);
+        res.status(500).send({ message: "Server error", error: err });
       }
     });
 
@@ -326,32 +353,21 @@ async function run() {
         if (user.password !== password) {
           const failedAttempts = (user.failedAttempts || 0) + 1;
           let updateFields = { failedAttempts };
-    
-        // Compare hashed password using bcrypt
-        const isMatch = await bcrypt.compare(password, user.password);
-
-        if (!isMatch) {
-          const failedAttempts = (user.failedAttempts || 0) + 1;
-          let updateFields = { failedAttempts };
-
-          console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
-
-
-          // Lock account after 3 failed attempts
-          if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
-            updateFields.isLocked = true;
-            updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
-
-          }
-          console.log(
+          // Compare hashed password using bcrypt
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
+            const failedAttempts = (user.failedAttempts || 0) + 1;
+            let updateFields = { failedAttempts };
+            console.log(`Failed attempts for ${email}: ${failedAttempts}`); // Debugging line
+            // Lock account after 3 failed attempts
+            if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+              updateFields.isLocked = true;
+              updateFields.lockoutUntil = Date.now() + LOCKOUT_DURATION;
+            }
+            console.log(
               `Account for ${email} locked! Lockout until: ${updateFields.lockoutUntil}`
             );
           }
-
-
-          // Compare hashed password using bcrypt
-         
-
           await usersCollection.updateOne({ email }, { $set: updateFields });
           return res.status(401).json({
             message: `Invalid credentials. Attempt ${failedAttempts} of ${MAX_FAILED_ATTEMPTS}.`,
@@ -385,16 +401,16 @@ async function run() {
       res.json({ isLocked: false });
     });
 
-    app.get("/debug-user/:email", async (req, res) => {
-      const email = req.params.email;
-      try {
-        const user = await usersCollection.findOne({ email });
-        res.json(user);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        res.status(500).json({ message: "Server error" });
-      }
-    });
+    // app.get("/debug-user/:email", async (req, res) => {
+    //   const email = req.params.email;
+    //   try {
+    //     const user = await usersCollection.findOne({ email });
+    //     res.json(user);
+    //   } catch (error) {
+    //     console.error("Error fetching user:", error);
+    //     res.status(500).json({ message: "Server error" });
+    //   }
+    // });
 
     app.post("/signup", async (req, res) => {
       const { email, password } = req.body;
@@ -422,27 +438,55 @@ async function run() {
       }
     });
 
+    // // payment functionalities
+    // app.post("/create-payment-intent", async (req, res) => {
+    //   try {
+    //     let { price } = req.body;
+
+    //     // Force to number
+    //     price = Number(price);
+
+    //     if (isNaN(price)) {
+    //       return res.status(400).json({ error: "Invalid price value" });
+    //     }
+
+    //     const amount = Math.round(price * 100); // always better than parseInt here
+
+    //     const paymentIntent = await stripe.paymentIntents.create({
+    //       amount,
+    //       currency: "usd",
+    //       payment_method_types: ["card"],
+    //     });
+
+    //     res.send({
+    //       clientSecret: paymentIntent.client_secret,
+    //     });
+    //   } catch (error) {
+    //     console.error("Stripe Payment Intent Error:", error.message);
+    //     res.status(500).json({ error: "Failed to create payment intent" });
+    //   }
+    // });
 
     // payment functionalities
     app.post("/create-payment-intent", async (req, res) => {
       try {
         let { price } = req.body;
-    
+
         // Force to number
         price = Number(price);
-    
+
         if (isNaN(price)) {
           return res.status(400).json({ error: "Invalid price value" });
         }
-    
+
         const amount = Math.round(price * 100); // always better than parseInt here
-    
+
         const paymentIntent = await stripe.paymentIntents.create({
           amount,
           currency: "usd",
           payment_method_types: ["card"],
         });
-    
+
         res.send({
           clientSecret: paymentIntent.client_secret,
         });
@@ -451,9 +495,64 @@ async function run() {
         res.status(500).json({ error: "Failed to create payment intent" });
       }
     });
-    
 
-    
+    app.post("/payments", async (req, res) => {
+      const payment = req.body;
+
+      try {
+        // Save the full payment object with product info
+        const paymentResult = await paymentCollection.insertOne(payment);
+        console.log("Payment info stored:", payment);
+
+        // Extract bidIds from products
+        const bidIdsToDelete = payment.products.map((p) => p.bidId);
+
+        // Delete those bids from product collection
+        const query = {
+          "bids.bidId": { $in: bidIdsToDelete },
+        };
+        const deleteResult = await productsCollection.deleteMany(query);
+
+        res.send({ paymentResult, deleteResult });
+      } catch (err) {
+        console.error("Payment storage error:", err.message);
+        res.status(500).send({ error: "Failed to process payment" });
+      }
+    });
+
+    app.get("/payments", async (req, res) => {
+      try {
+        const result = await paymentCollection.find().toArray();
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching payments", error });
+      }
+    });
+
+    // change the status handled by admin
+
+    app.patch("/payments/:id", async (req, res) => {
+      const { status } = req.body;
+      const { id } = req.params;
+
+      try {
+        const updatedOrder = await paymentCollection.updateOne(
+          { _id: new ObjectId(id) }, // Ensure id is valid and properly cast to ObjectId
+          { $set: { status } }
+        );
+
+        if (updatedOrder.modifiedCount === 0) {
+          return res
+            .status(404)
+            .json({ error: "Order not found or already updated" });
+        }
+
+        res.json({ message: "Order status updated" });
+      } catch (error) {
+        console.error("Error updating order status:", error);
+        res.status(500).json({ error: "Error updating order status" });
+      }
+    });
 
     app.get("/users", async (req, res) => {
       try {
@@ -495,6 +594,150 @@ async function run() {
       }
     });
 
+    // Automatic Notification send to Auction Winner
+    cron.schedule("*/1 * * * *", async () => {
+      console.log("⏰ Running auction expiry check...");
+      // app.get("/winner-auction", async (req, res) => {
+      try {
+        const nowISOString = new Date().toISOString();
+        const query = {
+          auctionEndTime: { $lte: nowISOString },
+          status: { $ne: "expired" },
+        };
+        const products = await productsCollection.find(query).toArray();
+        const winners = [];
+        // console.log("winner auction", winners);
+        for (const product of products) {
+          const bids = product.bids || [];
+
+          if (bids.length > 0) {
+            const highestBid = bids.reduce((max, bid) =>
+              bid.amount > max.amount ? bid : max
+            );
+            console.log("Highest bid:", highestBid);
+            await productsCollection.updateOne(
+              { _id: product._id },
+              {
+                $set: {
+                  status: "expired",
+                  winner: highestBid.user,
+                  winningBid: highestBid.amount,
+                  winningProduct: product.productName,
+                  winningTime: new Date(),
+                },
+              }
+            );
+            const notification = {
+              userId: highestBid.bidId || "",
+              email: highestBid.email,
+              message: `Congrats! You won the auction for "${product.productName}" with ৳${highestBid.amount}`,
+              createdAt: new Date(),
+              read: false,
+            };
+            await notificationsCollection.insertOne(notification);
+            console.log("expired auction notification", notification);
+            io.emit(`notification_${highestBid.email}`, notification);
+            winners.push({
+              _id: product._id,
+              productName: product.productName,
+              winnerEmail: highestBid.email,
+              winningBid: highestBid.amount,
+            });
+          } else {
+            await productsCollection.updateOne(
+              { _id: product._id },
+              { $set: { status: "expired" } }
+            );
+          }
+        }
+        console.log("expired auction expiredAuction", products.length);
+        // res.send({ totalExpired: products.length });
+        // res.send(winners);
+      } catch (error) {
+        console.error("Auction Expiry Error:", error);
+        res
+          .status(500)
+          .json({ error: "Something went wrong while expiring auctions" });
+      }
+      // });
+    });
+
+    // bid suggest related API
+
+    app.get("/suggest-bid/:category", async (req, res) => {
+      const category = req.params.category;
+
+      try {
+        const categoryProducts = await productsCollection
+          .find({ category: category })
+          .toArray();
+        if (categoryProducts.length === 0) {
+          return res
+            .status(404)
+            .json({ message: "there is no category product" });
+        }
+        console.log("category is", categoryProducts);
+        let totalStartingPrice = 0;
+        let totalBidAmount = 0;
+        let totalBids = 0;
+        categoryProducts.forEach((product) => {
+          const startingBid = parseFloat(
+            product.basePrice || product.startingBid || 0
+          );
+          totalStartingPrice += startingBid;
+
+          if (product.bids && Array.isArray(product.bids)) {
+            product.bids.forEach((bid) => {
+              const bidAmount = parseFloat(bid.amount);
+              if (!isNaN(bidAmount)) {
+                totalBidAmount += bidAmount;
+                totalBids++;
+              }
+            });
+          }
+        });
+
+        const averageStartingPrice =
+          categoryProducts.length > 0
+            ? totalStartingPrice / categoryProducts.length
+            : 0;
+        const averageBid =
+          totalBids > 0 ? totalBidAmount / totalBids : averageStartingPrice;
+        const suggestedBidBaseOnStartingPrice = averageStartingPrice * 1.05;
+        const suggestedBidBaseOnBids = averageBid * 1.03;
+
+        const suggestedBid = Math.round(
+          Math.max(
+            suggestedBidBaseOnStartingPrice,
+            suggestedBidBaseOnBids,
+            averageStartingPrice
+          )
+        );
+        io.emit("suggestedBidUpdate", {
+          category,
+          suggestedBid,
+        });
+
+        res.send({ category, suggestedBid });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "problem to make suggest bid" });
+      }
+    });
+
+    // Delete a user
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const user = await usersCollection.findOne({ _id: new ObjectId(id) });
+
+      if (user?.role === "admin") {
+        return res.status(403).send({ message: "Cannot delete admin user" });
+      }
+
+      const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
       const { bidId, amount, user, email, sellerId, sellerEmail, productName } =
@@ -510,7 +753,7 @@ async function run() {
           { _id: objectId },
           { $push: { bids: { bidId, amount, user, email, time: new Date() } } }
         );
-        console.log("Bid time:", new Date());
+        // console.log("Bid time:", new Date());
         // notification for Seller when user Bid the product
         const notification = {
           userId: sellerId,
@@ -528,6 +771,55 @@ async function run() {
         res.status(500).send({ error: "Failed to place bid" });
       }
     });
+
+    app.post("/messages", async (req, res) => {
+      const { sender, receiver, message, productId } = req.body;
+    
+      if (!sender || !receiver || !message || !productId) {
+        return res.status(400).send({ error: "Missing required fields" });
+      }
+    
+      const chatMessage = {
+        sender,
+        receiver,
+        message,
+        productId,
+        timestamp: new Date(),
+        read: false,
+      };
+    
+      try {
+        const result = await messagesCollection.insertOne(chatMessage);
+        io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
+        res.send(result);
+      } catch (error) {
+        console.error("Message store error:", error);
+        res.status(500).send({ error: "Failed to send message" });
+      }
+    });
+    
+
+    app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
+      const { productId, userEmail, otherUserEmail } = req.params;
+    
+      try {
+        const messages = await messagesCollection
+          .find({
+            productId,
+            $or: [
+              { sender: userEmail, receiver: otherUserEmail },
+              { sender: otherUserEmail, receiver: userEmail },
+            ],
+          })
+          .sort({ timestamp: 1 })
+          .toArray();
+    
+        res.send(messages);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to fetch messages" });
+      }
+    });
+    
 
     // about automatic send end time of bid to the bidder Users
     const AuctionEndingTimer = async () => {
@@ -597,6 +889,12 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/reviews", async (req, res) => {
+     
+      const result = await reviewsCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post("/reviews", async (req, res) => {
       try {
         const review = req.body;
@@ -617,6 +915,79 @@ async function run() {
         res.status(500).send({ error: "Failed to submit review" });
       }
     });
+
+    app.post("/reviews/reply/:id", async (req, res) => {
+      const { id } = req.params;
+      const { replyText } = req.body;  // Get the reply from the request body
+    
+      try {
+        
+        const result = await reviewsCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { 
+            $set: { 
+              "adminReply.replyText": replyText,
+              "adminReply.repliedAt": new Date()
+            }
+          }
+        );
+    
+        if (result.modifiedCount === 0) {
+          return res.status(404).send({ error: "Review not found." });
+        }
+    
+        res.send({ message: "Reply added successfully." });
+      } catch (error) {
+        console.error("Error adding admin reply:", error);
+        res.status(500).send({ error: "Failed to add reply." });
+      }
+    });
+    
+
+    app.patch("/reviews/:id", async (req, res) => {
+      const { id } = req.params;
+      const { adminReply } = req.body;
+    
+      try {
+        const result = await reviewsCollection.updateOne(
+          { _id: new ObjectId(id) },
+          {
+            $set: {
+              adminReply: adminReply,
+            },
+          }
+        );
+    
+        if (result.modifiedCount === 0) {
+          return res.status(404).send({ error: "Review not found or already replied." });
+        }
+    
+        res.send({ message: "Admin reply added successfully." });
+      } catch (error) {
+        console.error("Error updating review:", error);
+        res.status(500).send({ error: "Failed to add admin reply." });
+      }
+    });
+
+    app.delete("/reviews/:id", async (req, res) => {
+      const { id } = req.params;
+    
+      try {
+        const result = await reviewsCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+    
+        if (result.deletedCount === 0) {
+          return res.status(404).send({ error: "Review not found." });
+        }
+    
+        res.send({ message: "Review deleted successfully." });
+      } catch (error) {
+        console.error("Error deleting review:", error);
+        res.status(500).send({ error: "Failed to delete review." });
+      }
+    });
+    
 
     //bid History related API
 
@@ -645,6 +1016,7 @@ async function run() {
               timestamp: bid.time,
               bidId: bid.bidId,
               _id: product._id,
+              productImage: product.productImage,
             });
 
             // console.log("Bid:", _id);
