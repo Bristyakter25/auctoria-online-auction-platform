@@ -32,13 +32,15 @@
     "react-router-dom": "^7.3.0",
     "react-share": "^5.2.2",
     "react-toastify": "^11.0.5",
+    "react-tsparticles": "^2.12.2",
     "recharts": "^2.15.1",
     "shadcn-ui": "^0.9.5",
     "socket.io-client": "^4.8.1",
     "sort-by": "^1.2.0",
     "sweetalert2": "^11.17.2",
     "swiper": "^11.2.6",
-    "tailwind-clip-path": "^1.0.0"
+    "tailwind-clip-path": "^1.0.0",
+    "tsparticles": "^3.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

@@ -6,6 +6,7 @@ import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
+import LoadingSpinner from "../../components/ShareComponents/LoadingSpinner ";
 
 // import { MdCancel } from "react-icons/md";
 
@@ -144,7 +145,7 @@ const Bid = () => {
     }
   };
 
-  if (!product) return <p className="text-center">Loading...</p>;
+  if (!product) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <div className="container mx-auto px-4 py-40">
@@ -203,18 +204,18 @@ const Bid = () => {
           <p className="text-gray-500 text-sm mb-4"> {product.category}</p>
 
           {/* Start & End Time */}
-          <p className="text-gray-700">
+          <p className="text-gray-500">
             <strong>Auction Start:</strong>{" "}
             {new Date(product.auctionStartDate).toLocaleString()}
           </p>
-          <p className="text-gray-600">
+          <p className="text-gray-500">
             <strong>Auction ends:</strong>{" "}
             {new Date(product.auctionEndTime).toLocaleString()}
           </p>
 
           {/* Current Bid */}
           <div className="mt-4">
-            <p className="text-sm font-semibold text-gray-600">Current Bid:</p>
+            <p className="text-sm font-semibold text-gray-500">Current Bid:</p>
             <p className="text-3xl font-bold">
               $ {currentBid || "No bids yet"}
             </p>
@@ -256,7 +257,7 @@ const Bid = () => {
             transition={{ duration: 0.5 }}
             className="   "
           >
-            <h3 className="text-xl font-bold text-gray-600 mb-3 mt-3">
+            <h3 className="text-xl font-bold text-gray-500 mb-3 mt-3">
               Latest Bids
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -270,7 +271,7 @@ const Bid = () => {
                       className=" p-4 shadow-md rounded-lg border border-gray-200"
                     >
                       <div className="flex items-center justify-between">
-                        <p className="text-lg font-semibold text-gray-600">
+                        <p className="text-lg font-semibold text-gray-500">
                           ${bid.amount}
                         </p>
                         {/* <button
@@ -279,7 +280,7 @@ const Bid = () => {
                           <MdCancel />
                         </button> */}
                       </div>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-400">
                         Bid by: {bid.user}
                       </p>
                       {/* <p className="text-xs text-gray-400">

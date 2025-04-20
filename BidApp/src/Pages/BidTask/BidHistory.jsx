@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/ShareComponents/LoadingSpinner ";
 
 
 const BidHistory = () => {
@@ -74,7 +75,7 @@ const BidHistory = () => {
       }
     }
   };
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingSpinner></LoadingSpinner>;
   const totalAmountToPay = bids?.reduce((total, bid) => {
     
     if (bid.email === user?.email) {
