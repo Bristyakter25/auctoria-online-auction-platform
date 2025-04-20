@@ -590,6 +590,7 @@ async function run() {
             .status(404)
             .json({ message: "there is no category product" });
         }
+        console.log("category is", categoryProducts);
         let totalStartingPrice = 0;
         let totalBidAmount = 0;
         let totalBids = 0;
