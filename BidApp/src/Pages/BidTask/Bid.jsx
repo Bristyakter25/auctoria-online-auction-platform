@@ -7,6 +7,12 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
+<<<<<<< HEAD
+// import AuctionWinner from "./AuctionWinner";
+import { MdWatchLater } from "react-icons/md";
+import { Player } from "@lottiefiles/react-lottie-player";
+import animationLoading from "../../assets/Animation Loading.json";
+=======
 import AuctionWinner from "./AuctionWinner";
 
 import { BsFillChatTextFill } from "react-icons/bs";
@@ -15,6 +21,7 @@ import { MdWatchLater } from "react-icons/md";
 
 
 // import { MdCancel } from "react-icons/md";
+>>>>>>> fd03a3c485ea10ec662f817f60d0cc1d5bcfce0d
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -41,10 +48,10 @@ const calculateCountdown = (endTime) => {
 };
 
 const Bid = () => {
-  const { user } = useContext(AuthContext);
-  // const item = {
-  //   images: [],
-  // };
+  const { user, loading } = useContext(AuthContext);
+  const item = {
+    images: [],
+  };
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
@@ -176,6 +183,26 @@ const [showModal, setShowModal] = useState(false);
     }
   };
 
+<<<<<<< HEAD
+  // if (!product) return <p className="text-center">Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="relative w-[130px] h-[130px]">
+          <Player
+            autoplay
+            loop
+            src={animationLoading}
+            className="w-full h-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <FaGavel className="text-4xl animate-bounce opacity-80" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+=======
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) {
@@ -221,6 +248,7 @@ const [showModal, setShowModal] = useState(false);
   
 
   if (!product) return <p className="text-center">Loading...</p>;
+>>>>>>> fd03a3c485ea10ec662f817f60d0cc1d5bcfce0d
 
   if (!product) return <LoadingSpinner></LoadingSpinner>;
 
@@ -233,17 +261,25 @@ const [showModal, setShowModal] = useState(false);
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
+<<<<<<< HEAD
+          className=" p-6 shadow-md rounded-lg bg-gray-50"
+=======
 
           
 
           className=" p-6 shadow-md rounded-lg bg-teal-50"
 
+>>>>>>> fd03a3c485ea10ec662f817f60d0cc1d5bcfce0d
         >
           {/* Main Image */}
           <motion.img
             src={product.productImage}
             alt="Auction Item"
+<<<<<<< HEAD
+            className="w-full h-[480px] object-fill object-cover rounded-lg lg:mt-2"
+=======
             className="w-full mt-24 h-[420px] object-fill rounded-lg"
+>>>>>>> fd03a3c485ea10ec662f817f60d0cc1d5bcfce0d
             whileHover={{ scale: 1 }}
             transition={{ duration: 0.8 }}
           />
@@ -290,7 +326,7 @@ const [showModal, setShowModal] = useState(false);
             {product.category}
           </p>
           <p className="text-gary-600 dark:text-gray-700">
-            <strong>End Time:</strong> {formatDate(product.auctionEndTime)}
+            <strong>End Time</strong> {formatDate(product.auctionEndTime)}
           </p>
           <p className="text-sm mt-1 flex items-center gap-2 text-gary-600 dark:text-gray-700">
             <MdWatchLater size={24} />
@@ -298,13 +334,23 @@ const [showModal, setShowModal] = useState(false);
           </p>
 
           {/* Current Bid */}
-          <div className="mt-4">
-            <p className="text-sm font-semibold text-gary-600 dark:text-gray-700">
-              Current Bid:
-            </p>
-            <p className="text-3xl font-bold text-gary-600 dark:text-gray-700">
-              $ {currentBid || "No bids yet"}
-            </p>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex px-4 py-1 border bg-green-300 rounded-full">
+              <p className="text-sm font-semibold text-gary-600 dark:text-gray-700">
+                Current Bid
+                <span className="text-3xl font-bold text-gary-600 dark:text-gray-700">
+                  ${currentBid || "No bids yet"}
+                </span>
+              </p>
+            </div>
+            <div>
+              <p className="border px-4 py-1 bg-blue-300 rounded-full ">
+                Base Price{" "}
+                <span className="text-3xl font-bold text-gary-600 dark:text-gray-700">
+                  ${product.startingBid}
+                </span>
+              </p>
+            </div>
           </div>
 
           {/* Bid Input Field */}
