@@ -11,7 +11,7 @@ import AuctionWinner from "./AuctionWinner";
 
 // import { MdCancel } from "react-icons/md";
 
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -33,9 +33,7 @@ const Bid = () => {
   console.log("product data", product);
   useEffect(() => {
     console.log(`Fetching product with id: ${id}`);
-    fetch(
-      `https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`
-    )
+    fetch(`http://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched product data:", data);
@@ -106,6 +104,12 @@ const Bid = () => {
       });
       return;
     }
+    if (Number(bidAmount) <= product.startingBid) {
+      toast.error("Your bid must be at least max to the starting bid!", {
+        position: "top-right",
+      });
+      return;
+    }
     if (Number(bidAmount) <= currentBid) {
       toast.warning("Your bid must be higher than the current maximum bid!", {
         position: "top-right",
@@ -114,23 +118,19 @@ const Bid = () => {
     }
     // const bidId = generateSellerId();
     try {
-      const res = await fetch(
-        `https://auctoria-online-auction-platform.onrender.com/bid/${id}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            bidId: generateSellerId(),
-            sellerId: product.sellerId,
-            sellerEmail: product.email,
-            amount: Number(bidAmount),
-            user: user?.displayName,
-            email: user?.email,
-            productName: product.productName,
-            productImage: product.productImage,
-          }),
-        }
-      );
+      const res = await fetch(`http://localhost:5000/bid/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bidId: generateSellerId(),
+          sellerId: product.sellerId,
+          sellerEmail: product.email,
+          amount: Number(bidAmount),
+          user: user?.displayName,
+          email: user?.email,
+          productName: product.productName,
+        }),
+      });
       if (res.ok) {
         toast.success("Your bid has been submitted successfully!", {
           position: "top-right",
@@ -294,7 +294,7 @@ const Bid = () => {
                               isWinningBid ? "text-amber-700" : "text-gray-800"
                             }`}
                           >
-                            ৳{bid.amount}
+                            ${bid.amount}
                           </p>
                           {isWinningBid && (
                             <span className="text-xs bg-teal-400 text-white px-2 py-1 rounded-full">

@@ -7,11 +7,18 @@ import { WishlistContext } from "../../providers/wishListProvider";
 import Swal from "sweetalert2";
 
 const RecentProductCard = ({ recentProduct }) => {
-  const { productName, description, productImage, startingBid, auctionStartDate, _id } = recentProduct;
+  const {
+    productName,
+    description,
+    productImage,
+    startingBid,
+    auctionStartDate,
+    _id,
+  } = recentProduct;
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const { refetchWishlist} = useContext(WishlistContext);
+  const { refetchWishlist } = useContext(WishlistContext);
   const userId = user?.uid;
 
   // ✅ Check if the product is already in the wishlist on component mount
@@ -21,11 +28,15 @@ const RecentProductCard = ({ recentProduct }) => {
     // Fetch wishlist from backend to ensure it's for the logged-in user
     const fetchWishlist = async () => {
       try {
-        const response = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`);
+        const response = await fetch(
+          `http://localhost:5000/wishlist/${userId}`
+        );
         const data = await response.json();
 
         if (response.ok) {
-          const isProductInWishlist = data.wishlist.some(product => product._id === _id);
+          const isProductInWishlist = data.wishlist.some(
+            (product) => product._id === _id
+          );
           setIsWishlisted(isProductInWishlist); // Update state based on backend data
         } else {
           console.error("Failed to fetch wishlist");
@@ -50,7 +61,7 @@ const RecentProductCard = ({ recentProduct }) => {
     };
 
     try {
-      const response = await fetch("https://auctoria-online-auction-platform.onrender.com/addToWishlist", {
+      const response = await fetch("http://localhost:5000/addToWishlist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,19 +71,23 @@ const RecentProductCard = ({ recentProduct }) => {
 
       if (response.ok) {
         setIsWishlisted(true); // Update state immediately
-       Swal.fire({
+        Swal.fire({
           position: "top-end",
           icon: "success",
           title: "This Product is successfully Wish Listed!",
           showConfirmButton: false,
-          timer: 1500
+          timer: 1500,
         });
         refetchWishlist();
 
         // Re-fetch wishlist to ensure state consistency
-        const updatedWishlistResponse = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`);
+        const updatedWishlistResponse = await fetch(
+          `http://localhost:5000/wishlist/${userId}`
+        );
         const updatedData = await updatedWishlistResponse.json();
-        const isProductInWishlist = updatedData.wishlist.some(product => product._id === _id);
+        const isProductInWishlist = updatedData.wishlist.some(
+          (product) => product._id === _id
+        );
         setIsWishlisted(isProductInWishlist);
       } else {
         const errorData = await response.json();
@@ -89,16 +104,23 @@ const RecentProductCard = ({ recentProduct }) => {
         <img className="w-full h-[250px]" src={productImage} alt="product" />
       </figure>
       <div className="card-body gap-y-2">
-        <h2 className="card-title font-bold text-2xl text-center">{productName}</h2>
+        <h2 className="card-title font-bold text-2xl text-center">
+          {productName}
+        </h2>
         <p>{description}</p>
         <p>
           <span className="font-bold">Starting Bid:</span> {startingBid}
         </p>
         <p>
-          <span className="font-bold">Auction Start Date:</span> {auctionStartDate}
+          <span className="font-bold">Auction Start Date:</span>{" "}
+          {auctionStartDate}
         </p>
         <div className="flex justify-between p-3">
-        <button className="btn text-white" onClick={handleAddToWishlist} disabled={isWishlisted}>
+          <button
+            className="btn text-white"
+            onClick={handleAddToWishlist}
+            disabled={isWishlisted}
+          >
             {isWishlisted ? (
               <IoMdHeart size={28} className="text-red-600" />
             ) : (

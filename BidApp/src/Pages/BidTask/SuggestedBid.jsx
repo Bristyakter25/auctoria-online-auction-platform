@@ -17,7 +17,7 @@ const SuggestedBid = ({ category }) => {
     queryKey: ["suggestBid", category],
     queryFn: async () => {
       const res = await axiosPublic.get(`suggest-bid/${category}`);
-      //   console.log("suggets data", res.data);
+      console.log("suggets data", res.data);
       return res.data;
     },
     enabled: !!category,
@@ -40,15 +40,15 @@ const SuggestedBid = ({ category }) => {
       socket.off("suggestedBidUpdate");
     };
   }, [category]);
-  //   useEffect(() => {
-  //     if (category) {
-  //       const intervalId = setInterval(() => {
-  //         console.log("Refetching suggested bid...");
-  //         refetch();
-  //       }, 10000);
-  //       return () => clearInterval(intervalId);
-  //     }
-  //   }, [category, refetch]);
+  // useEffect(() => {
+  //   if (category) {
+  //     const intervalId = setInterval(() => {
+  //       console.log("Refetching suggested bid...");
+  //       refetch();
+  //     }, 10000);
+  //     return () => clearInterval(intervalId);
+  //   }
+  // }, [category, refetch]);
   return (
     <div>
       {suggestedBid !== null && (

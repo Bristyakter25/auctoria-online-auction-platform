@@ -29,9 +29,6 @@ const AuctionWinner = ({ product, setProduct }) => {
   const handleCheckExpired = async () => {
     await refetch();
   };
-  // setInterval(() => {
-  //   handleCheckExpired;
-  // }, 5000);
 
   return (
     <>

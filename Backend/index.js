@@ -76,7 +76,7 @@ async function run() {
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
-    const paymentCollection = client.db("Auctoria").collection('payments')
+    const paymentCollection = client.db("Auctoria").collection("payments");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -239,31 +239,31 @@ async function run() {
     });
 
     // Get Popular Product based on bid
-    
+
     app.get("/popularProducts", async (req, res) => {
       try {
-        const result = await productsCollection.aggregate([
-          {
-            $addFields: {
-              totalBids: { $size: { $ifNull: ["$bids", []] } } // ✅ handles missing or null bids
-            }
-          },
-          {
-            $sort: { totalBids: -1 }
-          },
-          {
-            $limit: 10
-          }
-        ]).toArray();
-    
+        const result = await productsCollection
+          .aggregate([
+            {
+              $addFields: {
+                totalBids: { $size: { $ifNull: ["$bids", []] } }, // ✅ handles missing or null bids
+              },
+            },
+            {
+              $sort: { totalBids: -1 },
+            },
+            {
+              $limit: 10,
+            },
+          ])
+          .toArray();
+
         res.send(result);
       } catch (err) {
         console.error("Error fetching popular products:", err);
         res.status(500).send({ message: "Server error", error: err });
       }
     });
-    
-
 
     // 🛠 Get User Wishlist
     // Ensure ObjectId is imported from MongoDB
@@ -496,66 +496,63 @@ async function run() {
       }
     });
 
-    app.post('/payments', async (req, res) => {
+    app.post("/payments", async (req, res) => {
       const payment = req.body;
-    
+
       try {
         // Save the full payment object with product info
         const paymentResult = await paymentCollection.insertOne(payment);
-        console.log('Payment info stored:', payment);
-    
+        console.log("Payment info stored:", payment);
+
         // Extract bidIds from products
-        const bidIdsToDelete = payment.products.map(p => p.bidId);
-    
+        const bidIdsToDelete = payment.products.map((p) => p.bidId);
+
         // Delete those bids from product collection
         const query = {
-          "bids.bidId": { $in: bidIdsToDelete }
+          "bids.bidId": { $in: bidIdsToDelete },
         };
         const deleteResult = await productsCollection.deleteMany(query);
-    
+
         res.send({ paymentResult, deleteResult });
       } catch (err) {
         console.error("Payment storage error:", err.message);
         res.status(500).send({ error: "Failed to process payment" });
       }
     });
-    
-    
 
-app.get("/payments",async(req,res)=>{
-  try{
-    const result = await paymentCollection.find().toArray();
-    res.json(result);
-  }  catch (error) {
-    res.status(500).json({ message: "Error fetching payments", error });
-  }
-})
+    app.get("/payments", async (req, res) => {
+      try {
+        const result = await paymentCollection.find().toArray();
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching payments", error });
+      }
+    });
 
+    // change the status handled by admin
 
-// change the status handled by admin
+    app.patch("/payments/:id", async (req, res) => {
+      const { status } = req.body;
+      const { id } = req.params;
 
-app.patch('/payments/:id', async (req, res) => {
-  const { status } = req.body;
-  const { id } = req.params;
+      try {
+        const updatedOrder = await paymentCollection.updateOne(
+          { _id: new ObjectId(id) }, // Ensure id is valid and properly cast to ObjectId
+          { $set: { status } }
+        );
 
-  try {
-    const updatedOrder = await paymentCollection.updateOne(
-      { _id: new ObjectId(id) },  // Ensure id is valid and properly cast to ObjectId
-      { $set: { status } }
-    );
+        if (updatedOrder.modifiedCount === 0) {
+          return res
+            .status(404)
+            .json({ error: "Order not found or already updated" });
+        }
 
-    if (updatedOrder.modifiedCount === 0) {
-      return res.status(404).json({ error: 'Order not found or already updated' });
-    }
-
-    res.json({ message: 'Order status updated' });
-  } catch (error) {
-    console.error('Error updating order status:', error);
-    res.status(500).json({ error: 'Error updating order status' });
-  }
-});
-
-
+        res.json({ message: "Order status updated" });
+      } catch (error) {
+        console.error("Error updating order status:", error);
+        res.status(500).json({ error: "Error updating order status" });
+      }
+    });
 
     app.get("/users", async (req, res) => {
       try {
@@ -679,6 +676,7 @@ app.patch('/payments/:id', async (req, res) => {
             .status(404)
             .json({ message: "there is no category product" });
         }
+        console.log("category is", categoryProducts);
         let totalStartingPrice = 0;
         let totalBidAmount = 0;
         let totalBids = 0;
