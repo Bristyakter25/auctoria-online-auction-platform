@@ -53,9 +53,7 @@ const SuggestedBid = ({ category }) => {
     <div>
       {suggestedBid !== null && (
         <div className="flex">
-          <h3 className="text-base text-gray-200 dark:text-gary-700 mb-3">
-            You can bid this amount{" "}
-          </h3>
+          <h3 className="text-base mb-3">You can bid this amount </h3>
           <p className="text-base font-bold">${suggestedBid}</p>
         </div>
       )}

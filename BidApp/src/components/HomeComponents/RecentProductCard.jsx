@@ -6,13 +6,20 @@ import { useNavigate } from "react-router-dom"; // ✅ Import navigate
 import { WishlistContext } from "../../providers/wishListProvider";
 import Swal from "sweetalert2";
 
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  const options = { day: "numeric", month: "long", year: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+};
 const RecentProductCard = ({ recentProduct }) => {
+  console.log("product", recentProduct);
   const {
     productName,
     description,
     productImage,
     startingBid,
     auctionStartDate,
+    status,
     _id,
   } = recentProduct;
   const { user } = useContext(AuthContext);
@@ -101,33 +108,58 @@ const RecentProductCard = ({ recentProduct }) => {
   return (
     <div className="card  card-compact bg-base-100 w-[320px] mx-auto shadow-xl">
       <figure>
-        <img className="w-full h-[250px]" src={productImage} alt="product" />
+        <img
+          className="w-full h-[280px] object-cover object-fill relative"
+          src={productImage}
+          alt="product"
+        />
       </figure>
-      <div className="card-body gap-y-2">
+      <p>
+        {status === "upcoming" ? (
+          <>
+            <p className="px-4 py-0.5 bg-green-500 shadow-md text-white shadow-gray-700 text-center text-sm rounded-full absolute top-1 right-1">
+              {status}
+            </p>
+          </>
+        ) : status === "live" ? (
+          <p className="px-4 py-0.5 bg-rose-500 shadow-md shadow-gray-700 text-center text-white text-sm rounded-full absolute top-1 right-1">
+            {status}
+          </p>
+        ) : (
+          ""
+        )}
+      </p>
+      <div className="card-body">
         <h2 className="card-title font-bold text-2xl text-center">
           {productName}
         </h2>
-        <p>{description}</p>
+        {/* <p>{description}</p> */}
+        <p>
+          <span className="font-bold">Auction Start</span>{" "}
+          {formatDate(auctionStartDate)}
+        </p>
         <p>
           <span className="font-bold">Starting Bid:</span> {startingBid}
         </p>
-        <p>
-          <span className="font-bold">Auction Start Date:</span>{" "}
-          {auctionStartDate}
-        </p>
         <div className="flex justify-between p-3">
           <button
-            className="btn text-white"
+            className="text-white w-10 h-10 hover:bg-gray-100 border rounded-full flex items-center justify-center"
             onClick={handleAddToWishlist}
             disabled={isWishlisted}
           >
             {isWishlisted ? (
               <IoMdHeart size={28} className="text-red-600" />
             ) : (
-              <IoMdHeartEmpty size={28} className="text-gray-600" />
+              <IoMdHeartEmpty
+                size={28}
+                className="text-gray-600 hover:text-red-500"
+              />
             )}
           </button>
-          <button className="btn" onClick={() => navigate(`/bid/${_id}`)}>
+          <button
+            className="w-10 h-10 border rounded-full flex items-center justify-center hover:bg-gray-100"
+            onClick={() => navigate(`/bid/${_id}`)}
+          >
             <IoEye size={20} className="text-gray-600" />
           </button>
         </div>

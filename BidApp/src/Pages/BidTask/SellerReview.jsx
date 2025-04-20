@@ -14,7 +14,6 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
   const { user } = useContext(AuthContext);
 
   const [reviews, setReviews] = useState([]);
- 
 
   // const [reviews, setReviews] = useState([]);
 
@@ -114,11 +113,15 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
           <p className="text-gray-500">No reviews yet.</p>
         )}
       </div>
-      <div className="lg:w-5/12 h-[400px] p-6  rounded-xl shadow-md border">
-        <h2 className="text-2xl font-bold mb-4 text-center">Seller Reviews</h2>
+      <div className="lg:w-5/12 h-[400px] p-6  rounded-xl shadow-md border bg-gray-50">
+        <h2 className="text-2xl font-bold mb-4 text-center text-gary-600 dark:text-gray-700">
+          Seller Reviews
+        </h2>
 
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Your Rating*</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gary-600 dark:text-gray-700">
+            Your Rating*
+          </h3>
           <div className="flex items-center space-x-1 mb-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <motion.div
@@ -137,14 +140,14 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
             ))}
           </div>
           <textarea
-            className="textarea textarea-bordered w-full mb-2"
+            className="textarea textarea-bordered w-full mb-2 lg:mt-4"
             placeholder="Write your review here..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           ></textarea>
           <motion.button
             whileTap={{ scale: 0.95 }}
-            className="btn bg-teal-300 mt-5"
+            className="btn w-full bg-teal-300 mt-5 border-none"
             onClick={handleSubmit}
           >
             Submit Review
