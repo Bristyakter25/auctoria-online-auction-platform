@@ -24,6 +24,7 @@ const Home = () => {
       <Banner></Banner>
       <div className="lg:max-w-7xl mx-auto">
         {/* <EidGreeting /> */}
+
         <LatestAuctions></LatestAuctions>
         <Question />
         <FeaturedProducts></FeaturedProducts>

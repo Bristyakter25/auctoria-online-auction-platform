@@ -7,8 +7,11 @@ import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { FaUser } from "react-icons/fa";
 import { IoMdTime } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { Player } from "@lottiefiles/react-lottie-player";
+import animationTrophy from "../../assets/Animation Trophy.json";
+import { AiOutlineProduct } from "react-icons/ai";
 
-const AuctionWinner = ({ product, setProduct }) => {
+const AuctionWinner = ({ product }) => {
   const axiosPublic = useAxiosPublic();
   console.log("winner data", product);
   const {
@@ -39,21 +42,35 @@ const AuctionWinner = ({ product, setProduct }) => {
           transition={{ duration: 0.4 }}
           className="bg-white rounded-2xl shadow-lg border  p-6 w-full max-w-2xl mx-auto hover:shadow-xl duration-300"
         >
-          <div className="flex items-center gap-4 mb-4">
-            <GiQueenCrown size={40} className="text-amber-500" />
-            <div>
-              <h2 className="text-xl font-bold text-gray-800">
-                {product.productName}
-              </h2>
-              <p className="text-sm text-gray-500">Winning Auction</p>
+          <div className="flex items-center mb-4 justify-between">
+            <div className="flex items-center gap-4">
+              {/* <GiQueenCrown size={40} className="text-amber-500" /> */}
+              <div className="flex items-center gap-3">
+                <FaUser size={20} className="text-gray-500" />
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800">
+                    {product.winner}
+                  </h2>
+                  <p className="text-sm text-gray-500">Winning Auction</p>
+                </div>
+              </div>
             </div>
+            <Player
+              autoplay
+              loop
+              src={animationTrophy}
+              className="w-[100px] h-[100px]"
+            />
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-gray-700">
-              <FaUser size={20} className="text-gray-500" />
-              <span className="font-medium">Winner </span>
-              <span className="text-gray-600 font-bold">{product.winner}</span>
+              {/* <FaUser size={20} className="text-gray-500" /> */}
+              <AiOutlineProduct size={20} className="text-gray-500" />
+              {/* <span className="font-medium">Product </span> */}
+              <span className="text-gray-600 font-bold">
+                {product.productName}
+              </span>
             </div>
 
             <div className="flex items-center gap-2 text-gray-700">
@@ -77,10 +94,10 @@ const AuctionWinner = ({ product, setProduct }) => {
           </div>
 
           <div className="mt-6 flex justify-end">
-            <Link to='/bid-history' >
-            <button className="btn btn-sm bg-teal-500 hover:bg-teal-600 text-white shadow-md">
-              Payment
-            </button>
+            <Link to="/bid-history">
+              <button className="btn btn-sm bg-teal-500 hover:bg-teal-600 text-white shadow-md">
+                Payment
+              </button>
             </Link>
           </div>
         </motion.div>
