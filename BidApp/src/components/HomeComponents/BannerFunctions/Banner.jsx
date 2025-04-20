@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom"
-import pic1 from "../../assets/vintage items picture/cars.jpeg"
-import pic2 from "../../assets/vintage items picture/clock.jpeg"
-import pic3 from "../../assets/vintage items picture/grammophone.jpeg"
-import pic4 from "../../assets/vintage items picture/lamp image.jpeg"
-import pic5 from "../../assets/vintage items picture/vintage auction.jpeg"
+import pic1 from "../../../assets/vintage items picture/cars.jpeg"
+import pic2 from "../../../assets/vintage items picture/clock.jpeg"
+import pic3 from "../../../assets/vintage items picture/grammophone.jpeg"
+import pic4 from "../../../assets/vintage items picture/lamp image.jpeg"
+import pic5 from "../../../assets/vintage items picture/vintage auction.jpeg"
 
 const Banner = () => { 
   return (
@@ -26,7 +26,7 @@ const Banner = () => {
             Join us as we carve a path to success, driven by passion, powered by innovation, and we're here to turn them into reality.
           </p>
           <div className="flex gap-x-5 mt-36">
-            <button className="btn px-8 py-6 font-bold">Start A Bid!</button>
+            <Link to="/bidInstruction"><button className="btn px-8 py-6 font-bold">Start A Bid!</button></Link>
             <Link to="/allAuctions">
               <button className="btn font-bold px-8 py-6 hover:bg-green-700 hover:text-white">View All Auction</button>
             </Link>
