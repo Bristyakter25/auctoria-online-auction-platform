@@ -77,6 +77,7 @@ async function run() {
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
     const paymentCollection = client.db("Auctoria").collection("payments");
+    const messageCollection = client.db("Auctoria").collection("messages");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -263,7 +264,7 @@ async function run() {
           .aggregate([
             {
               $addFields: {
-                totalBids: { $size: { $ifNull: ["$bids", []] } }, // ✅ handles missing or null bids
+                totalBids: { $size: { $ifNull: ["$bids", []] } },
               },
             },
             {
@@ -791,11 +792,11 @@ async function run() {
 
     app.post("/messages", async (req, res) => {
       const { sender, receiver, message, productId } = req.body;
-    
+
       if (!sender || !receiver || !message || !productId) {
         return res.status(400).send({ error: "Missing required fields" });
       }
-    
+
       const chatMessage = {
         sender,
         receiver,
@@ -804,7 +805,7 @@ async function run() {
         timestamp: new Date(),
         read: false,
       };
-    
+
       try {
         const result = await messagesCollection.insertOne(chatMessage);
         io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
@@ -814,29 +815,30 @@ async function run() {
         res.status(500).send({ error: "Failed to send message" });
       }
     });
-    
 
-    app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
-      const { productId, userEmail, otherUserEmail } = req.params;
-    
-      try {
-        const messages = await messagesCollection
-          .find({
-            productId,
-            $or: [
-              { sender: userEmail, receiver: otherUserEmail },
-              { sender: otherUserEmail, receiver: userEmail },
-            ],
-          })
-          .sort({ timestamp: 1 })
-          .toArray();
-    
-        res.send(messages);
-      } catch (error) {
-        res.status(500).send({ error: "Failed to fetch messages" });
+    app.get(
+      "/messages/:productId/:userEmail/:otherUserEmail",
+      async (req, res) => {
+        const { productId, userEmail, otherUserEmail } = req.params;
+
+        try {
+          const messages = await messagesCollection
+            .find({
+              productId,
+              $or: [
+                { sender: userEmail, receiver: otherUserEmail },
+                { sender: otherUserEmail, receiver: userEmail },
+              ],
+            })
+            .sort({ timestamp: 1 })
+            .toArray();
+
+          res.send(messages);
+        } catch (error) {
+          res.status(500).send({ error: "Failed to fetch messages" });
+        }
       }
-    });
-    
+    );
 
     // about automatic send end time of bid to the bidder Users
     const AuctionEndingTimer = async () => {
@@ -907,7 +909,6 @@ async function run() {
     });
 
     app.get("/reviews", async (req, res) => {
-     
       const result = await reviewsCollection.find().toArray();
       res.send(result);
     });
@@ -935,36 +936,34 @@ async function run() {
 
     app.post("/reviews/reply/:id", async (req, res) => {
       const { id } = req.params;
-      const { replyText } = req.body;  // Get the reply from the request body
-    
+      const { replyText } = req.body; // Get the reply from the request body
+
       try {
-        
         const result = await reviewsCollection.updateOne(
           { _id: new ObjectId(id) },
-          { 
-            $set: { 
+          {
+            $set: {
               "adminReply.replyText": replyText,
-              "adminReply.repliedAt": new Date()
-            }
+              "adminReply.repliedAt": new Date(),
+            },
           }
         );
-    
+
         if (result.modifiedCount === 0) {
           return res.status(404).send({ error: "Review not found." });
         }
-    
+
         res.send({ message: "Reply added successfully." });
       } catch (error) {
         console.error("Error adding admin reply:", error);
         res.status(500).send({ error: "Failed to add reply." });
       }
     });
-    
 
     app.patch("/reviews/:id", async (req, res) => {
       const { id } = req.params;
       const { adminReply } = req.body;
-    
+
       try {
         const result = await reviewsCollection.updateOne(
           { _id: new ObjectId(id) },
@@ -974,11 +973,13 @@ async function run() {
             },
           }
         );
-    
+
         if (result.modifiedCount === 0) {
-          return res.status(404).send({ error: "Review not found or already replied." });
+          return res
+            .status(404)
+            .send({ error: "Review not found or already replied." });
         }
-    
+
         res.send({ message: "Admin reply added successfully." });
       } catch (error) {
         console.error("Error updating review:", error);
@@ -988,23 +989,22 @@ async function run() {
 
     app.delete("/reviews/:id", async (req, res) => {
       const { id } = req.params;
-    
+
       try {
         const result = await reviewsCollection.deleteOne({
           _id: new ObjectId(id),
         });
-    
+
         if (result.deletedCount === 0) {
           return res.status(404).send({ error: "Review not found." });
         }
-    
+
         res.send({ message: "Review deleted successfully." });
       } catch (error) {
         console.error("Error deleting review:", error);
         res.status(500).send({ error: "Failed to delete review." });
       }
     });
-    
 
     //bid History related API
 

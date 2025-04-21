@@ -7,10 +7,11 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
-import AuctionWinner from "./AuctionWinner";
+// import AuctionWinner from "./AuctionWinner";
 import { MdWatchLater } from "react-icons/md";
-
-// import { MdCancel } from "react-icons/md";
+import { Player } from "@lottiefiles/react-lottie-player";
+import animationLoading from "../../assets/Animation Loading.json";
+import { BsFillChatTextFill } from "react-icons/bs";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -37,15 +38,22 @@ const calculateCountdown = (endTime) => {
 };
 
 const Bid = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const item = {
-    images: [],
+    images: [
+      "https://i.ibb.co.com/LXSdnhYY/deniz-demirci-Ftl-G2pnqh-M4-unsplash.jpg",
+      "https://i.ibb.co.com/LDT5JrZH/deniz-demirci-cp-Fmi-KNcy4o-unsplash.jpg",
+      "https://i.ibb.co.com/2YCqyxQV/deniz-demirci-i0-S-o-J9-Ug-JM-unsplash.jpg",
+    ],
   };
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
 
-  // const [selectedImage, setSelectedImage] = useState(item.images[0]);
+  const [messageText, setMessageText] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
   console.log("product data", product);
   useEffect(() => {
@@ -167,6 +175,25 @@ const Bid = () => {
     }
   };
 
+  // if (!product) return <p className="text-center">Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="relative w-[130px] h-[130px]">
+          <Player
+            autoplay
+            loop
+            src={animationLoading}
+            className="w-full h-full"
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <FaGavel className="text-4xl animate-bounce opacity-80" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!product) return <LoadingSpinner></LoadingSpinner>;
 
   return (
@@ -177,13 +204,13 @@ const Bid = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg bg-teal-50"
+          className=" p-6 shadow-md rounded-lg bg-gray-50"
         >
           {/* Main Image */}
           <motion.img
             src={product.productImage}
             alt="Auction Item"
-            className="w-full h-[320px] object-fill rounded-lg"
+            className="w-full h-[480px] object-fill object-cover rounded-lg lg:mt-2"
             whileHover={{ scale: 1 }}
             transition={{ duration: 0.8 }}
           />
@@ -230,7 +257,7 @@ const Bid = () => {
             {product.category}
           </p>
           <p className="text-gary-600 dark:text-gray-700">
-            <strong>End Time:</strong> {formatDate(product.auctionEndTime)}
+            <strong>End Time</strong> {formatDate(product.auctionEndTime)}
           </p>
           <p className="text-sm mt-1 flex items-center gap-2 text-gary-600 dark:text-gray-700">
             <MdWatchLater size={24} />
@@ -238,13 +265,23 @@ const Bid = () => {
           </p>
 
           {/* Current Bid */}
-          <div className="mt-4">
-            <p className="text-sm font-semibold text-gary-600 dark:text-gray-700">
-              Current Bid:
-            </p>
-            <p className="text-3xl font-bold text-gary-600 dark:text-gray-700">
-              $ {currentBid || "No bids yet"}
-            </p>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex px-4 py-1 border bg-green-300 rounded-full">
+              <p className="text-sm font-semibold text-gary-600 dark:text-gray-700">
+                Current Bid
+                <span className="text-3xl font-bold text-gary-600 dark:text-gray-700">
+                  ${currentBid || "No bids yet"}
+                </span>
+              </p>
+            </div>
+            <div>
+              <p className="border px-4 py-1 bg-blue-300 rounded-full ">
+                Base Price{" "}
+                <span className="text-3xl font-bold text-gary-600 dark:text-gray-700">
+                  ${product.startingBid}
+                </span>
+              </p>
+            </div>
           </div>
 
           {/* Bid Input Field */}
@@ -335,6 +372,52 @@ const Bid = () => {
                   })
               ) : (
                 <p className="">There is no Bid।</p>
+              )}
+            </div>
+            <div className="my-5">
+              <div className="border rounded-lg p-4 shadow-sm mt-6">
+                <h4 className="text-md font-semibold mb-2">Need Help?</h4>
+                <p className="text-sm text-gray-600 mb-3">
+                  Contact the seller for more info about this product.
+                </p>
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                >
+                  <BsFillChatTextFill />
+                  Chat With Seller
+                </button>
+              </div>
+
+              {showModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                  <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+                    <h3 className="text-xl font-semibold mb-4">
+                      Send Message to Seller
+                    </h3>
+                    <textarea
+                      className="w-full p-2 border rounded mb-4"
+                      rows={4}
+                      placeholder="Write your message..."
+                      value={messageText}
+                      onChange={(e) => setMessageText(e.target.value)}
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="bg-gray-300 hover:bg-gray-400 text-black py-1 px-4 rounded"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSendMessage}
+                        className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+                      >
+                        Send
+                      </button>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </motion.div>

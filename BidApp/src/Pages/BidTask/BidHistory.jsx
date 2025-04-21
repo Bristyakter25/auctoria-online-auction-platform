@@ -83,7 +83,7 @@ const BidHistory = () => {
         <div className="text-xl font-semibold mb-4 text-green-700 mr-5">
           Total Amount to Pay: ${totalAmountToPay?.toFixed(2)}
           <Link to="/dashboard/pay" state={{ totalPrice: totalAmountToPay }}>
-            <button className="btn btn-primary ml-5">pay</button>
+            <button className="btn bg-green-400 hover:bg-green-700 hover:text-white ml-5">Pay Now!</button>
           </Link>
         </div>
       </div>

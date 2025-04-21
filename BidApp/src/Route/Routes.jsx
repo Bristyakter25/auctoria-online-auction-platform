@@ -23,6 +23,8 @@ import ManageUsers from "../Pages/Dashboard/AdminRoutes/ManageUsers";
 import Analytics from "../Pages/Dashboard/AdminRoutes/Analytics";
 import RecentOrders from "../Pages/Dashboard/AdminRoutes/RecentOrders";
 import Reviews from "../Pages/Dashboard/AdminRoutes/Reviews";
+import ChatBox from "../Pages/BidTask/ChatBox";
+import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInstruction";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +33,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "about-us", element: <AboutHome></AboutHome> },
+      { path: "bidInstruction", element: <BidInstruction></BidInstruction> },
 
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Register /> },
@@ -46,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: "/wishlist",
         element: <WishList></WishList>,
+      },
+      {
+        path: "/chatBox",
+        element:<ChatBox></ChatBox>
       },
     ],
   },

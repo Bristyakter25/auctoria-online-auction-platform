@@ -1,6 +1,6 @@
 
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
-import Particles from "react-tsparticles";
+
 import { loadFull } from "tsparticles";
 import { useCallback } from "react";
 // import ParticleBg from "../ParticleBg/ParticleBg";
