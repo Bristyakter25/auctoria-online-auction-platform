@@ -8,6 +8,7 @@ import { GrHome } from "react-icons/gr";
 import { MdOutlineAddToQueue } from "react-icons/md";
 import { FaChartBar } from "react-icons/fa";
 import useRole from "../../hooks/useRole";
+import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
 
 
 
@@ -18,7 +19,7 @@ const Dashboard = () => {
   <div className="flex  w-full  h-full">
  
  {/* Sidebar */}
- <div className="bg-purple-100 dark:bg-gray-600 dark:text-white lg:px-8 lg:py-10 min-h-screen">
+ <div className="bg-blue-400  lg:px-8 lg:py-10 min-h-screen">
    <ul className="menu">
      <h2 className="text-center my-5 font-bold text-xl  text-[#4635B1] dark:text-purple-300">Menu</h2>
      <li className="text-xl"><NavLink to="/dashboard/auctionChart"><FaChartBar /> Auction Chart</NavLink></li>
@@ -56,10 +57,23 @@ const Dashboard = () => {
 
 </ul>}
 </div>
-{/* Main Content */}
-<div className="flex-1 ml-5 lg:ml-0 p-4">
-   <Outlet />
- </div>
+
+ {/* Content */}
+ <div className="flex-1 flex flex-col ">
+        <div className="p-4 bg-white  border-b flex justify-between items-center">
+          <button className="lg:hidden text-gray-600 text-2xl" ></button>
+          <div className="flex items-center justify-between">
+          <h1 className="text-lg text-black font-bold">Dashboard</h1>
+          <div>
+                <ThemeToggle></ThemeToggle>
+              </div>
+          </div>
+        </div>
+        
+        <div className="p-4 overflow-auto flex-1"><Outlet />
+     
+        </div>
+      </div>
 </div>
     )
 } 
