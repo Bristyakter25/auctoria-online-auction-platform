@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FaGavel, FaTimesCircle } from "react-icons/fa";
+import { FaGavel } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -7,11 +7,9 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
-// import AuctionWinner from "./AuctionWinner";
 import { MdWatchLater } from "react-icons/md";
-import { Player } from "@lottiefiles/react-lottie-player";
-import animationLoading from "../../assets/Animation Loading.json";
 import { BsFillChatTextFill } from "react-icons/bs";
+import LoadingSpinner from "../../components/ShareComponents/Loading/LoadingSpinner";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -175,26 +173,48 @@ const Bid = () => {
     }
   };
 
-  // if (!product) return <p className="text-center">Loading...</p>;
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen ">
-        <div className="relative w-[130px] h-[130px]">
-          <Player
-            autoplay
-            loop
-            src={animationLoading}
-            className="w-full h-full"
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <FaGavel className="text-4xl animate-bounce opacity-80" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleSendMessage = async () => {
+    if (!messageText.trim()) {
+      toast.error("Message cannot be empty.");
+      return;
+    }
+    if (!user?.email || !product?.email || !product?._id) {
+      toast.error("Some required data is missing.");
+      return;
+    }
 
-  if (!product) return <LoadingSpinner></LoadingSpinner>;
+    const payload = {
+      senderId: user?.email, // assuming email is used as ID
+      receiverId: product?.email, // seller email
+      productId: product?._id,
+      message: messageText,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (data.insertedId) {
+        toast.success("Message sent to seller!");
+        setShowModal(false);
+        setMessageText("");
+      } else {
+        toast.error("Failed to send message.");
+      }
+    } catch (error) {
+      console.error("Message send error:", error);
+      toast.error("Server error while sending message.");
+    }
+  };
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="container mx-auto px-4 py-32">
