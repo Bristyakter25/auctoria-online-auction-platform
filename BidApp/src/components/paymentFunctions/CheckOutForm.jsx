@@ -112,7 +112,7 @@ axiosSecure.post('/create-payment-intent', {price: totalPrice},{cart: cart})
           },
         }}
       />
-      <button className="btn btn-primary my-5" type="submit" disabled={!stripe || !clientSecret}>
+      <button className="btn  bg-green-400 hover:bg-green-700 hover:text-white  my-5" type="submit" disabled={!stripe || !clientSecret}>
         Pay
       </button>
       <p className="text-red-600">{error}</p>

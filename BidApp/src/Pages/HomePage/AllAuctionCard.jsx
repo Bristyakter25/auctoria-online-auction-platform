@@ -19,14 +19,49 @@ const AllAuctionCard = ({ auction }) => {
     category,
     status,
     winner,
+    auctionEndTime,
   } = auction;
-  // console.log("category", category);
+
   const { user } = useContext(AuthContext);
   const userId = user?.uid;
 
   const [isWishlisted, setIsWishlisted] = useState(false);
   const { refetchWishlist } = useContext(WishlistContext);
 
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  // Countdown Timer Effect
+  useEffect(() => {
+    if (!auctionEndTime) return;
+
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const end = new Date(auctionEndTime).getTime();
+      const distance = end - now;
+
+      if (distance <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        clearInterval(interval);
+      } else {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        setTimeLeft({ days, hours, minutes, seconds });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [auctionEndTime]);
+
+  // Wishlist check
   useEffect(() => {
     if (!userId) return;
 
@@ -53,6 +88,7 @@ const AllAuctionCard = ({ auction }) => {
     fetchWishlist();
   }, [userId, _id]);
 
+  // Handle Add to Wishlist
   const handleAddToWishlist = async () => {
     if (!userId) {
       Swal.fire({
@@ -88,7 +124,6 @@ const AllAuctionCard = ({ auction }) => {
         });
         refetchWishlist();
 
-        // Re-fetch wishlist to ensure state consistency
         const updatedWishlistResponse = await fetch(
           `http://localhost:5000/wishlist/${userId}`
         );
@@ -123,28 +158,6 @@ const AllAuctionCard = ({ auction }) => {
           src={productImage}
           alt={productName}
         />
-
-        {/* 
-<div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
-  <p className="flex items-center gap-2 text-sm">
-    {status === "expired" ? (
-      <>
-        <FaUser className="text-gray-500" size={16} />
-        <span className="text-gray-600 font-bold">Winner {winner}</span>
-      </>
-    ) : bids?.length > 0 ? (
-      <>
-        <FaGavel className="text-gray-500" />
-        <span className="text-gray-600 font-bold">{`${bids.length} Bids`}</span>
-      </>
-    ) : (
-      <>
-        <span className="text-gray-600 font-bold">No bids yet</span>
-      </>
-    )}
-  </p>
-</div> */}
-
         <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
           <div className="flex items-center gap-2 text-sm">
             {status === "expired" ? (

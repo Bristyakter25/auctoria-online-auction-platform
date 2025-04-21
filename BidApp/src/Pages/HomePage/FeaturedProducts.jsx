@@ -61,7 +61,7 @@ const FeaturedProducts = () => {
         </select>
       </div>
 
-      <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-5">
+      <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {filteredAuctions.length > 0 ? (
           filteredAuctions.map((auction) => (
             <FeaturedProductCard key={auction._id} auction={auction} />
