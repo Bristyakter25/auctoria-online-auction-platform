@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const FeaturedProductCard = ({ auction }) => {
-  const { productName, productImage, description, status, startingBid, auctionEndTime } = auction;
+  const navigate = useNavigate();
+  const {
+    _id,
+    productName,
+    productImage,
+    description,
+    status,
+    startingBid,
+    auctionEndTime,
+  } = auction;
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -27,7 +37,9 @@ const FeaturedProductCard = ({ auction }) => {
         clearInterval(interval);
       } else {
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
         setTimeLeft({ days, hours, minutes, seconds });
@@ -40,7 +52,11 @@ const FeaturedProductCard = ({ auction }) => {
   return (
     <div className="card card-compact bg-base-100 shadow-xl ">
       <figure className="relative">
-        <img src={productImage} className="h-[280px] w-full object-cover" alt="product" />
+        <img
+          src={productImage}
+          className="h-[280px] w-full object-cover"
+          alt="product"
+        />
         <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-3 py-1 rounded-full text-sm shadow-md z-10 flex items-center gap-2">
           <div className="bg-gray-100 px-2 py-1 rounded">
             <span className="font-bold">{timeLeft.days}</span> Days
@@ -68,7 +84,9 @@ const FeaturedProductCard = ({ auction }) => {
         </p>
         <p>Status: {status}</p>
         <div className="card-actions justify-end">
-          <button className="btn">Bid Now!</button>
+          <button className="btn" onClick={() => navigate(`/bid/${_id}`)}>
+            Bid Now!
+          </button>
         </div>
       </div>
     </div>
