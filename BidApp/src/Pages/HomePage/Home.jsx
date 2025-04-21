@@ -34,7 +34,7 @@ const Home = () => {
         <AuctionProcess></AuctionProcess>
         {/* <Partners /> */}
         
-        <BiddingMadness />
+        {/* <BiddingMadness /> */}
         <ContactForm />
         <TrustedPartners></TrustedPartners>
       </div>

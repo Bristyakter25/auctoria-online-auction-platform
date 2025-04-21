@@ -1,114 +1,68 @@
-
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
-
-import { loadFull } from "tsparticles";
-import { useCallback } from "react";
-// import ParticleBg from "../ParticleBg/ParticleBg";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
-  const particlesInit = useCallback(async engine => {
-    console.log(engine);
-    // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
-    // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
-    // starting from v2 you can add only the features you need reducing the bundle size
-    await loadFull(engine);
-    // await loadSlim(engine);
-}, []);
-
-const particlesLoaded = useCallback(async container => {
-    await console.log(container);
-}, []);
-
   return (
-    <div className="relative text-white bg-[#2d0147]">
-      {/* Particle Background */}
-     
-      {/* <Particles
-        className="absolute inset-0 z-0"
-        init={particlesInit}
-        loaded={particlesLoaded}
-        options={{
-          fullScreen: { enable: false },
-          background: { color: "#2d0147" },
-          particles: {
-            color: { value: "#ffffff" },
-            links: {
-              enable: true,
-              color: "#c084fc",
-              distance: 120, 
-              opacity: 0.5,
-              width: 0.7,
-            },
-            move: {
-              enable: true,
-              speed: 0.8,
-              outModes: "out",
-            },
-            number: {
-              value: 30, 
-              density: { enable: true, area: 800 },
-            },
-            size: {
-              value: { min: 1, max: 3 },
-            },
-            opacity: { value: 0.4 },
-          }
-          
-        }}
-      /> */}
+    <footer className="relative py-10 mt-10 bg-gradient-to-r from-yellow-100 via-lime-100 to-green-200 text-black pt-20 px-4 md:px-16 pb-12 overflow-hidden">
+      
+      {/* Top Curve */}
+      <div className="absolute -top-1 left-0 w-full h-24 rotate-180">
+        <svg viewBox="0 0 1440 80" className="w-full h-full" preserveAspectRatio="none">
+          <path
+            d="M0,80 C360,0 1080,0 1440,80 L1440,100 L0,100 Z"
+            fill="white"
+          />
+        </svg>
+      </div>
+
+      {/* <div className="absolute -top-1 left-0 w-full h-16 rotate-180">
+  <svg viewBox="0 0 1440 80" className="w-full h-full" preserveAspectRatio="none">
+    <path
+      d="M0,80 C480,20 960,20 1440,80 L1440,0 L0,0 Z"
+      fill="white"
+    />
+  </svg>
+</div> */}
+
 
       {/* Footer Content */}
-      <div className="relative z-10 p-10 grid md:grid-cols-4 gap-6">
-        {/* Logo & Description */}
+      <div className="max-w-7xl py-10 mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 relative z-10">
         <div>
-          <h2 className="text-3xl font-bold text-purple-300 mb-2"> <span className="text-white">Auction</span></h2>
-          <p className="text-sm text-gray-300">
-            A reliable platform for bidding and auctioning items.
-            Find great deals, or auction your own items today.
+          <h2 className="text-2xl font-bold mb-4">Auctoria</h2>
+          <p className="text-sm">
+            Your one-stop destination for all things - auctions, and deals.
           </p>
-          <div className="flex gap-4 mt-4 text-purple-200 text-xl">
-            <FaFacebookF className="hover:text-white cursor-pointer" />
-            <FaTwitter className="hover:text-white cursor-pointer" />
-            <FaInstagram className="hover:text-white cursor-pointer" />
-            <FaLinkedinIn className="hover:text-white cursor-pointer" />
-          </div>
         </div>
-
-        {/* Services */}
         <div>
-          <h6 className="footer-title text-lg mb-2">Services</h6>
-          <a className="link link-hover block">Buy & Sell</a>
-          <a className="link link-hover block">Marketing</a>
-          <a className="link link-hover block">Advertisement</a>
+          <h3 className="text-lg font-semibold mb-3">Company</h3>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/about" className="hover:underline">About Us</Link></li>
+            <li><Link to="/careers" className="hover:underline">Careers</Link></li>
+            <li><Link to="/contact" className="hover:underline">Contact</Link></li>
+          </ul>
         </div>
-
-        {/* Company */}
         <div>
-          <h6 className="footer-title text-lg mb-2">Company</h6>
-          <a className="link link-hover block">About us</a>
-          <a className="link link-hover block">Contact</a>
+          <h3 className="text-lg font-semibold mb-3">Support</h3>
+          <ul className="space-y-2 text-sm">
+            <li><Link to="/help" className="hover:underline">Help Center</Link></li>
+            <li><Link to="/terms" className="hover:underline">Terms of Service</Link></li>
+            <li><Link to="/privacy" className="hover:underline">Privacy Policy</Link></li>
+          </ul>
         </div>
-
-        {/* Legal */}
         <div>
-          <h6 className="footer-title text-lg mb-2">Legal</h6>
-          <a className="link link-hover block">Terms of use</a>
-          <a className="link link-hover block">Privacy policy</a>
-          <a className="link link-hover block">Cookie policy</a>
+          <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
+          <ul className="space-y-2 text-sm">
+            <li><a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:underline">Facebook</a></li>
+            <li><a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:underline">Twitter</a></li>
+            <li><a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:underline">LinkedIn</a></li>
+          </ul>
         </div>
       </div>
 
-      {/* Bottom Line */}
-      <div className="relative z-10 footer footer-center p-4 bg-[#24013b] text-purple-200">
-        <aside>
-          <p>
-            Copyright © {new Date().getFullYear()} - All rights reserved by
-            Rex Auction Ltd.
-          </p>
-        </aside>
+      {/* Bottom Bar */}
+      <div className="mt-10 text-center text-sm border-t border-black/20 pt-4 relative z-10">
+        &copy; {new Date().getFullYear()} DevShop. All rights reserved.
       </div>
-      {/* <ParticleBg></ParticleBg> */}
-    </div>
+    </footer>
   );
 };
 

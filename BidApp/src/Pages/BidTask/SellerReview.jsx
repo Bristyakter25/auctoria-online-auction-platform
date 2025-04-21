@@ -106,7 +106,7 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
   </p>
   {/* Admin reply section */}
   {review.adminReply && (
-    <div className="flex items-start mt-4 ml-5 bg-gray-100 p-3 rounded-lg">
+    <div className="flex items-start mt-4 ml-5 bg-gray-300 p-3 rounded-lg">
       <FaCircleUser size={25} className="text-gray-500 mr-3" />
       <div>
         <p className="font-semibold text-gray-700">Admin</p>
