@@ -865,29 +865,27 @@ async function run() {
     // );
 
     // about automatic send end time of bid to the bidder Users
-    app.get(
-      "/messages/:productId/:userEmail/:otherUserEmail",
-      async (req, res) => {
-        const { productId, userEmail, otherUserEmail } = req.params;
-
-        try {
-          const messages = await messagesCollection
-            .find({
-              productId,
-              $or: [
-                { sender: userEmail, receiver: otherUserEmail },
-                { sender: otherUserEmail, receiver: userEmail },
-              ],
-            })
-            .sort({ timestamp: 1 })
-            .toArray();
-
-          res.send(messages);
-        } catch (error) {
-          res.status(500).send({ error: "Failed to fetch messages" });
-        }
+    app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
+      const { productId, userEmail, otherUserEmail } = req.params;
+    
+      try {
+        const messages = await messageCollection
+          .find({
+            productId,
+            $or: [
+              { senderId: userEmail, receiverId: otherUserEmail },
+              { senderId: otherUserEmail, receiverId: userEmail },
+            ],
+          })
+          .sort({ timestamp: 1 })
+          .toArray();
+    
+        res.send(messages);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to fetch messages" });
       }
-    );
+    });
+    
 
     // chat with seller
     app.post("/messages", async (req, res) => {
