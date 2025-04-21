@@ -74,9 +74,9 @@ const NotificationBell = ({ user }) => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg overflow-hidden"
+          className="absolute right-0 mt-2 w-64 bg-slate-200 shadow-lg rounded-lg overflow-hidden"
         >
-          <div className="p-4 border-b flex justify-between">
+          <div className="p-4 border-b text-black flex justify-between">
             <span className="font-semibold">Notifications</span>
             <button
               onClick={handleClearNotifications}
@@ -91,7 +91,7 @@ const NotificationBell = ({ user }) => {
               {notifications.map((notif) => (
                 <li
                   key={notif._id}
-                  className="p-3 border-b hover:bg-gray-100 transition"
+                  className="p-3 border-b text-black hover:bg-gray-400 transition"
                 >
                   {notif.message}
                 </li>

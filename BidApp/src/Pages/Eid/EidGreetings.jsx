@@ -53,7 +53,7 @@ const EidGreeting = () => {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="bg-white p-6 shadow-lg rounded-2xl">
+        <div className=" p-6 shadow-lg rounded-2xl">
           <div className="text-center text-xl font-semibold text-green-700">
             {greeting}
           </div>

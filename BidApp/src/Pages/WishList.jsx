@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import WishListCard from "./WishListCard";
 import { AuthContext } from "../providers/AuthProvider";
+import LoadingSpinner from "../components/ShareComponents/Loading/LoadingSpinner";
 
 const WishList = () => {
   const { user } = useContext(AuthContext);
@@ -32,22 +33,18 @@ const WishList = () => {
       });
   }, [user]);
   if (loading) {
-    return (
-      <div className="text-center mt-10">
-        <p>Loading your wishlist...</p>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-center mt-36 mb-5 ">
+    <div className=" max-w-7xl mx-auto mt-24 mb-10 rounded-xl">
+      <h2 className="text-2xl font-bold text-center mb-5 py-3 shadow-lg bg-teal-100 max-w-7xl mx-auto rounded-xl ">
         Your Wishlisted Items
       </h2>
       {error && <p className="text-center text-red-500">{error}</p>}{" "}
       {/* Display error message if any */}
       {wishListProducts.length > 0 ? (
-        <div className="grid gap-y-5 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-x-4 w-[1000px] mx-auto">
+        <div className="grid gap-y-5 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-x-4">
           {wishListProducts.map((wishListProduct) => (
             <WishListCard
               key={wishListProduct._id}

@@ -5,6 +5,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/ShareComponents/LoadingSpinner ";
 
 const BidHistory = () => {
   const [bids, setBids] = useState([]);
@@ -66,9 +67,7 @@ const BidHistory = () => {
       }
     }
   };
-
-  if (loading) return <p>Loading...</p>;
-
+  if (loading) return <LoadingSpinner></LoadingSpinner>;
   const totalAmountToPay = bids?.reduce((total, bid) => {
     if (bid.email === user?.email) {
       total += bid.bidAmount;
@@ -84,7 +83,7 @@ const BidHistory = () => {
         <div className="text-xl font-semibold mb-4 text-green-700 mr-5">
           Total Amount to Pay: ${totalAmountToPay?.toFixed(2)}
           <Link to="/dashboard/pay" state={{ totalPrice: totalAmountToPay }}>
-            <button className="btn btn-primary ml-5">pay</button>
+            <button className="btn bg-green-400 hover:bg-green-700 hover:text-white ml-5">Pay Now!</button>
           </Link>
         </div>
       </div>
@@ -108,6 +107,13 @@ const BidHistory = () => {
             <tbody>
               {bids.map((bid, index) => (
                 <tr key={`${bid._id}-${index}`}>
+                    <td className="border px-4 py-2">
+                    <img
+                      src={bid.productImage}
+                      alt={bid.productName}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  </td>
                   <td className="border px-4 py-2">{bid.productName}</td>
                   <td className="border px-4 py-2">{bid.name}</td>
                   <td className="border px-4 py-2">{bid.email}</td>
@@ -124,13 +130,7 @@ const BidHistory = () => {
                       Delete
                     </button>
                   </td>
-                  <td className="border px-4 py-2">
-                    <img
-                      src={bid.productImage}
-                      alt={bid.productName}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  </td>
+                
                 </tr>
               ))}
             </tbody>

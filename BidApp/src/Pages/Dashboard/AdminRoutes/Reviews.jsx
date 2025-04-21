@@ -8,10 +8,20 @@ const fetchReviews = async () => {
 };
 
 const Reviews = () => {
-  const [replyModal, setReplyModal] = useState({ isOpen: false, reviewId: null, email: "", name: "" });
+  const [replyModal, setReplyModal] = useState({
+    isOpen: false,
+    reviewId: null,
+    email: "",
+    name: "",
+  });
   const [replyMessage, setReplyMessage] = useState("");
 
-  const { data: reviews = [], isLoading, error, refetch } = useQuery({
+  const {
+    data: reviews = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["reviews"],
     queryFn: fetchReviews,
   });
@@ -20,7 +30,9 @@ const Reviews = () => {
   if (error) return <p>Error fetching reviews: {error.message}</p>;
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm("Are you sure you want to delete this review?");
+    const confirm = window.confirm(
+      "Are you sure you want to delete this review?"
+    );
     if (!confirm) return;
 
     try {
@@ -41,9 +53,12 @@ const Reviews = () => {
     if (!replyMessage) return alert("Please enter a reply message.");
 
     try {
-      await axios.patch(`http://localhost:5000/reviews/${replyModal.reviewId}`, {
-        adminReply: replyMessage,
-      });
+      await axios.patch(
+        `http://localhost:5000/reviews/${replyModal.reviewId}`,
+        {
+          adminReply: replyMessage,
+        }
+      );
 
       alert("Reply saved.");
       setReplyModal({ isOpen: false, reviewId: null, email: "", name: "" });
@@ -75,12 +90,22 @@ const Reviews = () => {
             </thead>
             <tbody>
               {reviews.map((review, index) => (
-                <tr key={review._id} className={index % 2 === 0 ? "bg-base-200" : ""}>
+                <tr
+                  key={review._id}
+                  className={index % 2 === 0 ? "bg-base-200" : ""}
+                >
                   <td>{index + 1}</td>
                   <td>{review.reviewerName || "Anonymous"}</td>
                   <td>
                     {Array.from({ length: 5 }, (_, i) => (
-                      <span key={i} className={i < review.rating ? "text-yellow-400" : "text-gray-300"}>
+                      <span
+                        key={i}
+                        className={
+                          i < review.rating
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                        }
+                      >
                         ★
                       </span>
                     ))}
@@ -88,16 +113,27 @@ const Reviews = () => {
                   <td>
                     {review.comment}
                     {review.adminReply && (
-                      <p className="text-sm text-blue-600 mt-2 font-semibold">Admin Reply: {review.adminReply}</p>
+                      <p className="text-sm text-blue-600 mt-2 font-semibold">
+                        Admin Reply: {review.adminReply}
+                      </p>
                     )}
                   </td>
                   <td>{new Date(review.createdAt).toLocaleDateString()}</td>
                   <td className="flex gap-2">
-                    <button onClick={() => handleDelete(review._id)} className="btn btn-error btn-sm">
+                    <button
+                      onClick={() => handleDelete(review._id)}
+                      className="btn btn-error btn-sm"
+                    >
                       Delete
                     </button>
                     <button
-                      onClick={() => handleReply(review._id, review.reviewerEmail, review.reviewerName)}
+                      onClick={() =>
+                        handleReply(
+                          review._id,
+                          review.reviewerEmail,
+                          review.reviewerName
+                        )
+                      }
                       className="btn btn-info btn-sm"
                     >
                       Reply
@@ -114,7 +150,9 @@ const Reviews = () => {
       {replyModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <h3 className="text-xl font-semibold mb-4">Reply to {replyModal.name || "User"}</h3>
+            <h3 className="text-xl font-semibold mb-4">
+              Reply to {replyModal.name || "User"}
+            </h3>
             <textarea
               className="textarea textarea-bordered w-full mb-4"
               rows="4"
@@ -123,7 +161,10 @@ const Reviews = () => {
               onChange={(e) => setReplyMessage(e.target.value)}
             />
             <div className="flex justify-end space-x-2">
-              <button onClick={() => setReplyModal({ isOpen: false })} className="btn btn-outline btn-sm">
+              <button
+                onClick={() => setReplyModal({ isOpen: false })}
+                className="btn btn-outline btn-sm"
+              >
                 Cancel
               </button>
               <button onClick={submitReply} className="btn btn-primary btn-sm">

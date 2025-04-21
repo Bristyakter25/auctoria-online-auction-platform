@@ -144,11 +144,11 @@ const Navbar = () => {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden px-4 pb-4 bg-white text-gray-700 font-medium space-y-2 overflow-hidden"
+            className="md:hidden px-4 pb-4 bg-teal-100 text-gray-700 font-medium space-y-2 overflow-hidden"
           >
             {navLinks}
-            <div className="flex items-center gap-3 mt-3">
-              <NotificationBell user={user} />
+            <div className="flex items-center  gap-3 mt-3">
+              <NotificationBell user={user} className="text-gray-600" />
               <Link
                 to="/wishlist"
                 className="relative bg-gray-100 p-2 rounded-full"
@@ -165,7 +165,7 @@ const Navbar = () => {
               </Link>
             </div>
             {user ? (
-              <>
+              <div className="">
                 <Link
                   to="/profile"
                   className="block hover:text-indigo-500 mt-2"
@@ -178,7 +178,7 @@ const Navbar = () => {
                 >
                   Logout
                 </button>
-              </>
+              </div>
             ) : (
               <div className="flex flex-col gap-2">
                 <Link to="/login" className="hover:text-indigo-500">

@@ -7,10 +7,17 @@ import {
   LinearScale,
   PointElement,
   Tooltip,
-  Filler
+  Filler,
 } from "chart.js";
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Filler);
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Filler
+);
 
 const Analytics = () => {
   const [popularProducts, setPopularProducts] = useState([]);
@@ -31,7 +38,7 @@ const Analytics = () => {
   };
 
   const crosshairPlugin = {
-    id: 'customCrosshair',
+    id: "customCrosshair",
     afterDraw: (chart) => {
       if (chart.tooltip._active && chart.tooltip._active.length) {
         const ctx = chart.ctx;
@@ -39,7 +46,7 @@ const Analytics = () => {
         const x = activePoint.element.x;
         const topY = chart.chartArea.top;
         const bottomY = chart.chartArea.bottom;
-  
+
         ctx.save();
         ctx.beginPath();
         ctx.moveTo(x, topY);
@@ -52,7 +59,6 @@ const Analytics = () => {
       }
     },
   };
-  
 
   const chartData = {
     labels: popularProducts.map((p) => p.productName),
@@ -93,15 +99,17 @@ const Analytics = () => {
             const idx = tooltipItem.dataIndex;
             const totalBids = popularProducts[idx]?.totalBids || 0;
             const bids = popularProducts[idx]?.bids || [];
-            const highestBid = bids.length ? Math.max(...bids.map(b => b.amount)) : 0;
-  
+            const highestBid = bids.length
+              ? Math.max(...bids.map((b) => b.amount))
+              : 0;
+
             return [
               `🔁 Total Bids: ${totalBids}`,
-              `💰 Highest Bid: ${highestBid}`
+              `💰 Highest Bid: ${highestBid}`,
             ];
-          }
-        }
-      }
+          },
+        },
+      },
     },
     scales: {
       x: { display: false },
@@ -111,33 +119,43 @@ const Analytics = () => {
       mode: "index",
       intersect: false,
     },
-    plugins: [crosshairPlugin], // Register custom plugin
+    // plugins: [crosshairPlugin], // Register custom plugin
+    crosshairPlugin,
   };
-  
 
   return (
     <div>
-      <h2 className="text-3xl font-bold text-center my-5 py-5">Popular Products based on Bids!</h2>
+      <h2 className="text-3xl font-bold text-center my-5 py-5">
+        Popular Products based on Bids!
+      </h2>
       <div className="w-full bg-white  rounded-xl shadow-md p-6 border border-gray-200">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <p className="text-sm font-medium text-gray-500">Bids Analysis</p>
-          
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <p className="text-sm font-medium text-gray-500">Bids Analysis</p>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20h6M9 4a3 3 0 00-6 0v16h6V4zM15 11a3 3 0 006 0V4a3 3 0 00-6 0v7z"
+              />
+            </svg>
+          </div>
         </div>
-        <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20h6M9 4a3 3 0 00-6 0v16h6V4zM15 11a3 3 0 006 0V4a3 3 0 00-6 0v7z" />
-          </svg>
-        </div>
-      </div>
 
-      {/* Chart container */}
-      <div className="w-full h-28 sm:h-32 md:h-36 lg:h-40">
-        <Line ref={chartRef} data={chartData} options={chartOptions} />
+        {/* Chart container */}
+        <div className="w-full h-28 sm:h-32 md:h-36 lg:h-40">
+          <Line ref={chartRef} data={chartData} options={chartOptions} />
+        </div>
       </div>
-    </div>
     </div>
   );
 };
