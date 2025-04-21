@@ -77,8 +77,8 @@ async function run() {
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
     const paymentCollection = client.db("Auctoria").collection("payments");
+    // const messageCollection = client.db("Auctoria").collection("messages");
     const messageCollection = client.db("Auctoria").collection("messages");
-
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -790,32 +790,57 @@ async function run() {
       }
     });
 
-    app.post("/messages", async (req, res) => {
-      const { sender, receiver, message, productId } = req.body;
+    // app.post("/messages", async (req, res) => {
+    //   const { sender, receiver, message, productId } = req.body;
 
-      if (!sender || !receiver || !message || !productId) {
-        return res.status(400).send({ error: "Missing required fields" });
-      }
+    //   if (!sender || !receiver || !message || !productId) {
+    //     return res.status(400).send({ error: "Missing required fields" });
+    //   }
 
-      const chatMessage = {
-        sender,
-        receiver,
-        message,
-        productId,
-        timestamp: new Date(),
-        read: false,
-      };
+    //   const chatMessage = {
+    //     sender,
+    //     receiver,
+    //     message,
+    //     productId,
+    //     timestamp: new Date(),
+    //     read: false,
+    //   };
 
-      try {
-        const result = await messagesCollection.insertOne(chatMessage);
-        io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
-        res.send(result);
-      } catch (error) {
-        console.error("Message store error:", error);
-        res.status(500).send({ error: "Failed to send message" });
-      }
-    });
+    //   try {
+    //     const result = await messageCollection.insertOne(chatMessage);
+    //     io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
+    //     res.send(result);
+    //   } catch (error) {
+    //     console.error("Message store error:", error);
+    //     res.status(500).send({ error: "Failed to send message" });
+    //   }
+    // });
 
+    // app.get(
+    //   "/messages/:productId/:userEmail/:otherUserEmail",
+    //   async (req, res) => {
+    //     const { productId, userEmail, otherUserEmail } = req.params;
+
+    //     try {
+    //       const messages = await messagesCollection
+    //         .find({
+    //           productId,
+    //           $or: [
+    //             { sender: userEmail, receiver: otherUserEmail },
+    //             { sender: otherUserEmail, receiver: userEmail },
+    //           ],
+    //         })
+    //         .sort({ timestamp: 1 })
+    //         .toArray();
+
+    //       res.send(messages);
+    //     } catch (error) {
+    //       res.status(500).send({ error: "Failed to fetch messages" });
+    //     }
+    //   }
+    // );
+
+    // about automatic send end time of bid to the bidder Users
     app.get(
       "/messages/:productId/:userEmail/:otherUserEmail",
       async (req, res) => {
@@ -840,7 +865,31 @@ async function run() {
       }
     );
 
-    // about automatic send end time of bid to the bidder Users
+    // chat with seller
+    app.post("/messages", async (req, res) => {
+      const { senderId, receiverId, productId, message } = req.body;
+
+      if (!senderId || !receiverId || !productId || !message) {
+        return res.status(400).send({ error: "Missing fields" });
+      }
+
+      const newMessage = {
+        senderId,
+        receiverId,
+        productId,
+        message,
+        timestamp: new Date(),
+      };
+
+      try {
+        const result = await messageCollection.insertOne(newMessage);
+        res.send(result);
+      } catch (error) {
+        console.error("Error inserting message:", error);
+        res.status(500).send({ error: "Server error while saving message" });
+      }
+    });
+
     const AuctionEndingTimer = async () => {
       const now = new Date();
       const tenMinutesLater = new Date(now.getTime() + 10 * 60 * 1000);
