@@ -69,7 +69,7 @@ const Tabs = ({ sellerId, sellerEmail,product }) => {
       hashtag="#AuctionItem"
     >
       <div className="btn btn-sm btn-outline btn-success flex items-center gap-2">
-        <FaFacebookSquare />
+        <FaFacebookSquare size={20}/>
         Share on Facebook
       </div>
     </FacebookShareButton>
@@ -81,7 +81,7 @@ const Tabs = ({ sellerId, sellerEmail,product }) => {
       hashtags={["Auction", "OnlineBidding"]}
     >
       <div className="btn btn-sm btn-outline btn-info flex items-center gap-2">
-        <FaTwitter />
+        <FaTwitter size={20} />
         Share on Twitter
       </div>
     </TwitterShareButton>
@@ -94,7 +94,7 @@ const Tabs = ({ sellerId, sellerEmail,product }) => {
       source="Auctoria Auction"
     >
       <div className="btn btn-sm btn-outline btn-primary flex items-center gap-2">
-        <FaLinkedin />
+        <FaLinkedin  size={20}/>
         Share on LinkedIn
       </div>
     </LinkedinShareButton>
