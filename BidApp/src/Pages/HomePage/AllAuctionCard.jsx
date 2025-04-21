@@ -124,7 +124,7 @@ const AllAuctionCard = ({ auction }) => {
           alt={productName}
         />
 
-
+        {/* 
 <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
   <p className="flex items-center gap-2 text-sm">
     {status === "expired" ? (
@@ -143,8 +143,7 @@ const AllAuctionCard = ({ auction }) => {
       </>
     )}
   </p>
-</div>
-
+</div> */}
 
         <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
           <div className="flex items-center gap-2 text-sm">
@@ -165,7 +164,6 @@ const AllAuctionCard = ({ auction }) => {
             )}
           </div>
         </div>
-
 
         <div className="px-4 h-[80px]">
           <h2 className="text-lg font-bold text-gray-800 mb-1 line-clamp-1">
