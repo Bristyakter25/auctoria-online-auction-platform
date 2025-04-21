@@ -13,23 +13,31 @@ import FeaturedProducts from "./FeaturedProducts";
 import GetInKnow from "./GetInKnow";
 
 import EidGreeting from "../Eid/EidGreetings";
-import Banner from "../../components/HomeComponents/Banner";
+
+import AboutSection from "../../components/HomeComponents/AboutSection";
+import AuctionProcess from "../About Us/AuctionProcess";
+import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
+import Banner from "../../components/HomeComponents/BannerFunctions/Banner";
 
 const Home = () => {
   return (
     <div className="w-full">
-     
-      <Banner></Banner>
+    <Banner></Banner>
       <div className="lg:max-w-7xl mx-auto">
-        <EidGreeting />
+        {/* <EidGreeting /> */}
+
         <LatestAuctions></LatestAuctions>
         <Question />
         <FeaturedProducts></FeaturedProducts>
-        <GetInKnow></GetInKnow>
-        <MeetCards />
-        <Partners />
+        {/* <GetInKnow></GetInKnow> */}
+        <AboutSection></AboutSection>
+        {/* <MeetCards /> */}
+        <AuctionProcess></AuctionProcess>
+        {/* <Partners /> */}
+        
         <BiddingMadness />
         <ContactForm />
+        <TrustedPartners></TrustedPartners>
       </div>
     </div>
   );

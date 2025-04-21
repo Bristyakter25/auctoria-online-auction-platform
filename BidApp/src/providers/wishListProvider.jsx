@@ -1,5 +1,10 @@
-
-import {  useEffect, useState, useContext, useCallback, createContext } from "react";
+import {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  createContext,
+} from "react";
 
 // import {
 //   createContext,
@@ -18,9 +23,6 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
-  
-
   // console.log("wishList is", wishlist);
 
   const fetchWishlist = useCallback(async () => {
@@ -32,7 +34,7 @@ export const WishlistProvider = ({ children }) => {
 
     try {
       setLoading(true);
-      const res = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${user.uid}`);
+      const res = await fetch(`http://localhost:5000/wishlist/${user.uid}`);
       if (!res.ok) throw new Error("Fetch failed");
 
       const data = await res.json();
@@ -53,7 +55,6 @@ export const WishlistProvider = ({ children }) => {
     }
   }, [user]);
 
- 
   useEffect(() => {
     fetchWishlist();
   }, [fetchWishlist]);
@@ -64,7 +65,7 @@ export const WishlistProvider = ({ children }) => {
         wishlist,
         setWishlist,
         loading,
-        refetchWishlist: fetchWishlist, 
+        refetchWishlist: fetchWishlist,
       }}
     >
       {children}

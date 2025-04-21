@@ -1,39 +1,65 @@
 import { useContext, useEffect, useState } from "react";
-import { FaGavel } from "react-icons/fa";
+import { FaGavel, FaTimesCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
+import SuggestedBid from "./SuggestedBid";
+import AuctionWinner from "./AuctionWinner";
+
+import { BsFillChatTextFill } from "react-icons/bs";
+
+import { MdWatchLater } from "react-icons/md";
+
 
 // import { MdCancel } from "react-icons/md";
 
-
-
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  const options = { day: "numeric", month: "long", year: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+};
+
+const calculateCountdown = (endTime) => {
+  const now = new Date();
+  const end = new Date(endTime);
+  const diff = end - now;
+
+  if (diff <= 0) return "Auction Ended";
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / 1000 / 60) % 60);
+
+  return `${days}d ${hours}h ${minutes}m left`;
+};
 
 const Bid = () => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const item = {
-    images: [
-      "https://i.ibb.co/PhQ5y3z/51q-Glsxsw-ZL.jpg",
-      "https://i.ibb.co/09jKmmg/Pulse-01-1200x.jpg",
-      "https://i.ibb.co/6F2D1s1/Smart-Watches.jpg",
-    ],
+    images: [],
   };
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");
-  const [selectedImage, setSelectedImage] = useState(item.images[0]);
+
+  const [messageText, setMessageText] = useState("");
+const [showModal, setShowModal] = useState(false);
+
+
+
+  // const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
   console.log("product data", product);
   useEffect(() => {
     console.log(`Fetching product with id: ${id}`);
-    fetch(`https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`)
+    fetch(`http://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched product data:", data);
@@ -104,6 +130,12 @@ const Bid = () => {
       });
       return;
     }
+    if (Number(bidAmount) <= product.startingBid) {
+      toast.error("Your bid must be at least max to the starting bid!", {
+        position: "top-right",
+      });
+      return;
+    }
     if (Number(bidAmount) <= currentBid) {
       toast.warning("Your bid must be higher than the current maximum bid!", {
         position: "top-right",
@@ -112,7 +144,7 @@ const Bid = () => {
     }
     // const bidId = generateSellerId();
     try {
-      const res = await fetch(`https://auctoria-online-auction-platform.onrender.com/bid/${id}`, {
+      const res = await fetch(`http://localhost:5000/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -144,35 +176,86 @@ const Bid = () => {
     }
   };
 
+
+  const handleSendMessage = async () => {
+    if (!messageText.trim()) {
+      toast.error("Message cannot be empty.");
+      return;
+    }
+    if (!user?.email || !product?.email || !product?._id) {
+      toast.error("Some required data is missing.");
+      return;
+    }
+    
+    const payload = {
+      senderId: user?.email, // assuming email is used as ID
+      receiverId: product?.email, // seller email
+      productId: product?._id,
+      message: messageText,
+    };
+  
+    try {
+      const res = await fetch("http://localhost:5000/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await res.json();
+  
+      if (data.insertedId) {
+        toast.success("Message sent to seller!");
+        setShowModal(false);
+        setMessageText("");
+      } else {
+        toast.error("Failed to send message.");
+      }
+    } catch (error) {
+      console.error("Message send error:", error);
+      toast.error("Server error while sending message.");
+    }
+  };
+  
+  
+
   if (!product) return <p className="text-center">Loading...</p>;
 
+  if (!product) return <LoadingSpinner></LoadingSpinner>;
+
+
   return (
-    <div className="container mx-auto px-4 py-40">
+    <div className="container mx-auto px-4 py-32">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Right Side: Images & Thumbnails */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border"
+
+          
+
+          className=" p-6 shadow-md rounded-lg bg-teal-50"
+
         >
           {/* Main Image */}
           <motion.img
             src={product.productImage}
             alt="Auction Item"
-            className="w-full h-80 object-fill rounded-lg"
+            className="w-full mt-24 h-[420px] object-fill rounded-lg"
             whileHover={{ scale: 1 }}
             transition={{ duration: 0.8 }}
           />
 
           {/* Thumbnails */}
-          <div className="flex gap-2 mt-4 col-reverse">
+          {/* <div className="flex gap-2 mt-4 col-reverse">
             {item.images.map((img, index) => (
               <motion.img
                 key={index}
                 src={img}
                 alt="Thumbnail"
-                className={`w-20 h-20 object-cover rounded-md cursor-pointer border-2 ${
+                className={`w-32 h-32 object-cover rounded-md cursor-pointer border-2 ${
                   selectedImage === img ? "border-blue-600" : "border-gray-300"
                 }`}
                 whileHover={{ scale: 1.1 }}
@@ -180,48 +263,68 @@ const Bid = () => {
                 onClick={() => setSelectedImage(img)}
               />
             ))}
-          </div>
+          </div> */}
         </motion.div>
         {/* Left Side: Bidding Info */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white p-6 shadow-md rounded-lg border relative "
+          className=" p-6 shadow-md rounded-lg border relative bg-gray-50"
         >
           <div className="text-2xl font-bold mb-2 flex items-center ">
             {" "}
             <div
               className="w-0 h-0 border-t-[28px] border-t-transparent border-l-[28px] border-l-teal-300
-  border-b-[28px] border-b-transparent absolute -top-5 -right-1 -rotate-45 "
+  border-b-[28px] border-b-transparent absolute -top-6 -right-2 -rotate-45 p-1"
             ></div>
-            <h2 className="w-8/12 ">{product.productName} </h2>
-            <p className="text-lg text-gray-900 flex justify-center items-center -top-1 right-1 absolute">
+            <h2 className="w-8/12 text-gary-600 dark:text-gray-700">
+              {product.productName}{" "}
+            </h2>
+            <p className="text-lg flex justify-center items-center -top-1 right-1 absolute text-gary-600 dark:text-gray-700">
               {product.bids?.length}
             </p>{" "}
           </div>
-          <p className="text-gray-500 text-sm mb-4"> {product.category}</p>
-
-          {/* Start & End Time */}
-          <p className="text-gray-700">
-            <strong>Auction Start:</strong>{" "}
-            {new Date(product.auctionStartDate).toLocaleString()}
+          <p className="text-md mb-4 text-gary-600 dark:text-gray-700">
+            {" "}
+            {product.category}
           </p>
-          <p className="text-gray-600">
-            <strong>Auction ends:</strong>{" "}
-            {new Date(product.auctionEndTime).toLocaleString()}
+          <p className="text-gary-600 dark:text-gray-700">
+            <strong>End Time</strong> {formatDate(product.auctionEndTime)}
+          </p>
+          <p className="text-sm mt-1 flex items-center gap-2 text-gary-600 dark:text-gray-700">
+            <MdWatchLater size={24} />
+            {calculateCountdown(product.auctionEndTime)}
           </p>
 
           {/* Current Bid */}
-          <div className="mt-4">
-            <p className="text-sm font-semibold text-gray-600">Current Bid:</p>
-            <p className="text-3xl font-bold">
-              $ {currentBid || "No bids yet"}
-            </p>
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex px-4 py-1 border bg-green-300 rounded-full">
+              <p className="text-sm font-semibold text-gary-600 dark:text-gray-700">
+                Current Bid
+                <span className="text-3xl font-bold text-gary-600 dark:text-gray-700">
+                  ${currentBid || "No bids yet"}
+                </span>
+              </p>
+            </div>
+            <div>
+              <p className="border px-4 py-1 bg-blue-300 rounded-full ">
+                Base Price{" "}
+                <span className="text-3xl font-bold text-gary-600 dark:text-gray-700">
+                  ${product.startingBid}
+                </span>
+              </p>
+            </div>
           </div>
 
           {/* Bid Input Field */}
-          <div className="mt-4">
+          <div className="mt-4 text-gary-600 dark:text-gray-700">
+            {product.status === "expired" ? (
+              ""
+            ) : (
+              <SuggestedBid category={product.category} />
+            )}
+
             <input
               type="number"
               className="w-full p-2 border rounded-md"
@@ -232,7 +335,7 @@ const Bid = () => {
           </div>
 
           {/* Make a Bid Button */}
-          {product.endingSoonNotified === true ? (
+          {new Date(product.auctionEndTime) < new Date() ? (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleBid}
@@ -254,9 +357,9 @@ const Bid = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white   "
+            className="   "
           >
-            <h3 className="text-xl font-bold text-gray-600 mb-3 mt-3">
+            <h3 className="text-xl font-bold mb-3 mt-3 text-gary-600 dark:text-gray-700">
               Latest Bids
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -264,39 +367,108 @@ const Bid = () => {
                 [...product.bids]
                   .sort((a, b) => b.amount - a.amount)
                   .slice(0, 3)
-                  .map((bid, index) => (
-                    <div
-                      key={index}
-                      className="bg-white p-4 shadow-md rounded-lg border border-gray-200"
-                    >
-                      <div className="flex items-center justify-between">
-                        <p className="text-lg font-semibold text-gray-800">
-                          ${bid.amount}
-                        </p>
-                        {/* <button
-                          onClick={() => bid?._id && handleDeleteBid(bid._id)}
+                  .map((bid, index) => {
+                    const isWinningBid =
+                      product.status === "expired" && index === 0;
+                    return (
+                      <div
+                        key={index}
+                        className={`p-4 shadow-md rounded-lg border transition duration-300 ${
+                          isWinningBid
+                            ? "bg-teal-100 border-teal-400"
+                            : "bg-white border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p
+                            className={`text-lg font-semibold ${
+                              isWinningBid ? "text-amber-700" : "text-gray-800"
+                            }`}
+                          >
+                            ${bid.amount}
+                          </p>
+                          {isWinningBid && (
+                            <span className="text-xs bg-teal-400 text-white px-2 py-1 rounded-full">
+                              Winner 👑
+                            </span>
+                          )}
+                        </div>
+                        <p
+                          className={`text-sm mt-1 ${
+                            isWinningBid ? "font-medium" : "text-gray-500"
+                          }`}
                         >
-                          <MdCancel />
-                        </button> */}
+                          Bidder: {bid.user}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-500">
-                        Bid by: {bid.user}
-                      </p>
-                      {/* <p className="text-xs text-gray-400">
-                        {bid.time
-                          ? new Date(bid?.time).toLocaleString()
-                          : "Loading..."}
-                      </p> */}
-                    </div>
-                  ))
+                    );
+                  })
               ) : (
-                <p className="text-gray-500">No bids placed yet.</p>
+                <p className="">There is no Bid।</p>
               )}
+
+
             </div>
+            <div className="my-5">
+              
+            <div className="border rounded-lg p-4 shadow-sm mt-6">
+  <h4 className="text-md font-semibold mb-2">Need Help?</h4>
+  <p className="text-sm text-gray-600 mb-3">Contact the seller for more info about this product.</p>
+  <button
+    onClick={() => setShowModal(true)}
+    className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+  >
+    <BsFillChatTextFill />
+    Chat With Seller
+  </button>
+</div>
+
+
+
+{showModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+      <h3 className="text-xl font-semibold mb-4">Send Message to Seller</h3>
+      <textarea
+        className="w-full p-2 border rounded mb-4"
+        rows={4}
+        placeholder="Write your message..."
+        value={messageText}
+        onChange={(e) => setMessageText(e.target.value)}
+      />
+      <div className="flex justify-end gap-2">
+        <button
+          onClick={() => setShowModal(false)}
+          className="bg-gray-300 hover:bg-gray-400 text-black py-1 px-4 rounded"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSendMessage}
+          className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+            
+            </div>
+            
           </motion.div>
         </motion.div>
+        
       </div>
-     <Tabs sellerId={product._id} sellerEmail={product.email} product={product}></Tabs>
+      {/* <AuctionWinner /> */}
+      <Tabs
+        sellerId={product._id}
+        sellerEmail={product.email}
+        product={product}
+        setProduct={setProduct}
+      />
     </div>
   );
 };

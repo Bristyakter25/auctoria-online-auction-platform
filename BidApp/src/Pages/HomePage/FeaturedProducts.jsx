@@ -8,7 +8,7 @@ const FeaturedProducts = () => {
   const [filteredAuctions, setFilteredAuctions] = useState([]);
 
   useEffect(() => {
-    fetch("https://auctoria-online-auction-platform.onrender.com/featuredProducts")
+    fetch("http://localhost:5000/featuredProducts")
       .then((res) => res.json())
       .then((data) => {
         setFeaturedAuctions(data);
@@ -33,7 +33,7 @@ const FeaturedProducts = () => {
 
   return (
     <div className="">
-      <h2 className="lg:text-4xl text-3xl text-black mt-10 font-bold text-center mb-4">
+      <h2 className="lg:text-4xl text-3xl  mt-10 font-bold text-center mb-4">
         Featured Products
       </h2>
 
@@ -61,7 +61,7 @@ const FeaturedProducts = () => {
         </select>
       </div>
 
-      <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-5">
+      <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {filteredAuctions.length > 0 ? (
           filteredAuctions.map((auction) => (
             <FeaturedProductCard key={auction._id} auction={auction} />

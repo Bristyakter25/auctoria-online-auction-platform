@@ -9,14 +9,16 @@ const CheckOutForm = () => {
     const [error, setError] = useState('');
     const [clientSecret, setClientSecret] = useState('');
     const [transactionId, setTransactionId] = useState('');
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+
     const stripe = useStripe();
     const elements = useElements();
 const axiosSecure = useAxiosSecure();
 const location = useLocation();
-const {totalPrice} = location.state;
+const {totalPrice, cart} = location.state;
 const {user} =useContext(AuthContext);
     useEffect( () =>{
-axiosSecure.post('/create-payment-intent', {price: totalPrice})
+axiosSecure.post('/create-payment-intent', {price: totalPrice},{cart: cart})
 .then(res => {
     console.log(res.data.clientSecret);
     setClientSecret(res.data.clientSecret);
@@ -66,12 +68,31 @@ axiosSecure.post('/create-payment-intent', {price: totalPrice})
     }
     else{
         console.log('payment intent',paymentIntent);
-        if(paymentIntent.status === "succeeded")
-            console.log('transaction id', paymentIntent.id);
-       setTransactionId(paymentIntent.id)
-    }
-    }
-
+        if(paymentIntent.status === "succeeded") {
+          console.log('transaction id', paymentIntent.id);
+          setTransactionId(paymentIntent.id);
+      
+          const payment = {
+            email: user.email,
+            price: totalPrice,
+            transactionId: paymentIntent.id,
+            date: new Date(),
+            products: cart.map(item => ({
+              bidId: item.bidId,
+              name: item.productName,        
+              image: item.productImage,     
+            })),
+            status: "pending"
+          };
+          
+      
+          const res = await axiosSecure.post('/payments', payment);
+          console.log("payment saved", res);
+          
+          
+          setPaymentSuccess(true);
+      }
+    }}      
     
     return (
         <form onSubmit={handleSubmit}>
@@ -91,11 +112,26 @@ axiosSecure.post('/create-payment-intent', {price: totalPrice})
           },
         }}
       />
-      <button className="btn btn-primary my-5" type="submit" disabled={!stripe || !clientSecret}>
+      <button className="btn  bg-green-400 hover:bg-green-700 hover:text-white  my-5" type="submit" disabled={!stripe || !clientSecret}>
         Pay
       </button>
       <p className="text-red-600">{error}</p>
       {transactionId && <p className="text-green-600">Your Transaction Id: {transactionId}</p> }
+      {paymentSuccess && (
+  <div className="mt-5">
+    <h2 className="text-xl font-bold mb-3">Products Paid For:{user.name}</h2>
+    <ul className="space-y-2">
+      {cart.map((item, index) => (
+        <li key={index} className="border p-3 rounded shadow-sm">
+          <p><strong>Product Name:</strong> {item.productName}</p>
+          <p><strong>Price:</strong> ${item.amount}</p>
+          
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
         </form>
     );
 };

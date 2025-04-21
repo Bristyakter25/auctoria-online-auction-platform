@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import AllAuctionCard from "./HomePage/AllAuctionCard";
 
 const AllAuctions = () => {
@@ -9,7 +10,7 @@ const AllAuctions = () => {
   const [filteredAuctions, setFilteredAuctions] = useState([]);
 
   useEffect(() => {
-    fetch("https://auctoria-online-auction-platform.onrender.com/addProducts")
+    fetch("http://localhost:5000/addProducts")
       .then((res) => res.json())
       .then((data) => {
         setAllAuctions(data);
@@ -40,24 +41,26 @@ const AllAuctions = () => {
       </h2>
 
       {/* Search & Filter Section */}
-      <div className="text-center my-5 flex flex-wrap justify-center gap-4">
+      <div className="text-center my-5 flex flex-wrap justify-center gap-4 ">
+        {/* <FaSearch className="" /> */}
         <input
           type="text"
           placeholder="Search auctions"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border p-2 rounded"
+          className="border p-2 rounded lg:w-3/12"
         />
 
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="border p-2 rounded"
+          className="border p-2 rounded lg:w-2/12  "
         >
           <option value="All">All</option>
           <option value="Antiques">Antiques</option>
           <option value="Electronics">Electronics</option>
           <option value="Collectibles">Collectibles</option>
+          <option value="Cars">Cars</option>
           <option value="Jewelry">Jewelry</option>
           <option value="Watches">Watches</option>
           <option value="Art">Art</option>
@@ -65,7 +68,7 @@ const AllAuctions = () => {
       </div>
 
       {/* Auction List */}
-      <div className="max-w-3xl mx-auto gap-4 space-y-3 ">
+      <div className="max-w-7xl mx-auto gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ">
         {filteredAuctions.length > 0 ? (
           filteredAuctions.map((auction) => (
             <AllAuctionCard key={auction._id} auction={auction} />
