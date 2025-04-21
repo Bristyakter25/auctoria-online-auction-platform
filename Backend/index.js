@@ -214,6 +214,23 @@ async function run() {
 
     // 🛠 Get Single Product by ID
 
+
+    app.get("/productHistory", async (req, res) => {
+      const email = req.query.email; 
+      console.log("email:", email);
+    
+      if (!email) {
+        return res.status(400).send({ message: "Email query parameter is required." });
+      }
+    
+      try {
+        const result = await productsCollection.find({ email }).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch products", error });
+      }
+    });
+
     app.get("/addProducts/:id", async (req, res) => {
       const { id } = req.params;
       console.log("product id is ", id);
