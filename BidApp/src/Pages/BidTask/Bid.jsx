@@ -38,9 +38,9 @@ const calculateCountdown = (endTime) => {
 
 const Bid = () => {
   const { user } = useContext(AuthContext);
-  // const item = {
-  //   images: [],
-  // };
+  const item = {
+    images: [],
+  };
   const { id } = useParams();
   const [product, setProduct] = useState([]);
   const [bidAmount, setBidAmount] = useState("");

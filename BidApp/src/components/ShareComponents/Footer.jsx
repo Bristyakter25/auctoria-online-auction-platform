@@ -3,7 +3,7 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/f
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import { useCallback } from "react";
-import ParticleBg from "../ParticleBg/ParticleBg";
+// import ParticleBg from "../ParticleBg/ParticleBg";
 
 const Footer = () => {
   const particlesInit = useCallback(async engine => {
@@ -107,7 +107,7 @@ const particlesLoaded = useCallback(async container => {
           </p>
         </aside>
       </div>
-      <ParticleBg></ParticleBg>
+      {/* <ParticleBg></ParticleBg> */}
     </div>
   );
 };

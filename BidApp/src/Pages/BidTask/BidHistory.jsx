@@ -107,6 +107,13 @@ const BidHistory = () => {
             <tbody>
               {bids.map((bid, index) => (
                 <tr key={`${bid._id}-${index}`}>
+                    <td className="border px-4 py-2">
+                    <img
+                      src={bid.productImage}
+                      alt={bid.productName}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  </td>
                   <td className="border px-4 py-2">{bid.productName}</td>
                   <td className="border px-4 py-2">{bid.name}</td>
                   <td className="border px-4 py-2">{bid.email}</td>
@@ -123,13 +130,7 @@ const BidHistory = () => {
                       Delete
                     </button>
                   </td>
-                  <td className="border px-4 py-2">
-                    <img
-                      src={bid.productImage}
-                      alt={bid.productName}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  </td>
+                
                 </tr>
               ))}
             </tbody>
