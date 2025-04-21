@@ -147,8 +147,8 @@ const Navbar = () => {
             className="md:hidden px-4 pb-4 bg-teal-100 text-gray-700 font-medium space-y-2 overflow-hidden"
           >
             {navLinks}
-            <div className="flex items-center gap-3 mt-3">
-              <NotificationBell user={user} />
+            <div className="flex items-center  gap-3 mt-3">
+              <NotificationBell user={user} className="text-gray-600" />
               <Link
                 to="/wishlist"
                 className="relative bg-gray-100 p-2 rounded-full"

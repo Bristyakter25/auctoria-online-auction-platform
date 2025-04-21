@@ -49,7 +49,9 @@ const AllAuctionCard = ({ auction }) => {
         clearInterval(interval);
       } else {
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
         setTimeLeft({ days, hours, minutes, seconds });
@@ -65,11 +67,15 @@ const AllAuctionCard = ({ auction }) => {
 
     const fetchWishlist = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/wishlist/${userId}`);
+        const response = await fetch(
+          `http://localhost:5000/wishlist/${userId}`
+        );
         const data = await response.json();
 
         if (response.ok) {
-          const isProductInWishlist = data.wishlist.some((product) => product._id === _id);
+          const isProductInWishlist = data.wishlist.some(
+            (product) => product._id === _id
+          );
           setIsWishlisted(isProductInWishlist);
         } else {
           console.error("Failed to fetch wishlist");
@@ -147,34 +153,11 @@ const AllAuctionCard = ({ auction }) => {
       className="rounded-xl shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
     >
       <div className="h-full">
-        {/* Relative container for image and countdown */}
-        <div className="relative h-[280px]">
-          <img
-            className="object-cover w-full h-full items-center rounded-t-xl"
-            src={productImage}
-            alt={productName}
-          />
-          {status !== "expired" && (
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-3 py-1 rounded-full text-sm shadow-md z-10 flex items-center gap-2">
-              <div className="bg-gray-100 px-2 py-1 rounded">
-                <span className="font-bold">{timeLeft.days}</span> Days
-              </div>
-              <span className="text-gray-500">•</span>
-              <div className="bg-gray-100 px-2 py-1 rounded">
-                <span className="font-bold">{timeLeft.hours}</span> Hours
-              </div>
-              <span className="text-gray-500">•</span>
-              <div className="bg-gray-100 px-2 py-1 rounded">
-                <span className="font-bold">{timeLeft.minutes}</span> Minutes
-              </div>
-              <span className="text-gray-500">•</span>
-              <div className="bg-gray-100 px-2 py-1 rounded">
-                <span className="font-bold">{timeLeft.seconds}</span> Seconds
-              </div>
-            </div>
-          )}
-        </div>
-
+        <img
+          className="object-cover w-full h-[200px] items-center rounded-t-xl"
+          src={productImage}
+          alt={productName}
+        />
         <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
           <div className="flex items-center gap-2 text-sm">
             {status === "expired" ? (
