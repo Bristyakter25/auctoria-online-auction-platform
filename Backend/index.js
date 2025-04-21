@@ -76,9 +76,16 @@ async function run() {
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
-    const paymentCollection = client.db("Auctoria").collection("payments");
-    // const messageCollection = client.db("Auctoria").collection("messages");
-    const messageCollection = client.db("Auctoria").collection("messages");
+
+
+    const paymentCollection = client.db("Auctoria").collection('payments');
+    const messageCollection = client.db("Auctoria").collection('messages');
+
+    
+
+
+    
+
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -253,6 +260,23 @@ async function run() {
         res.json(product);
       } catch (error) {
         res.status(500).json({ error: "Invalid product ID" });
+      }
+    });
+
+
+    app.get("/productHistory", async (req, res) => {
+      const email = req.query.email; 
+      console.log("email:", email);
+    
+      if (!email) {
+        return res.status(400).send({ message: "Email query parameter is required." });
+      }
+    
+      try {
+        const result = await productsCollection.find({ email }).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch products", error });
       }
     });
 
