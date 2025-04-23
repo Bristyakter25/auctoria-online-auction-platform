@@ -2,11 +2,12 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoEye } from "react-icons/io5";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaGavel, FaUser } from "react-icons/fa";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 import { WishlistContext } from "../../providers/wishListProvider";
+import { cn } from "../../utils/cn";
 
 const AllAuctionCard = ({ auction }) => {
   const navigate = useNavigate();
@@ -150,32 +151,43 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-xl shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
+      className={cn(
+        "rounded-3xl relative z-40 shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
+      )}
     >
-      <div className="h-full">
+      <div className="h-full ">
         <img
           className="object-cover w-full h-[200px] items-center rounded-t-xl"
           src={productImage}
           alt={productName}
         />
-        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
+        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-gray-800">
+          {" "}
+          {/* Changed text-white to text-gray-800 for better contrast on gradient */}
           <div className="flex items-center gap-2 text-sm">
             {status === "expired" ? (
               <>
-                <FaUser className="text-gray-500" size={16} />
-                <p className="text-gray-600 font-bold">Winner {winner}</p>
+                <FaUser size={16} />
+                <p className="font-bold">Winner {winner}</p>
               </>
             ) : bids?.length > 0 ? (
               <>
-                <FaGavel className="text-gray-500" />
-                <p className="text-gray-600 font-bold">{`${bids.length} Bids`}</p>
+                <FaGavel />
+                <p className="font-bold">{`${bids.length} Bids`}</p>
               </>
             ) : (
               <>
-                <p className="text-gray-600 font-bold">No bids yet</p>
+                <p className="font-bold">No bids yet</p>
               </>
             )}
           </div>
+          {/* Display countdown timer if not expired */}
+          {status !== "expired" && auctionEndTime && (
+            <div className="text-sm font-bold">
+              {timeLeft.days > 0 && `${timeLeft.days}d `}
+              {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+            </div>
+          )}
         </div>
 
         <div className="px-4 h-[80px]">

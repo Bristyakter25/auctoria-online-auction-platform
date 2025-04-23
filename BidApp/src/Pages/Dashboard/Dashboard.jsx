@@ -7,6 +7,7 @@ import { MdOutlineAddToQueue } from "react-icons/md";
 import { FaChartBar } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router-dom";
 import useRole from "../../hooks/useRole";
+import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
 
 const Dashboard = () => {
   const [role, isLoading] = useRole();
