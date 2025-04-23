@@ -7,9 +7,14 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
-import { MdWatchLater } from "react-icons/md";
+import AuctionWinner from "./AuctionWinner";
+
 import { BsFillChatTextFill } from "react-icons/bs";
-import LoadingSpinner from "../../components/ShareComponents/Loading/LoadingSpinner";
+
+import { MdWatchLater } from "react-icons/md";
+
+
+// import { MdCancel } from "react-icons/md";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -173,6 +178,7 @@ const Bid = () => {
     }
   };
 
+
   const handleSendMessage = async () => {
     if (!messageText.trim()) {
       toast.error("Message cannot be empty.");
@@ -213,8 +219,13 @@ const Bid = () => {
       toast.error("Server error while sending message.");
     }
   };
+  
+  
 
-  if (loading) return <LoadingSpinner />;
+  if (!product) return <p className="text-center">Loading...</p>;
+
+  if (!product) return <LoadingSpinner></LoadingSpinner>;
+
 
   return (
     <div className="container mx-auto px-4 py-32">
@@ -224,13 +235,21 @@ const Bid = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
+<<<<<<< HEAD
+
+          
+
+          className=" p-6 shadow-md rounded-lg bg-teal-50"
+
+=======
           className=" p-6 shadow-md rounded-lg "
+>>>>>>> 4e84591697aaad33fe0725a66afe1deb5f6decb0
         >
           {/* Main Image */}
           <motion.img
             src={product.productImage}
             alt="Auction Item"
-            className="w-full h-[480px] object-fill object-cover rounded-lg lg:mt-2"
+            className="w-full mt-24 h-[420px] object-fill rounded-lg"
             whileHover={{ scale: 1 }}
             transition={{ duration: 0.8 }}
           />
