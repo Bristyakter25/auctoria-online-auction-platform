@@ -2,7 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import WishListCard from "./WishListCard";
 import { AuthContext } from "../providers/AuthProvider";
 import LoadingSpinner from "../components/ShareComponents/Loading/LoadingSpinner";
-
+import { Link } from "react-router-dom";
+import { FaLongArrowAltRight } from "react-icons/fa";
 const WishList = () => {
   const { user } = useContext(AuthContext);
   const [wishListProducts, setWishListProducts] = useState([]);
@@ -14,7 +15,7 @@ const WishList = () => {
 
     setLoading(true);
 
-    fetch(`http://localhost:5000/wishlist/${user.uid}`)
+    fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${user.uid}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch wishlist");
@@ -37,20 +38,31 @@ const WishList = () => {
   }
 
   return (
-    <div className=" max-w-7xl mx-auto mt-24 mb-10 rounded-xl">
-      <h2 className="text-2xl font-bold text-center mb-5 py-3 shadow-lg bg-teal-100 max-w-7xl mx-auto rounded-xl ">
-        Your Wishlisted Items
-      </h2>
+    <div className="">
+      
+<div className="text-center mb-10 py-40 bg-gradient-to-r from-yellow-100 via-white to-yellow-100"
+>
+
+            <h2 className="text-5xl  font-bold mb-5">Your Wish listed items! </h2>
+            
+            <div className="flex items-center justify-center gap-x-3 text-center ">
+            <Link to="/" className="text-lg hover:text-green-600">Home</Link>
+           <p className="mt-2 "> <FaLongArrowAltRight /></p>
+            <p className="text-lg ">Wish List Products</p>
+            </div>
+            </div>
       {error && <p className="text-center text-red-500">{error}</p>}{" "}
-      {/* Display error message if any */}
+      
       {wishListProducts.length > 0 ? (
-        <div className="grid gap-y-5 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-x-4">
+        <div className="lg:w-[900px] w-[380px] mx-auto">
+          <div className="grid gap-y-5  lg:grid-cols-2 sm:grid-cols-1 gap-x-4">
           {wishListProducts.map((wishListProduct) => (
             <WishListCard
               key={wishListProduct._id}
               wishListProduct={wishListProduct}
             />
           ))}
+        </div>
         </div>
       ) : (
         <p className="text-center text-gray-500">No items in your wishlist.</p>

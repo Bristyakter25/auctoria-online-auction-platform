@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 
 const fetchReviews = async () => {
-  const response = await axios.get("http://localhost:5000/reviews");
+  const response = await axios.get("https://auctoria-online-auction-platform.onrender.com/reviews");
   return response.data;
 };
 
@@ -36,7 +36,7 @@ const Reviews = () => {
     if (!confirm) return;
 
     try {
-      await axios.delete(`http://localhost:5000/reviews/${id}`);
+      await axios.delete(`https://auctoria-online-auction-platform.onrender.com/reviews/${id}`);
       alert("Review deleted.");
       refetch();
     } catch (err) {
@@ -54,7 +54,7 @@ const Reviews = () => {
 
     try {
       await axios.patch(
-        `http://localhost:5000/reviews/${replyModal.reviewId}`,
+        `https://auctoria-online-auction-platform.onrender.com/reviews/${replyModal.reviewId}`,
         {
           adminReply: replyMessage,
         }
