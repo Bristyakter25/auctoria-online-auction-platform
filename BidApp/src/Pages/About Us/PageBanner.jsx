@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const PageBanner = () => {
   return (
-    <section className="w-full h-96 bg-gradient-to-r from-[#f4f7ed] to-[#eef2dc] py-20 px-4 text-center relative overflow-hidden">
+    <section className="w-full h-96 bg-gradient-to-r from-yellow-100 via-white to-yellow-100 py-40 px-4 text-center relative overflow-hidden">
       {/* Optional grid pattern background */}
       <div className="absolute inset-0 bg-[url('	https://probid-wp.egenstheme.com/wp-content/plugin…theme-options/images/breadcrumb/breadcrumb-bg.png')] opacity-10 pointer-events-none"></div>
 
