@@ -24,7 +24,7 @@ const Analytics = () => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/popularProducts")
+    fetch("https://auctoria-online-auction-platform.onrender.com/popularProducts")
       .then((res) => res.json())
       .then((data) => setPopularProducts(data))
       .catch((err) => console.error("Error loading popular products:", err));
