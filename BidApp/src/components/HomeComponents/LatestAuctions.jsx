@@ -14,11 +14,17 @@ const LatestAuctions = () => {
   }, []);
 
   return (
-    <div>
-      <h2 className="text-5xl  mt-20  font-bold text-center mb-8">
-        Latest Auction Buzz!
-      </h2>
-      <div className="my-5  grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-x-14 gap-y-10">
+    <div className=" max-w-7xl mx-auto">
+      <div className="py-4">
+        <h2 className="lg:text-4xl text-3xl mt-5  font-bold text-center mb-4">
+          Latest Auction Buzz!
+        </h2>
+        <p className="text-base text-center">
+          Catch the excitement! See what’s buzzing in our latest live auctions
+          today
+        </p>
+      </div>
+      <div className="my-5 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-4">
         {recentProducts.map((recentProduct) => (
           <RecentProductCard
             key={recentProduct._id}
