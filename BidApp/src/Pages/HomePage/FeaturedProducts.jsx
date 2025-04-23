@@ -36,7 +36,11 @@ const FeaturedProducts = () => {
       <h2 className="lg:text-4xl text-3xl  mt-10 font-bold text-center mb-4">
         Featured Products
       </h2>
-
+      <p className="text-xl text-center">
+        Explore our top-picked featured items loved by shoppers across the
+        country.
+      </p>
+      {/* 
       <div className="text-center my-5 flex flex-wrap justify-center gap-4">
         <input
           type="text"
@@ -59,7 +63,7 @@ const FeaturedProducts = () => {
           <option value="Watches">Watches</option>
           <option value="Art">Art</option>
         </select>
-      </div>
+      </div> */}
 
       <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {filteredAuctions.length > 0 ? (

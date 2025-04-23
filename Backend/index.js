@@ -1145,6 +1145,36 @@ async function run() {
           .send({ success: false, message: "Server error", error });
       }
     });
+
+    // Recent Auction Winner related API
+    app.get("/recentWinners", async (req, res) => {
+      try {
+        const limit = parseInt(req.query.limit) || 3;
+        const winner = await productsCollection
+          .find({
+            status: "expired",
+            winner: { $exists: true, $ne: null },
+          })
+          .project({
+            productName: 1,
+            winner: 1,
+            winningBid: 1,
+            winningProduct: 1,
+            winningTime: 1,
+            productImage: 1,
+            category: 1,
+          })
+          .sort({ winningTime: -1 })
+          .limit(limit)
+          .toArray();
+        io.emit("newWinner", winner);
+        // console.log("Emitting newWinner", winner);
+        res.send(winner);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
