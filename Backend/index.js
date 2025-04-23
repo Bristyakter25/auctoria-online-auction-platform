@@ -76,9 +76,16 @@ async function run() {
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
-    const paymentCollection = client.db("Auctoria").collection("payments");
-    // const messageCollection = client.db("Auctoria").collection("messages");
-    const messageCollection = client.db("Auctoria").collection("messages");
+
+
+    const paymentCollection = client.db("Auctoria").collection('payments');
+    const messageCollection = client.db("Auctoria").collection('messages');
+
+    
+
+
+    
+
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -214,6 +221,23 @@ async function run() {
 
     // 🛠 Get Single Product by ID
 
+
+    app.get("/productHistory", async (req, res) => {
+      const email = req.query.email; 
+      console.log("email:", email);
+    
+      if (!email) {
+        return res.status(400).send({ message: "Email query parameter is required." });
+      }
+    
+      try {
+        const result = await productsCollection.find({ email }).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch products", error });
+      }
+    });
+
     app.get("/addProducts/:id", async (req, res) => {
       const { id } = req.params;
       console.log("product id is ", id);
@@ -236,6 +260,23 @@ async function run() {
         res.json(product);
       } catch (error) {
         res.status(500).json({ error: "Invalid product ID" });
+      }
+    });
+
+
+    app.get("/productHistory", async (req, res) => {
+      const email = req.query.email; 
+      console.log("email:", email);
+    
+      if (!email) {
+        return res.status(400).send({ message: "Email query parameter is required." });
+      }
+    
+      try {
+        const result = await productsCollection.find({ email }).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch products", error });
       }
     });
 
@@ -824,29 +865,27 @@ async function run() {
     // );
 
     // about automatic send end time of bid to the bidder Users
-    app.get(
-      "/messages/:productId/:userEmail/:otherUserEmail",
-      async (req, res) => {
-        const { productId, userEmail, otherUserEmail } = req.params;
-
-        try {
-          const messages = await messagesCollection
-            .find({
-              productId,
-              $or: [
-                { sender: userEmail, receiver: otherUserEmail },
-                { sender: otherUserEmail, receiver: userEmail },
-              ],
-            })
-            .sort({ timestamp: 1 })
-            .toArray();
-
-          res.send(messages);
-        } catch (error) {
-          res.status(500).send({ error: "Failed to fetch messages" });
-        }
+    app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
+      const { productId, userEmail, otherUserEmail } = req.params;
+    
+      try {
+        const messages = await messageCollection
+          .find({
+            productId,
+            $or: [
+              { senderId: userEmail, receiverId: otherUserEmail },
+              { senderId: otherUserEmail, receiverId: userEmail },
+            ],
+          })
+          .sort({ timestamp: 1 })
+          .toArray();
+    
+        res.send(messages);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to fetch messages" });
       }
-    );
+    });
+    
 
     // chat with seller
     app.post("/messages", async (req, res) => {

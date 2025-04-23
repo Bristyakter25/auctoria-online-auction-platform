@@ -35,7 +35,6 @@ const Home = () => {
         {/* <MeetCards /> */}
         <AuctionProcess></AuctionProcess>
         {/* <Partners /> */}
-
         {/* <BiddingMadness /> */}
         <ContactForm />
         <TrustedPartners></TrustedPartners>
