@@ -77,14 +77,8 @@ async function run() {
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
 
-
-    const paymentCollection = client.db("Auctoria").collection('payments');
-    const messageCollection = client.db("Auctoria").collection('messages');
-
-    
-
-
-    
+    const paymentCollection = client.db("Auctoria").collection("payments");
+    const messageCollection = client.db("Auctoria").collection("messages");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -157,7 +151,7 @@ async function run() {
         const result = await productsCollection
           .find()
           .sort({ _id: -1 })
-          .limit(4)
+          .limit(10)
           .toArray();
         res.json(result);
       } catch (error) {
@@ -221,15 +215,16 @@ async function run() {
 
     // 🛠 Get Single Product by ID
 
-
     app.get("/productHistory", async (req, res) => {
-      const email = req.query.email; 
+      const email = req.query.email;
       console.log("email:", email);
-    
+
       if (!email) {
-        return res.status(400).send({ message: "Email query parameter is required." });
+        return res
+          .status(400)
+          .send({ message: "Email query parameter is required." });
       }
-    
+
       try {
         const result = await productsCollection.find({ email }).toArray();
         res.send(result);
@@ -263,15 +258,16 @@ async function run() {
       }
     });
 
-
     app.get("/productHistory", async (req, res) => {
-      const email = req.query.email; 
+      const email = req.query.email;
       console.log("email:", email);
-    
+
       if (!email) {
-        return res.status(400).send({ message: "Email query parameter is required." });
+        return res
+          .status(400)
+          .send({ message: "Email query parameter is required." });
       }
-    
+
       try {
         const result = await productsCollection.find({ email }).toArray();
         res.send(result);
@@ -865,27 +861,29 @@ async function run() {
     // );
 
     // about automatic send end time of bid to the bidder Users
-    app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
-      const { productId, userEmail, otherUserEmail } = req.params;
-    
-      try {
-        const messages = await messageCollection
-          .find({
-            productId,
-            $or: [
-              { senderId: userEmail, receiverId: otherUserEmail },
-              { senderId: otherUserEmail, receiverId: userEmail },
-            ],
-          })
-          .sort({ timestamp: 1 })
-          .toArray();
-    
-        res.send(messages);
-      } catch (error) {
-        res.status(500).send({ error: "Failed to fetch messages" });
+    app.get(
+      "/messages/:productId/:userEmail/:otherUserEmail",
+      async (req, res) => {
+        const { productId, userEmail, otherUserEmail } = req.params;
+
+        try {
+          const messages = await messageCollection
+            .find({
+              productId,
+              $or: [
+                { senderId: userEmail, receiverId: otherUserEmail },
+                { senderId: otherUserEmail, receiverId: userEmail },
+              ],
+            })
+            .sort({ timestamp: 1 })
+            .toArray();
+
+          res.send(messages);
+        } catch (error) {
+          res.status(500).send({ error: "Failed to fetch messages" });
+        }
       }
-    });
-    
+    );
 
     // chat with seller
     app.post("/messages", async (req, res) => {
