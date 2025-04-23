@@ -13,7 +13,7 @@ const formatDate = (dateStr) => {
 };
 
 const RecentProductCard = ({ recentProduct }) => {
-  console.log("product", recentProduct);
+  // console.log("product", recentProduct);
   const {
     productName,
     description,
@@ -52,7 +52,9 @@ const RecentProductCard = ({ recentProduct }) => {
         clearInterval(interval);
       } else {
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
         setTimeLeft({ days, hours, minutes, seconds });
@@ -69,6 +71,8 @@ const RecentProductCard = ({ recentProduct }) => {
     const fetchWishlist = async () => {
       try {
         const response = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`);
+
+     
         const data = await response.json();
 
         if (response.ok) {
@@ -137,49 +141,52 @@ const RecentProductCard = ({ recentProduct }) => {
   };
 
   return (
-    <div className="card card-compact bg-base-100 w-[320px] mx-auto shadow-xl">
+    <div className="card card-compact bg-white hover:shadow-xl border rounded-2xl transition-all duration-1000 hover:scale-105">
       <figure className="relative">
         <img
-          className="w-full h-[280px]  object-fill"
+          className="w-full h-[230px] object-cover "
           src={productImage}
           alt="product"
         />
         {status === "upcoming" || status === "live" ? (
           <>
-            <p className={`px-4 py-0.5 shadow-md text-white text-center text-sm rounded-full absolute top-1 right-1 ${status === "upcoming" ? "bg-green-500" : "bg-rose-500"} shadow-gray-700`}>
+            <p
+              className={`px-4 py-0.5 shadow-md text-white text-center text-sm rounded-full absolute top-1 right-1 ${
+                status === "upcoming" ? "bg-green-500" : "bg-rose-500"
+              } shadow-gray-700`}
+            >
               {status}
             </p>
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-3 py-1 rounded-full text-sm shadow-md z-10 flex items-center gap-2">
-              <div className="bg-gray-100 px-2 py-1 rounded">
+            <div className="absolute bottom-2  left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-2 py-0.5 rounded-full text-sm shadow-md z-10 flex items-center gap-2">
+              <div className=" px-1 py-0.5 rounded">
                 <span className="font-bold">{timeLeft.days}</span> Days
               </div>
               <span className="text-gray-500">•</span>
-              <div className="bg-gray-100 px-2 py-1 rounded">
+              <div className=" px-1 py-0.5 rounded">
                 <span className="font-bold">{timeLeft.hours}</span> Hours
               </div>
               <span className="text-gray-500">•</span>
-              <div className="bg-gray-100 px-2 py-1 rounded">
+              <div className=" px-1 py-0.5  rounded">
                 <span className="font-bold">{timeLeft.minutes}</span> Minutes
               </div>
               <span className="text-gray-500">•</span>
-              <div className="bg-gray-100 px-2 py-1 rounded">
+              <div className=" px-1 py-0.5  rounded">
                 <span className="font-bold">{timeLeft.seconds}</span> Seconds
               </div>
             </div>
           </>
         ) : null}
       </figure>
-      <div className="card-body">
-        <h2 className="card-title font-bold text-2xl text-center">
-          {productName}
-        </h2>
-        <p>
-          <span className="font-bold">Auction Start:</span>{" "}
-          {formatDate(auctionStartDate)}
-        </p>
-        <p>
-          <span className="font-bold">Starting Bid:</span> {startingBid}
-        </p>
+      <div className="px-2 p-1">
+        <div className="h-[110px] space-y-1 text-gray-700">
+          <h2 className="card-title font-bold text-xl">{productName}</h2>
+          <p>
+            <span className="font-bold"></span> {formatDate(auctionStartDate)}
+          </p>
+          <p>
+            <span className="font-bold"></span>${startingBid}
+          </p>
+        </div>
         <div className="flex justify-between p-3">
           <button
             className="text-white w-10 h-10 hover:bg-gray-100 border rounded-full flex items-center justify-center"

@@ -2,11 +2,17 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoEye } from "react-icons/io5";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
-import { motion } from "framer-motion";
-import { FaGavel, FaUser, FaFlag } from "react-icons/fa";
+
+
+import { FaFlag } from "react-icons/fa";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { FaGavel, FaUser } from "react-icons/fa";
+
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 import { WishlistContext } from "../../providers/wishListProvider";
+import { cn } from "../../utils/cn";
 
 const AllAuctionCard = ({ auction }) => {
   const navigate = useNavigate();
@@ -138,12 +144,17 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-xl shadow-xl bg-white hover:shadow-2xl transition duration-300 hover:border border-teal-400 overflow-hidden"
+      className={cn(
+        "rounded-3xl relative z-40 shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
+      )}
     >
       <div className="h-full">
-        <img className="object-cover w-full h-[200px] rounded-t-xl" src={productImage} alt={productName} />
-
-        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-white">
+        <img
+          className="object-cover w-full h-[200px] items-center rounded-t-xl"
+          src={productImage}
+          alt={productName}
+        />
+        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-gray-800">
           <div className="flex items-center gap-2 text-sm">
             {status === "expired" ? (
               <>
@@ -159,13 +170,19 @@ const AllAuctionCard = ({ auction }) => {
               <p className="font-bold">No bids yet</p>
             )}
           </div>
+          {status !== "expired" && auctionEndTime && (
+            <div className="text-sm font-bold">
+              {timeLeft.days > 0 && `${timeLeft.days}d `}
+              {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+            </div>
+          )}
         </div>
-
+  
         <div className="px-4 h-[80px]">
           <h2 className="text-lg font-bold text-gray-800 mb-1 line-clamp-1">{productName}</h2>
           <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
         </div>
-
+  
         <div className="flex justify-between items-center px-4 py-2 border-t">
           <button className="hover:bg-teal-100 p-2 rounded-full" onClick={handleAddToWishlist} disabled={isWishlisted}>
             {isWishlisted ? (
@@ -174,17 +191,17 @@ const AllAuctionCard = ({ auction }) => {
               <IoMdHeartEmpty size={24} className="text-gray-500 hover:text-red-400" />
             )}
           </button>
-
+  
           <button className="hover:bg-teal-100 p-2 rounded-full" onClick={() => navigate(`/bid/${_id}`)}>
             <IoEye size={24} className="text-gray-600" />
           </button>
-
+  
           <button className="hover:bg-teal-100 p-2 rounded-full" onClick={() => setShowModal(true)}>
             <FaFlag size={20} className="text-red-600" title="Report" />
           </button>
         </div>
       </div>
-
+  
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-xl w-80 shadow-lg">
@@ -215,6 +232,7 @@ const AllAuctionCard = ({ auction }) => {
       )}
     </motion.div>
   );
+  
 };
 
 export default AllAuctionCard;
