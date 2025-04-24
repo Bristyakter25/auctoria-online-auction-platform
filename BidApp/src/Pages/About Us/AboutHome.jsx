@@ -1,9 +1,8 @@
 import React from 'react';
 import PageBanner from './PageBanner';
 import WhoWeAre from './WhoWeAre';
-import AboutSection from '../../components/HomeComponents/AboutSection';
-import AuctionProcess from './AuctionProcess';
 import AuctionSteps from './AuctionSteps';
+import AboutUs from './AboutUs';
 
 
 const AboutHome = () => {
@@ -12,7 +11,7 @@ const AboutHome = () => {
             <PageBanner></PageBanner>
         
             <WhoWeAre></WhoWeAre>
-            <AboutSection></AboutSection>
+            <AboutUs></AboutUs>
             {/* <AuctionProcess></AuctionProcess> */}
             <AuctionSteps></AuctionSteps>
         </div>
