@@ -4,7 +4,7 @@ import RecentProductCard from "./RecentProductCard";
 
 const LatestAuctions = () => {
   const [recentProducts, setRecentProducts] = useState([]);
-
+  console.log("all recent product", recentProducts);
   useEffect(() => {
     fetch("http://localhost:5000/recentProducts")
       .then((res) => res.json())

@@ -77,7 +77,10 @@ async function run() {
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
+
     const paymentCollection = client.db("Auctoria").collection("payments");
+    const messageCollection = client.db("Auctoria").collection("messages");
+    const followingCollection = client.db("Auctoria").collection("followers");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -150,7 +153,7 @@ async function run() {
         const result = await productsCollection
           .find()
           .sort({ _id: -1 })
-          .limit(4)
+          .limit(10)
           .toArray();
         res.json(result);
       } catch (error) {
@@ -213,6 +216,24 @@ async function run() {
     // });
 
     // 🛠 Get Single Product by ID
+
+    app.get("/productHistory", async (req, res) => {
+      const email = req.query.email;
+      console.log("email:", email);
+
+      if (!email) {
+        return res
+          .status(400)
+          .send({ message: "Email query parameter is required." });
+      }
+
+      try {
+        const result = await productsCollection.find({ email }).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: "Failed to fetch products", error });
+      }
+    });
 
     app.get("/addProducts/:id", async (req, res) => {
       const { id } = req.params;
@@ -775,11 +796,11 @@ async function run() {
 
     // app.post("/messages", async (req, res) => {
     //   const { sender, receiver, message, productId } = req.body;
-    
+
     //   if (!sender || !receiver || !message || !productId) {
     //     return res.status(400).send({ error: "Missing required fields" });
     //   }
-    
+
     //   const chatMessage = {
     //     sender,
     //     receiver,
@@ -788,7 +809,7 @@ async function run() {
     //     timestamp: new Date(),
     //     read: false,
     //   };
-    
+
     //   try {
     //     const result = await messagesCollection.insertOne(chatMessage);
     //     io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
@@ -798,20 +819,44 @@ async function run() {
     //     res.status(500).send({ error: "Failed to send message" });
     //   }
     // });
-    
 
+    // app.get(
+    //   "/messages/:productId/:userEmail/:otherUserEmail",
+    //   async (req, res) => {
+    //     const { productId, userEmail, otherUserEmail } = req.params;
+
+    //     try {
+    //       const messages = await messagesCollection
+    //         .find({
+    //           productId,
+    //           $or: [
+    //             { sender: userEmail, receiver: otherUserEmail },
+    //             { sender: otherUserEmail, receiver: userEmail },
+    //           ],
+    //         })
+    //         .sort({ timestamp: 1 })
+    //         .toArray();
+
+    //       res.send(messages);
+    //     } catch (error) {
+    //       res.status(500).send({ error: "Failed to fetch messages" });
+    //     }
+    //   }
+    // );
+
+    // about automatic send end time of bid to the bidder Users
     app.get(
       "/messages/:productId/:userEmail/:otherUserEmail",
       async (req, res) => {
         const { productId, userEmail, otherUserEmail } = req.params;
 
         try {
-          const messages = await messagesCollection
+          const messages = await messageCollection
             .find({
               productId,
               $or: [
-                { sender: userEmail, receiver: otherUserEmail },
-                { sender: otherUserEmail, receiver: userEmail },
+                { senderId: userEmail, receiverId: otherUserEmail },
+                { senderId: otherUserEmail, receiverId: userEmail },
               ],
             })
             .sort({ timestamp: 1 })
@@ -821,11 +866,11 @@ async function run() {
         } catch (error) {
           res.status(500).send({ error: "Failed to fetch messages" });
         }
-    
-    });
+      }
+    );
     // app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
     //   const { productId, userEmail, otherUserEmail } = req.params;
-    
+
     //   try {
     //     const messages = await messagesCollection
     //       .find({
@@ -837,39 +882,37 @@ async function run() {
     //       })
     //       .sort({ timestamp: 1 })
     //       .toArray();
-    
+
     //     res.send(messages);
     //   } catch (error) {
     //     res.status(500).send({ error: "Failed to fetch messages" });
     //   }
     // });
-    
-// chat with seller
-app.post('/messages', async (req, res) => {
-  const { senderId, receiverId, productId, message } = req.body;
 
-  if (!senderId || !receiverId || !productId || !message) {
-    return res.status(400).send({ error: "Missing fields" });
-  }
+    // chat with seller
+    app.post("/messages", async (req, res) => {
+      const { senderId, receiverId, productId, message } = req.body;
 
-  const newMessage = {
-    senderId,
-    receiverId,
-    productId,
-    message,
-    timestamp: new Date(),
-  };
+      if (!senderId || !receiverId || !productId || !message) {
+        return res.status(400).send({ error: "Missing fields" });
+      }
 
-  try {
-    const result = await messageCollection.insertOne(newMessage);
-    res.send(result);
-  } catch (error) {
-    console.error("Error inserting message:", error);
-    res.status(500).send({ error: "Server error while saving message" });
-  }
-});
+      const newMessage = {
+        senderId,
+        receiverId,
+        productId,
+        message,
+        timestamp: new Date(),
+      };
 
-
+      try {
+        const result = await messageCollection.insertOne(newMessage);
+        res.send(result);
+      } catch (error) {
+        console.error("Error inserting message:", error);
+        res.status(500).send({ error: "Server error while saving message" });
+      }
+    });
 
     // about automatic send end time of bid to the bidder Users
     const AuctionEndingTimer = async () => {
@@ -1132,6 +1175,28 @@ app.post('/messages', async (req, res) => {
         res.send(winner);
       } catch (err) {
         console.error(err);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+
+    // Followers Related Api
+    app.post("/following/:userId", async (req, res) => {
+      // const { sellerId } = req.body;
+      const userId = req.params.userId;
+      const { _id: sellerId } = req.body;
+      if (!ObjectId.isValid(sellerId)) {
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+      try {
+        const user = await usersCollection.findOne({ _id: userId });
+        if (!user) return res.status(404).json({ message: "user not found" });
+        const updatedUser = await usersCollection.updateOne(
+          { _id: userId },
+          { $addToSet: { favoriteSeller: new ObjectId(sellerId) } }
+        );
+        res.send({ success: true, updatedUser });
+      } catch (error) {
+        console.error("Error adding favorite product:", error);
         res.status(500).json({ message: "Server error" });
       }
     });
