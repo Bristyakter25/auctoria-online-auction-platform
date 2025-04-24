@@ -18,13 +18,13 @@ const ProductHistory = () => {
   }, [user?.email]);
 
   return (
-    <section className="p-6  bg-gray-100">
+    <section className="p-6  ">
       <div className="mx-auto max-w-7xl">
         <h2 className="text-2xl font-bold mb-6  text-white">Product History</h2>
 
         <div className="overflow-x-auto border border-gray-200 rounded-lg">
           <table className="min-w-full divide-y divide-gray-200 ">
-            <thead className=" bg-gray-100">
+            <thead className=" ">
               <tr>
                 <th className="px-6 py-3 text-left  font-bold  uppercase tracking-wider">
                   Image

@@ -8,7 +8,7 @@ function AuctionProcess() {
     <h2 className="text-3xl font-bold text-center  mb-2">Select Our Product At Our Auction.</h2>
     <p className="text-center text-gray-500 mb-8">Feel free adapt this based on the specific managed services, features</p>
     <Marquee pauseOnHover speed={50} gradient={false}>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="flex gap-6 ml-6">
      {/* Registration */}
      <div className="card card-compact bg-lime-50 shadow-xl">
       <div className="card-body">
@@ -67,7 +67,7 @@ function AuctionProcess() {
      </div>
 
      {/* Make Payment */}
-     <div className="card card-compact bg-sky-50 shadow-xl">
+     <div className="card card-compact bg-sky-50  shadow-xl">
       <div className="card-body">
        <div className="flex justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-700">
@@ -84,11 +84,8 @@ function AuctionProcess() {
        <div className="absolute top-4 right-4 text-gray-400">Step 04</div>
       </div>
      </div>
-   
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-     {/* Registration */}
-     <div className="card card-compact bg-lime-50 shadow-xl">
+      {/* Registration */}
+      <div className="card card-compact bg-lime-50 shadow-xl">
       <div className="card-body">
        <div className="flex justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-700">
@@ -105,9 +102,8 @@ function AuctionProcess() {
        <div className="absolute top-4 right-4 text-gray-400">Step 01</div>
       </div>
      </div>
-
-     {/* Select Product */}
-     <div className="card card-compact bg-lime-100 shadow-xl">
+       {/* Select Product */}
+       <div className="card card-compact bg-lime-100 shadow-xl">
       <div className="card-body">
        <div className="flex justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-700">
@@ -145,7 +141,7 @@ function AuctionProcess() {
      </div>
 
      {/* Make Payment */}
-     <div className="card card-compact bg-sky-50 shadow-xl">
+     <div className="card card-compact bg-sky-50  shadow-xl">
       <div className="card-body">
        <div className="flex justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-700">
@@ -162,8 +158,13 @@ function AuctionProcess() {
        <div className="absolute top-4 right-4 text-gray-400">Step 04</div>
       </div>
      </div>
+     
    
     </div>
+
+   
+   
+    
     </Marquee>
    </div>
   </div>
