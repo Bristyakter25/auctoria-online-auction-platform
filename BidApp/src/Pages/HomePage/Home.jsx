@@ -19,6 +19,7 @@ import AuctionProcess from "../About Us/AuctionProcess";
 import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
 import Banner from "../../components/HomeComponents/BannerFunctions/Banner";
 import RecentWinner from "./RecentWinner";
+import SellerProfile from "../../SellerProfile/SellerProfile";
 
 const Home = () => {
   return (
@@ -37,6 +38,7 @@ const Home = () => {
         {/* <Partners /> */}
         {/* <BiddingMadness /> */}
         <ContactForm />
+        <SellerProfile />
         <TrustedPartners></TrustedPartners>
       </div>
     </div>

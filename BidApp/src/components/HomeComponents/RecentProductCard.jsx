@@ -24,7 +24,7 @@ const RecentProductCard = ({ recentProduct }) => {
     _id,
     auctionEndTime, // Assuming this field exists in recentProduct
   } = recentProduct;
-  console.log("recent product", recentProduct);
+  // console.log("recent product", recentProduct);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isWishlisted, setIsWishlisted] = useState(false);
