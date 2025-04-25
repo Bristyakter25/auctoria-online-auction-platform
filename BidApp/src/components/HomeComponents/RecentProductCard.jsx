@@ -70,9 +70,13 @@ const RecentProductCard = ({ recentProduct }) => {
 
     const fetchWishlist = async () => {
       try {
-        const response = await fetch(
-          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
-        );
+
+        const response = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`);
+
+     
+
+        
+
         const data = await response.json();
 
         if (response.ok) {
