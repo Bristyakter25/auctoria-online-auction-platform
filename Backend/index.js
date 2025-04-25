@@ -133,7 +133,11 @@ async function run() {
       const users = await usersCollection.estimatedDocumentCount();
       const products = await productsCollection.estimatedDocumentCount();
       const payments = await paymentCollection.estimatedDocumentCount();
-      res.send({users,products,payments})
+      const totalpayments = await paymentCollection.find().toArray();
+      const totalAmount = totalpayments.reduce((acc, payment) => {
+        return acc + payment.price; // Assuming 'amount' is the field you want to sum
+      })
+      res.send({users,products,payments,totalAmount})
     })
 
     //verify user role api
