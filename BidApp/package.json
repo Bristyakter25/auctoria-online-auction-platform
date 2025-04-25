@@ -50,7 +50,8 @@
     "swiper": "^11.2.6",
     "tailwind-clip-path": "^1.0.0",
     "tailwind-merge": "^3.2.0",
-    "tsparticles": "^3.8.1"
+    "tsparticles": "^3.8.1",
+    "typed.js": "^2.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

@@ -51,7 +51,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="bg-gradient-to-r from-yellow-50 to-green-50 sticky top-0 z-50">
+    <nav className="bg-gradient-to-r from-yellow-100 via-lime-100 to-green-20 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-2">

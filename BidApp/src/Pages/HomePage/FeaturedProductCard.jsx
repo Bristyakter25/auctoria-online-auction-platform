@@ -77,11 +77,11 @@ const FeaturedProductCard = ({ auction }) => {
       </figure>
       <div className="card-body text-gray-700">
         <div className="h-[90px] space-y-1">
-          <h2 className="font-bold text-xl ">{productName}</h2>
+          <h2 className="font-bold text-xl h-[80px]">{productName}</h2>
           {/* <p>{description}</p> */}
-          <p className="flex items-center">
-            Starting Bid
-            <span className="font-bold text-xl ">${startingBid}</span>
+          <p className="flex font-semibold items-center">
+            Starting Bid: 
+            <span className="font-bold text-xl ml-2 "> ${startingBid}</span>
           </p>
           <p className="absolute top-0 right-1 py-0.5 border bg-lime-400 w-20 text-center text-gray-600 dark:text-gray-700 rounded-full">
             {" "}
@@ -89,7 +89,7 @@ const FeaturedProductCard = ({ auction }) => {
           </p>
         </div>
         <div className="card-actions justify-end">
-          <button className="btn " onClick={() => navigate(`/bid/${_id}`)}>
+          <button className="btn bg-green-500 mt-4 text-white rounded-lg hover:bg-green-800" onClick={() => navigate(`/bid/${_id}`)}>
             Bid Now!
           </button>
         </div>
