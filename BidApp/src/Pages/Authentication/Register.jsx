@@ -50,7 +50,7 @@ const Register = () => {
               role,
             };
 
-            fetch("http://localhost:5000/users", {
+            fetch("https://auctoria-online-auction-platform.onrender.com/users", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(userData),
@@ -115,9 +115,9 @@ const Register = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen ">
-      <div className="flex w-full max-w-full min-h-screen  px-10 overflow-hidden">
+      <div className=" flex-row md:flex w-full max-w-full min-h-screen  px-10 overflow-hidden">
         {/* Left Side Image */}
-        <div className="w-1/2">
+        <div className="w-full md:w-1/2 mt-16 md:mt-0">
           <img
             src={auctionImage}
             alt="Auction Platform"
@@ -130,7 +130,7 @@ const Register = () => {
           initial={{ opacity: 0, y: -600 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="w-1/2 p-12 space-y-6 flex flex-col justify-center"
+          className="w-full md:w-1/2 p-12 space-y-6 flex flex-col justify-center"
         >
           <h2 className="text-3xl font-bold text-center ">
             Create an Auction Account

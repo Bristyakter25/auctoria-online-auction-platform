@@ -16,7 +16,7 @@ import { MdWatchLater } from "react-icons/md";
 
 // import { MdCancel } from "react-icons/md";
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -61,7 +61,7 @@ const Bid = () => {
   console.log("product data", product);
   useEffect(() => {
     console.log(`Fetching product with id: ${id}`);
-    fetch(`http://localhost:5000/addProducts/${id}`)
+    fetch(`https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched product data:", data);
@@ -146,7 +146,7 @@ const Bid = () => {
     }
     // const bidId = generateSellerId();
     try {
-      const res = await fetch(`http://localhost:5000/bid/${id}`, {
+      const res = await fetch(`https://auctoria-online-auction-platform.onrender.com/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -197,7 +197,7 @@ const Bid = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/messages", {
+      const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -235,15 +235,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-<<<<<<< HEAD
-
-          
-
-          className=" p-6 shadow-md rounded-lg bg-teal-50"
-
-=======
           className=" p-6 shadow-md rounded-lg "
->>>>>>> 4e84591697aaad33fe0725a66afe1deb5f6decb0
         >
           {/* Main Image */}
           <motion.img
