@@ -179,12 +179,12 @@ const AllAuctionCard = ({ auction }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className={cn(
-        "rounded-3xl relative z-10 shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
+        "rounded-3xl relative z-10  shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
       )}
     >
       <div className="h-full">
         <img
-          className="object-cover w-full h-[200px] items-center rounded-t-xl"
+          className="object-cover w-full h-[200px] items-center rounded-t-xl relative "
           src={productImage}
           alt={productName}
         />
@@ -218,16 +218,18 @@ const AllAuctionCard = ({ auction }) => {
           </h2>
           <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
         </div>
-
-        <div className="flex justify-between items-center px-4 py-2 border-t">
+        <div className="flex justify-end p-2">
           <button
             onClick={() => navigate(`/SellerProfile/${email}`)}
-            className="hover:bg-teal-100 p-2 rounded-full"
+            className="bg-teal-100 p-2 rounded-full px-3 py-0.5 "
           >
-            <p>
-              <SlUserFollowing />
+            <p className="font-bold text-blue-500  ">
+              {/* <SlUserFollowing size={20} />  */}
+              Follow
             </p>
           </button>
+        </div>
+        <div className="flex justify-between items-center px-4 py-2 border-t">
           <button
             className="hover:bg-teal-100 p-2 rounded-full"
             onClick={handleAddToWishlist}
