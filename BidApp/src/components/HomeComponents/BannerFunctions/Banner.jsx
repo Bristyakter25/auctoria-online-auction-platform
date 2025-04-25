@@ -75,12 +75,8 @@ const Banner = () => {
             At Our Auction.
           </h2>
           <p className="mt-10 text-black text-lg">
-<<<<<<< HEAD
             Join us as we carve a path to success, driven by passion, powered by
             innovation, and we're here to turn them into reality.
-=======
-            Join us as we carve a path to success, driven by passion, powered by innovation, and we're here to turn them into reality.
->>>>>>> 8f53e7126cebf5e10241965285758842cb4812d1
           </p>
           <div className="flex gap-x-5 mt-36">
             <Link to="/bidInstruction">
