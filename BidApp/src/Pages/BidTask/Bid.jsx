@@ -9,12 +9,21 @@ import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
 import AuctionWinner from "./AuctionWinner";
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 8f53e7126cebf5e10241965285758842cb4812d1
 import { BsFillChatTextFill } from "react-icons/bs";
 
 import { MdWatchLater } from "react-icons/md";
 
 // import { MdCancel } from "react-icons/md";
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8f53e7126cebf5e10241965285758842cb4812d1
 const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
   reconnection: true,
@@ -200,6 +209,7 @@ const Bid = () => {
     };
 
     try {
+<<<<<<< HEAD
       const res = await fetch(
         "https://auctoria-online-auction-platform.onrender.com/messages",
         {
@@ -210,6 +220,20 @@ const Bid = () => {
           body: JSON.stringify(payload),
         }
       );
+=======
+
+      // const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
+        const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
+
+    
+
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+>>>>>>> 8f53e7126cebf5e10241965285758842cb4812d1
 
       const data = await res.json();
 

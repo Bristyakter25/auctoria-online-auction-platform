@@ -15,7 +15,8 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5174",
   "http://localhost:5173",
-  "https://bidapp-81c51.web.app",
+  "https://bidapp-81c51.web.app", // your frontend on Firebase
+  "https://auctoria-online-auction-platform.onrender.com", // your Render backend itself (needed for self requests)
 ];
 
 app.use(
@@ -130,6 +131,13 @@ async function run() {
       }
       next();
     };
+
+    app.get("/user-stats", async(req,res)=>{
+      const users = await usersCollection.estimatedDocumentCount();
+      const products = await productsCollection.estimatedDocumentCount();
+      const payments = await paymentCollection.estimatedDocumentCount();
+      res.send({users,products,payments})
+    })
 
     //verify user role api
     app.get("/user/role/:email", async (req, res) => {
