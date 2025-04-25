@@ -25,6 +25,7 @@ import RecentOrders from "../Pages/Dashboard/AdminRoutes/RecentOrders";
 import Reviews from "../Pages/Dashboard/AdminRoutes/Reviews";
 import ChatBox from "../Pages/BidTask/ChatBox";
 import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInstruction";
+import SellerProfile from "../SellerProfile/SellerProfile";
 
 export const router = createBrowserRouter([
   {
@@ -55,10 +56,10 @@ export const router = createBrowserRouter([
         path: "/chatBox",
         element: <ChatBox></ChatBox>,
       },
-      // {
-      //   path: "/sellerProfile",
-      //   element: <SellerProfile />,
-      // },
+      {
+        path: "/sellerProfile/:email",
+        element: <SellerProfile />,
+      },
     ],
   },
   {

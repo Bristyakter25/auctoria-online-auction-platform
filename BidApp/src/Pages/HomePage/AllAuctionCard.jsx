@@ -8,6 +8,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 import { WishlistContext } from "../../providers/wishListProvider";
 import { cn } from "../../utils/cn";
+import { SlUserFollowing } from "react-icons/sl";
 
 const AllAuctionCard = ({ auction }) => {
   const navigate = useNavigate();
@@ -21,8 +22,9 @@ const AllAuctionCard = ({ auction }) => {
     status,
     winner,
     auctionEndTime,
+    email,
   } = auction;
-
+  // console.log("auction data", auction);
   const { user } = useContext(AuthContext);
   const userId = user?.uid;
 
@@ -198,6 +200,14 @@ const AllAuctionCard = ({ auction }) => {
         </div>
 
         <div className="flex justify-between items-center px-4 py-2 border-t">
+          <button
+            onClick={() => navigate(`/SellerProfile/${email}`)}
+            className="hover:bg-teal-100 p-2 rounded-full"
+          >
+            <p>
+              <SlUserFollowing />
+            </p>
+          </button>
           <button
             className="hover:bg-teal-100 p-2 rounded-full"
             onClick={handleAddToWishlist}
