@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.14.0",
     "@lottiefiles/react-lottie-player": "^3.6.0",
     "@mui/material": "^7.0.0",
+    "@reduxjs/toolkit": "^2.7.0",
     "@stripe/react-stripe-js": "^3.6.0",
     "@stripe/stripe-js": "^7.0.0",
     "@tailwindcss/vite": "^4.0.14",
@@ -36,6 +37,7 @@
     "react-dom": "^19.0.0",
     "react-fast-marquee": "^1.6.5",
     "react-icons": "^5.5.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.3.0",
     "react-share": "^5.2.2",
     "react-toastify": "^11.0.5",
@@ -48,7 +50,8 @@
     "swiper": "^11.2.6",
     "tailwind-clip-path": "^1.0.0",
     "tailwind-merge": "^3.2.0",
-    "tsparticles": "^3.8.1"
+    "tsparticles": "^3.8.1",
+    "typed.js": "^2.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

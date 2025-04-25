@@ -2,8 +2,12 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoEye } from "react-icons/io5";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
+
+import { FaFlag } from "react-icons/fa";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGavel, FaUser } from "react-icons/fa";
+
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 import { WishlistContext } from "../../providers/wishListProvider";
@@ -18,7 +22,6 @@ const AllAuctionCard = ({ auction }) => {
     productName,
     description,
     productImage,
-    category,
     status,
     winner,
     auctionEndTime,
@@ -38,7 +41,9 @@ const AllAuctionCard = ({ auction }) => {
     seconds: 0,
   });
 
-  // Countdown Timer Effect
+  const [showModal, setShowModal] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+
   useEffect(() => {
     if (!auctionEndTime) return;
 
@@ -64,24 +69,21 @@ const AllAuctionCard = ({ auction }) => {
     return () => clearInterval(interval);
   }, [auctionEndTime]);
 
-  // Wishlist check
   useEffect(() => {
     if (!userId) return;
 
     const fetchWishlist = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/wishlist/${userId}`
+          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
         );
-        const data = await response.json();
 
+        const data = await response.json();
         if (response.ok) {
           const isProductInWishlist = data.wishlist.some(
             (product) => product._id === _id
           );
           setIsWishlisted(isProductInWishlist);
-        } else {
-          console.error("Failed to fetch wishlist");
         }
       } catch (error) {
         console.error("Error fetching wishlist:", error);
@@ -91,44 +93,39 @@ const AllAuctionCard = ({ auction }) => {
     fetchWishlist();
   }, [userId, _id]);
 
-  // Handle Add to Wishlist
   const handleAddToWishlist = async () => {
     if (!userId) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Please Log In to add products in wishlist!",
+        text: "Please log in to wishlist products!",
       });
       return;
     }
 
-    const wishlistItem = {
-      productId: _id,
-      userId: userId,
-    };
-
     try {
-      const response = await fetch("http://localhost:5000/addToWishlist", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(wishlistItem),
-      });
+      const response = await fetch(
+        "https://auctoria-online-auction-platform.onrender.com/addToWishlist",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId: _id, userId }),
+        }
+      );
 
       if (response.ok) {
         setIsWishlisted(true);
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: "This Product is successfully Wish Listed!",
+          title: "Wishlisted!",
           showConfirmButton: false,
           timer: 1500,
         });
         refetchWishlist();
 
         const updatedWishlistResponse = await fetch(
-          `http://localhost:5000/wishlist/${userId}`
+          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
         );
         const updatedData = await updatedWishlistResponse.json();
         const isProductInWishlist = updatedData.wishlist.some(
@@ -144,7 +141,35 @@ const AllAuctionCard = ({ auction }) => {
       }
     } catch (error) {
       console.error("Error adding to wishlist:", error);
-      alert("Something went wrong. Please try again.");
+    }
+  };
+
+  const handleReport = async () => {
+    if (!reportReason.trim()) {
+      Swal.fire({ icon: "warning", title: "Please enter a reason!" });
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: _id,
+          userEmail: user?.email,
+          reason: reportReason,
+        }),
+      });
+
+      if (response.ok) {
+        Swal.fire({ icon: "success", title: "Reported successfully!" });
+        setReportReason("");
+        setShowModal(false);
+      } else {
+        Swal.fire({ icon: "error", title: "Report failed!" });
+      }
+    } catch (error) {
+      console.error("Error reporting product:", error);
     }
   };
 
@@ -154,18 +179,16 @@ const AllAuctionCard = ({ auction }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className={cn(
-        "rounded-3xl relative z-40 shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
+        "rounded-3xl relative z-10 shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
       )}
     >
-      <div className="h-full ">
+      <div className="h-full">
         <img
           className="object-cover w-full h-[200px] items-center rounded-t-xl"
           src={productImage}
           alt={productName}
         />
         <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-gray-800">
-          {" "}
-          {/* Changed text-white to text-gray-800 for better contrast on gradient */}
           <div className="flex items-center gap-2 text-sm">
             {status === "expired" ? (
               <>
@@ -178,12 +201,9 @@ const AllAuctionCard = ({ auction }) => {
                 <p className="font-bold">{`${bids.length} Bids`}</p>
               </>
             ) : (
-              <>
-                <p className="font-bold">No bids yet</p>
-              </>
+              <p className="font-bold">No bids yet</p>
             )}
           </div>
-          {/* Display countdown timer if not expired */}
           {status !== "expired" && auctionEndTime && (
             <div className="text-sm font-bold">
               {timeLeft.days > 0 && `${timeLeft.days}d `}
@@ -229,8 +249,46 @@ const AllAuctionCard = ({ auction }) => {
           >
             <IoEye size={24} className="text-gray-600" />
           </button>
+
+          <button
+            className="hover:bg-teal-100 p-2 rounded-full"
+            onClick={() => setShowModal(true)}
+          >
+            <FaFlag size={20} className="text-red-600" title="Report" />
+          </button>
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl w-80 shadow-lg">
+            <h3 className="text-lg font-semibold mb-2 text-gray-800">
+              Report this Auction
+            </h3>
+            <textarea
+              value={reportReason}
+              onChange={(e) => setReportReason(e.target.value)}
+              placeholder="Enter reason..."
+              className="w-full border rounded-md p-2 text-sm text-gray-700 mb-4"
+              rows={3}
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReport}
+                className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Report
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };

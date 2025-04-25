@@ -78,9 +78,12 @@ async function run() {
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
 
-    const paymentCollection = client.db("Auctoria").collection("payments");
-    const messageCollection = client.db("Auctoria").collection("messages");
+    const reportsCollection = client.db("Auctoria").collection("reports");
+    const paymentCollection = client.db("Auctoria").collection('payments');
+    const messageCollection = client.db("Auctoria").collection('messages');
+ 
     const followingCollection = client.db("Auctoria").collection("followers");
+
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -973,6 +976,36 @@ async function run() {
           .json({ message: "Error fetching notifications", error });
       }
     });
+
+    // Reports from user functionality
+
+   app.post("/report", async (req, res) => {
+      const { productId, userEmail, reason } = req.body;
+    
+      if (!productId || !userEmail || !reason) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+    
+      try {
+        const report = {
+          productId: new ObjectId(productId),
+          userEmail,
+          reason,
+          reportedAt: new Date(),
+        };
+    
+        const result = await reportsCollection.insertOne(report);
+        res.status(201).json({ message: "Report submitted", id: result.insertedId });
+      } catch (err) {
+        console.error("Failed to report:", err);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    });
+
+    app.get('/report',async (req,res) =>{
+      const result = await reportsCollection.find().toArray();
+      res.send(result);
+    })
 
     // Review related API
 

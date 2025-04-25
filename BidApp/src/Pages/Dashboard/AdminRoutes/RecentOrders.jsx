@@ -4,13 +4,13 @@ import axios from "axios";
 
 
 const fetchOrders = async () => {
-  const response = await axios.get("http://localhost:5000/payments");
+  const response = await axios.get("https://auctoria-online-auction-platform.onrender.com/payments");
   return response.data;
 };
 
 
 const updateOrderStatus = async ({ orderId, status }) => {
-  const response = await axios.patch(`http://localhost:5000/payments/${orderId}`, { status });
+  const response = await axios.patch(`https://auctoria-online-auction-platform.onrender.com/payments/${orderId}`, { status });
   return response.data;
 };
 
@@ -55,8 +55,9 @@ const RecentOrders = () => {
             <thead>
               <tr>
                 <th>#</th>
-                <th className="font-extrabold text-black text-xl">Product Name</th>
+                
                 <th className="font-extrabold text-black text-xl">Image</th>
+                <th className="font-extrabold text-black text-xl">Product Name</th>
                 <th className="font-extrabold text-black text-xl">Price</th>
                 <th className="font-extrabold text-black text-xl">Status</th>
                 <th className="font-extrabold text-black text-xl">Date</th>
@@ -69,7 +70,7 @@ const RecentOrders = () => {
                   <th>{index + 1}</th>
                   {order.products.map((product) => (
                     <React.Fragment key={product.bidId}>
-                      <td className="font-semibold  text-[17px]">{product.name}</td>
+                     
                       <td>
                         <img
                           src={product.image}
@@ -78,6 +79,7 @@ const RecentOrders = () => {
                           onError={(e) => (e.target.src = "/fallback.jpg")}
                         />
                       </td>
+                      <td className="font-semibold  text-[17px]">{product.name}</td>
                       <td className="font-semibold text-[17px]">${order.price}</td>
                       <td className="capitalize font-semibold text-[17px]">{order.status}</td>
                       <td className="font-semibold  text-[17px]">{new Date(order.date).toLocaleString()}</td>
