@@ -7,9 +7,16 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
-import { MdWatchLater } from "react-icons/md";
+import AuctionWinner from "./AuctionWinner";
+
+
+
 import { BsFillChatTextFill } from "react-icons/bs";
-import LoadingSpinner from "../../components/ShareComponents/Loading/LoadingSpinner";
+
+import { MdWatchLater } from "react-icons/md";
+
+// import { MdCancel } from "react-icons/md";
+
 
 const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
@@ -191,8 +198,12 @@ const Bid = () => {
     };
 
     try {
+
       // const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
         const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
+
+    
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -215,7 +226,9 @@ const Bid = () => {
     }
   };
 
-  if (loading) return <LoadingSpinner />;
+  if (!product) return <p className="text-center">Loading...</p>;
+
+  if (!product) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <div className="container mx-auto px-4 py-32">
@@ -225,13 +238,13 @@ const Bid = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg "
+          className=" p-6 shadow-md rounded-lg bg-teal-50"
         >
           {/* Main Image */}
           <motion.img
             src={product.productImage}
             alt="Auction Item"
-            className="w-full h-[480px] object-fill object-cover rounded-lg lg:mt-2"
+            className="w-full mt-24 h-[420px] object-fill rounded-lg"
             whileHover={{ scale: 1 }}
             transition={{ duration: 0.8 }}
           />
@@ -266,17 +279,12 @@ const Bid = () => {
               className="w-0 h-0 border-t-[28px] border-t-transparent border-l-[28px] border-l-teal-300
   border-b-[28px] border-b-transparent absolute -top-6 -right-2 -rotate-45 p-1"
             ></div>
-            <h2 className="w-8/12 text-gary-600 ">
-              {product.productName}{" "}
-            </h2>
+            <h2 className="w-8/12 text-gary-600 ">{product.productName} </h2>
             <p className="text-lg flex justify-center items-center -top-1 right-1 absolute text-gary-600 dark:text-gray-700">
               {product.bids?.length}
             </p>{" "}
           </div>
-          <p className="text-md mb-4 text-gary-600 ">
-            {" "}
-            {product.category}
-          </p>
+          <p className="text-md mb-4 text-gary-600 "> {product.category}</p>
           <p className="text-gary-600 ">
             <strong>End Time</strong> {formatDate(product.auctionEndTime)}
           </p>

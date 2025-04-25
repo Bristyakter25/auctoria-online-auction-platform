@@ -24,7 +24,7 @@ const RecentProductCard = ({ recentProduct }) => {
     _id,
     auctionEndTime, // Assuming this field exists in recentProduct
   } = recentProduct;
-
+  // console.log("recent product", recentProduct);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -70,9 +70,13 @@ const RecentProductCard = ({ recentProduct }) => {
 
     const fetchWishlist = async () => {
       try {
+
         const response = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`);
 
      
+
+        
+
         const data = await response.json();
 
         if (response.ok) {
@@ -141,15 +145,16 @@ const RecentProductCard = ({ recentProduct }) => {
   };
 
   return (
-    <div className="card card-compact bg-white hover:shadow-xl border rounded-2xl transition-all duration-1000 hover:scale-105">
-      <figure className="relative">
-        <img
-          className="w-full h-[230px] object-cover "
-          src={productImage}
-          alt="product"
-        />
-        {status === "upcoming" || status === "live" ? (
-          <>
+    <>
+      {status === "upcoming" || status === "live" ? (
+        <div className="card card-compact bg-white hover:shadow-xl border rounded-2xl transition-all duration-1000 hover:scale-105">
+          <figure className="relative">
+            <img
+              className="w-full h-[230px] object-cover "
+              src={productImage}
+              alt="product"
+            />
+
             <p
               className={`px-4 py-0.5 shadow-md text-white text-center text-sm rounded-full absolute top-1 right-1 ${
                 status === "upcoming" ? "bg-green-500" : "bg-rose-500"
@@ -174,43 +179,44 @@ const RecentProductCard = ({ recentProduct }) => {
                 <span className="font-bold">{timeLeft.seconds}</span> Seconds
               </div>
             </div>
-          </>
-        ) : null}
-      </figure>
-      <div className="px-2 p-1">
-        <div className="h-[110px] space-y-1 text-gray-700">
-          <h2 className="card-title font-bold text-xl">{productName}</h2>
-          <p>
-            <span className="font-bold"></span> {formatDate(auctionStartDate)}
-          </p>
-          <p>
-            <span className="font-bold"></span>${startingBid}
-          </p>
+          </figure>
+          <div className="px-2 p-1">
+            <div className="h-[110px] space-y-1 text-gray-700">
+              <h2 className="card-title font-bold text-xl">{productName}</h2>
+              <p>
+                <span className="font-bold"></span>{" "}
+                {formatDate(auctionStartDate)}
+              </p>
+              <p>
+                <span className="font-bold"></span>${startingBid}
+              </p>
+            </div>
+            <div className="flex justify-between p-3">
+              <button
+                className="text-white w-10 h-10 hover:bg-gray-100 border rounded-full flex items-center justify-center"
+                onClick={handleAddToWishlist}
+                disabled={isWishlisted}
+              >
+                {isWishlisted ? (
+                  <IoMdHeart size={28} className="text-red-600" />
+                ) : (
+                  <IoMdHeartEmpty
+                    size={28}
+                    className="text-gray-600 hover:text-red-500"
+                  />
+                )}
+              </button>
+              <button
+                className="w-10 h-10 border rounded-full flex items-center justify-center hover:bg-gray-100"
+                onClick={() => navigate(`/bid/${_id}`)}
+              >
+                <IoEye size={20} className="text-gray-600" />
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex justify-between p-3">
-          <button
-            className="text-white w-10 h-10 hover:bg-gray-100 border rounded-full flex items-center justify-center"
-            onClick={handleAddToWishlist}
-            disabled={isWishlisted}
-          >
-            {isWishlisted ? (
-              <IoMdHeart size={28} className="text-red-600" />
-            ) : (
-              <IoMdHeartEmpty
-                size={28}
-                className="text-gray-600 hover:text-red-500"
-              />
-            )}
-          </button>
-          <button
-            className="w-10 h-10 border rounded-full flex items-center justify-center hover:bg-gray-100"
-            onClick={() => navigate(`/bid/${_id}`)}
-          >
-            <IoEye size={20} className="text-gray-600" />
-          </button>
-        </div>
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 };
 

@@ -13,8 +13,10 @@ const port = process.env.PORT || 5000;
 const server = http.createServer(app);
 
 const allowedOrigins = [
+  "http://localhost:5174",
   "http://localhost:5173",
-  "https://bidapp-81c51.web.app",
+  "https://bidapp-81c51.web.app", // your frontend on Firebase
+  "https://auctoria-online-auction-platform.onrender.com", // your Render backend itself (needed for self requests)
 ];
 
 app.use(
@@ -77,14 +79,12 @@ async function run() {
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
 
-    const reportsCollection = client.db("auctoriaDB").collection("reports");
+    const reportsCollection = client.db("Auctoria").collection("reports");
     const paymentCollection = client.db("Auctoria").collection('payments');
     const messageCollection = client.db("Auctoria").collection('messages');
+ 
+    const followingCollection = client.db("Auctoria").collection("followers");
 
-    
-
-
-    
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -132,6 +132,13 @@ async function run() {
       next();
     };
 
+    app.get("/user-stats", async(req,res)=>{
+      const users = await usersCollection.estimatedDocumentCount();
+      const products = await productsCollection.estimatedDocumentCount();
+      const payments = await paymentCollection.estimatedDocumentCount();
+      res.send({users,products,payments})
+    })
+
     //verify user role api
     app.get("/user/role/:email", async (req, res) => {
       const email = req.params.email;
@@ -157,7 +164,7 @@ async function run() {
         const result = await productsCollection
           .find()
           .sort({ _id: -1 })
-          .limit(4)
+          .limit(10)
           .toArray();
         res.json(result);
       } catch (error) {
@@ -221,15 +228,16 @@ async function run() {
 
     // 🛠 Get Single Product by ID
 
-
     app.get("/productHistory", async (req, res) => {
-      const email = req.query.email; 
+      const email = req.query.email;
       console.log("email:", email);
-    
+
       if (!email) {
-        return res.status(400).send({ message: "Email query parameter is required." });
+        return res
+          .status(400)
+          .send({ message: "Email query parameter is required." });
       }
-    
+
       try {
         const result = await productsCollection.find({ email }).toArray();
         res.send(result);
@@ -260,23 +268,6 @@ async function run() {
         res.json(product);
       } catch (error) {
         res.status(500).json({ error: "Invalid product ID" });
-      }
-    });
-
-
-    app.get("/productHistory", async (req, res) => {
-      const email = req.query.email; 
-      console.log("email:", email);
-    
-      if (!email) {
-        return res.status(400).send({ message: "Email query parameter is required." });
-      }
-    
-      try {
-        const result = await productsCollection.find({ email }).toArray();
-        res.send(result);
-      } catch (error) {
-        res.status(500).send({ message: "Failed to fetch products", error });
       }
     });
 
@@ -831,7 +822,7 @@ async function run() {
     //   };
 
     //   try {
-    //     const result = await messageCollection.insertOne(chatMessage);
+    //     const result = await messagesCollection.insertOne(chatMessage);
     //     io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
     //     res.send(result);
     //   } catch (error) {
@@ -865,27 +856,49 @@ async function run() {
     // );
 
     // about automatic send end time of bid to the bidder Users
-    app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
-      const { productId, userEmail, otherUserEmail } = req.params;
-    
-      try {
-        const messages = await messageCollection
-          .find({
-            productId,
-            $or: [
-              { senderId: userEmail, receiverId: otherUserEmail },
-              { senderId: otherUserEmail, receiverId: userEmail },
-            ],
-          })
-          .sort({ timestamp: 1 })
-          .toArray();
-    
-        res.send(messages);
-      } catch (error) {
-        res.status(500).send({ error: "Failed to fetch messages" });
+    app.get(
+      "/messages/:productId/:userEmail/:otherUserEmail",
+      async (req, res) => {
+        const { productId, userEmail, otherUserEmail } = req.params;
+
+        try {
+          const messages = await messageCollection
+            .find({
+              productId,
+              $or: [
+                { senderId: userEmail, receiverId: otherUserEmail },
+                { senderId: otherUserEmail, receiverId: userEmail },
+              ],
+            })
+            .sort({ timestamp: 1 })
+            .toArray();
+
+          res.send(messages);
+        } catch (error) {
+          res.status(500).send({ error: "Failed to fetch messages" });
+        }
       }
-    });
-    
+    );
+    // app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
+    //   const { productId, userEmail, otherUserEmail } = req.params;
+
+    //   try {
+    //     const messages = await messagesCollection
+    //       .find({
+    //         productId,
+    //         $or: [
+    //           { sender: userEmail, receiver: otherUserEmail },
+    //           { sender: otherUserEmail, receiver: userEmail },
+    //         ],
+    //       })
+    //       .sort({ timestamp: 1 })
+    //       .toArray();
+
+    //     res.send(messages);
+    //   } catch (error) {
+    //     res.status(500).send({ error: "Failed to fetch messages" });
+    //   }
+    // });
 
     // chat with seller
     app.post("/messages", async (req, res) => {
@@ -912,6 +925,7 @@ async function run() {
       }
     });
 
+    // about automatic send end time of bid to the bidder Users
     const AuctionEndingTimer = async () => {
       const now = new Date();
       const tenMinutesLater = new Date(now.getTime() + 10 * 60 * 1000);
@@ -1202,6 +1216,157 @@ async function run() {
         res.send(winner);
       } catch (err) {
         console.error(err);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+
+    // Followers Related Api
+
+    app.get("/favorite/:email", async (req, res) => {
+      const { email } = req.params;
+      const user = await usersCollection.findOne({ email });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const sellerEmail = user?.favoriteSeller || [];
+      console.log("favorite seller", sellerEmail);
+      if (sellerEmail.length === 0) {
+        return res.send([]);
+      }
+      const sellers = await usersCollection
+        .find({ email: { $in: sellerEmail } })
+        .project({ name: 1, photoURL: 1, email: 1, role: 1 })
+        .toArray();
+      console.log("favorite sellers found:", sellers);
+      res.send(sellers);
+    });
+
+    app.get("/followingSeller/:email", async (req, res) => {
+      const { email } = req.params;
+      if (!email) {
+        return res.status(400).json({ message: "User ID is required." });
+      }
+      try {
+        const user = await usersCollection.findOne(
+          { email },
+          { projection: { favoriteSeller: 1 } }
+        );
+        // console.log("following user", user);
+        if (!user || !user.favoriteSeller || user.favoriteSeller.length === 0) {
+          return res.status(200).json([]);
+        }
+        const favoriteSellerEmail = user.favoriteSeller;
+        console.log("favoriteSellerEmail", favoriteSellerEmail);
+        const followingList = await productsCollection
+          .find({
+            email: { $in: favoriteSellerEmail },
+            status: "active",
+          })
+          // .sort({ createdAt: -1 })
+          .limit(5)
+          .toArray();
+        // console.log("following list ", followingList);
+        res.send(followingList);
+      } catch (error) {
+        res
+          .status(500)
+          .json({ message: "Server error while fetching followed listings." });
+      }
+    });
+
+    // app.get("/followers/:email", async (req, res) => {
+    //   const { sellerEmail } = req.params;
+    //   const { email } = req.query;
+    //   try {
+    //     const seller = await usersCollection.findOne({
+    //       email: sellerEmail,
+    //     });
+    //     const isFollowing = await followingCollection.findOne({
+    //       sellerEmail,
+    //       followerEmail: email,
+    //       status: "following",
+    //     });
+    //     console.log("following ", isFollowing);
+    //     const profileData = {
+    //       ...seller,
+    //       isFollowing: !!isFollowing,
+    //     };
+    //     res.send(profileData);
+    //   } catch (error) {
+    //     res.status(500).json({
+    //       message: "Server error while fetching followers listings.",
+    //       error: error.message,
+    //     });
+    //   }
+    // });
+
+    app.get("/followers/:sellerEmail", async (req, res) => {
+      const { sellerEmail } = req.params;
+
+      try {
+        const seller = await usersCollection.findOne({ email: sellerEmail });
+        if (!seller) {
+          return res.status(404).json({ message: "Seller not found" });
+        }
+        const followers = await followingCollection
+          .find({ sellerEmail, status: "following" })
+          .toArray();
+        // const isFollowing = await followingCollection.findOne({
+        //   sellerEmail,
+        //   followerEmail,
+        //   status: "following",
+        // });
+
+        // const profileData = {
+        //   ...seller,
+        //   isFollowing: !!isFollowing,
+        // };
+        const profileData = {
+          ...seller,
+          followers: followers,
+          followerCount: followers.length,
+        };
+        console.log("followers data is", profileData);
+        res.send(profileData);
+      } catch (error) {
+        res.status(500).json({
+          message: "Server error while fetching followers listings.",
+          error: error.message,
+        });
+      }
+    });
+
+    app.post("/following/:email", async (req, res) => {
+      // const { sellerId } = req.body;
+      const { email } = req.params;
+      const { email: sellerEmail } = req.body;
+      try {
+        const user = await usersCollection.findOne({ email: email });
+        if (!user) return res.status(404).json({ message: "user not found" });
+        const updatedUser = await usersCollection.updateOne(
+          { email },
+          // { uid: userUid },
+          { $addToSet: { favoriteSeller: sellerEmail } }
+        );
+        const followData = {
+          followerEmail: email,
+          sellerEmail,
+          status: "following",
+          followedAt: new Date(),
+        };
+        console.log("Following data", followData);
+        const alreadyFollowed = await followingCollection.findOne({
+          followerEmail: email,
+          sellerEmail,
+        });
+        if (!alreadyFollowed) {
+          await followingCollection.insertOne(followData);
+        }
+        console.log("Following data ibgsdjfh", alreadyFollowed);
+        res.send({ success: true, updatedUser });
+      } catch (error) {
+        console.error("Error adding favorite product:", error);
         res.status(500).json({ message: "Server error" });
       }
     });

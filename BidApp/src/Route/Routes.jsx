@@ -25,6 +25,7 @@ import RecentOrders from "../Pages/Dashboard/AdminRoutes/RecentOrders";
 import Reviews from "../Pages/Dashboard/AdminRoutes/Reviews";
 import ChatBox from "../Pages/BidTask/ChatBox";
 import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInstruction";
+import SellerProfile from "../SellerProfile/SellerProfile";
 
 export const router = createBrowserRouter([
   {
@@ -44,7 +45,8 @@ export const router = createBrowserRouter([
       { path: "/profile", element: <Profile /> },
       { path: "/bid/:id", element: <Bid /> },
       {
-        path: "/payment", element:<Payment></Payment>
+        path: "/payment",
+        element: <Payment></Payment>,
       },
       {
         path: "/wishlist",
@@ -52,7 +54,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/chatBox",
-        element:<ChatBox></ChatBox>
+        element: <ChatBox></ChatBox>,
+      },
+      {
+        path: "/sellerProfile/:email",
+        element: <SellerProfile />,
       },
     ],
   },
@@ -67,16 +73,14 @@ export const router = createBrowserRouter([
       { path: "auctionChart", element: <AuctionChart /> },
 
       { path: "manageUsers", element: <ManageUsers></ManageUsers> },
-      {path: "analytics",
-        element:<Analytics></Analytics>
-      },
+      { path: "analytics", element: <Analytics></Analytics> },
       {
-        path:"recentOrders",
-        element:<RecentOrders></RecentOrders>
+        path: "recentOrders",
+        element: <RecentOrders></RecentOrders>,
       },
       {
         path: "reviews",
-        element:<Reviews></Reviews>
+        element: <Reviews></Reviews>,
       },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
@@ -84,8 +88,9 @@ export const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "updatedBidInfo", element: <UpdateBid /> },
       {
-        path:"pay",element: <Payment></Payment>
-      }
+        path: "pay",
+        element: <Payment></Payment>,
+      },
     ],
   },
 ]);
