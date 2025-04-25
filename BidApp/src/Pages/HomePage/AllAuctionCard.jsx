@@ -166,7 +166,7 @@ const AllAuctionCard = ({ auction }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className={cn(
-        "rounded-3xl relative z-10 shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
+        "rounded-3xl relative  shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
       )}
     >
       <div className="h-full">
