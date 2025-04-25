@@ -17,7 +17,7 @@ const cardVariants = {
 import { io } from "socket.io-client";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
-const socket = io("http://localhost:5000", {
+const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -34,7 +34,7 @@ const RecentWinner = () => {
     queryKey: ["auctionWinner"],
     queryFn: async () => {
       const res = await axiosPublic.get("/recentWinners");
-      console.log("winner ", res.data);
+      // console.log("winner ", res.data);
       return res?.data ? res.data : [];
     },
   });
@@ -43,7 +43,7 @@ const RecentWinner = () => {
       console.log("✅ Connected to Socket.IO server");
     });
     socket.on("newWinner", (newWinnerData) => {
-      console.log("🎉 New Winner Data Received:", newWinnerData);
+      // console.log("🎉 New Winner Data Received:", newWinnerData);
       refetch();
     });
     return () => {

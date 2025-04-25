@@ -66,7 +66,10 @@ const AllAuctionCard = ({ auction }) => {
 
     const fetchWishlist = async () => {
       try {
+
         const response = await fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`);
+
+        
         const data = await response.json();
         if (response.ok) {
           const isProductInWishlist = data.wishlist.some((product) => product._id === _id);
@@ -103,6 +106,24 @@ const AllAuctionCard = ({ auction }) => {
           timer: 1500,
         });
         refetchWishlist();
+
+
+
+        const updatedWishlistResponse = await fetch(
+          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
+        );
+        const updatedData = await updatedWishlistResponse.json();
+        const isProductInWishlist = updatedData.wishlist.some(
+          (product) => product._id === _id
+        );
+        setIsWishlisted(isProductInWishlist);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
+
       }
     } catch (error) {
       console.error("Error adding to wishlist:", error);
