@@ -77,7 +77,7 @@ async function run() {
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
 
-    const reportsCollection = client.db("auctoriaDB").collection("reports");
+    const reportsCollection = client.db("Auctoria").collection("reports");
     const paymentCollection = client.db("Auctoria").collection('payments');
     const messageCollection = client.db("Auctoria").collection('messages');
 
