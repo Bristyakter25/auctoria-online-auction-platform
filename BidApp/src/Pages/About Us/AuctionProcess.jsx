@@ -27,9 +27,8 @@ function AuctionProcess() {
        <div className="absolute top-4 right-4 text-gray-400">Step 01</div>
       </div>
      </div>
-
-     {/* Select Product */}
-     <div className="card card-compact bg-lime-100 shadow-xl">
+       {/* Select Product */}
+       <div className="card card-compact bg-lime-100 shadow-xl">
       <div className="card-body">
        <div className="flex justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-700">
@@ -67,7 +66,7 @@ function AuctionProcess() {
      </div>
 
      {/* Make Payment */}
-     <div className="card card-compact bg-sky-50 shadow-xl">
+     <div className="card card-compact bg-sky-50  shadow-xl">
       <div className="card-body">
        <div className="flex justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-12 h-12 text-gray-700">
@@ -84,6 +83,7 @@ function AuctionProcess() {
        <div className="absolute top-4 right-4 text-gray-400">Step 04</div>
       </div>
      </div>
+     
    
     </div>
     

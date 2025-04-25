@@ -13,7 +13,6 @@ import { BsFillChatTextFill } from "react-icons/bs";
 
 import { MdWatchLater } from "react-icons/md";
 
-
 // import { MdCancel } from "react-icons/md";
 
 const socket = io("https://auctoria-online-auction-platform.onrender.com", {
@@ -178,7 +177,6 @@ const Bid = () => {
     }
   };
 
-
   const handleSendMessage = async () => {
     if (!messageText.trim()) {
       toast.error("Message cannot be empty.");
@@ -219,13 +217,10 @@ const Bid = () => {
       toast.error("Server error while sending message.");
     }
   };
-  
-  
 
   if (!product) return <p className="text-center">Loading...</p>;
 
   if (!product) return <LoadingSpinner></LoadingSpinner>;
-
 
   return (
     <div className="container mx-auto px-4 py-32">
@@ -235,7 +230,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg "
+          className=" p-6 shadow-md rounded-lg bg-teal-50"
         >
           {/* Main Image */}
           <motion.img
@@ -276,17 +271,12 @@ const Bid = () => {
               className="w-0 h-0 border-t-[28px] border-t-transparent border-l-[28px] border-l-teal-300
   border-b-[28px] border-b-transparent absolute -top-6 -right-2 -rotate-45 p-1"
             ></div>
-            <h2 className="w-8/12 text-gary-600 ">
-              {product.productName}{" "}
-            </h2>
+            <h2 className="w-8/12 text-gary-600 ">{product.productName} </h2>
             <p className="text-lg flex justify-center items-center -top-1 right-1 absolute text-gary-600 dark:text-gray-700">
               {product.bids?.length}
             </p>{" "}
           </div>
-          <p className="text-md mb-4 text-gary-600 ">
-            {" "}
-            {product.category}
-          </p>
+          <p className="text-md mb-4 text-gary-600 "> {product.category}</p>
           <p className="text-gary-600 ">
             <strong>End Time</strong> {formatDate(product.auctionEndTime)}
           </p>
