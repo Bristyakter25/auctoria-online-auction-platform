@@ -56,7 +56,7 @@ const Banner = () => {
         </svg>
       </div>
 
-      <div className="lg:w-[1024px] w-[350px] mx-auto gap-x-5 grid grid-cols-1 lg:grid-cols-2 relative z-10">
+      <div className="lg:w-[1124px] w-[350px] mx-auto gap-x-5 grid grid-cols-1 lg:grid-cols-2 relative z-10">
         {/* Text Content */}
         <div>
           <h2 className="text-5xl text-black font-extrabold">

@@ -8,7 +8,7 @@ const ProductHistory = () => {
   useEffect(() => {
     if (user?.email) {
 
-      // fetch(`https://auctoria-online-auction-platform.onrender.com/addProduct?email=${user.email}`)
+      
       fetch(`https://auctoria-online-auction-platform.onrender.com/productHistory?email=${user.email}`)
 
       
