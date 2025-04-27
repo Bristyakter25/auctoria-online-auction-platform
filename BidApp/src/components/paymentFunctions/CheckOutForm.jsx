@@ -125,7 +125,9 @@ const {user} =useContext(AuthContext);
       {cart.map((item, index) => (
         <li key={index} className="border p-3 rounded shadow-sm">
           <p><strong>Product Name:</strong> {item.productName}</p>
-          <p><strong>Price:</strong> $ {item.price}</p>
+          <div className="mt-4 text-lg font-semibold">
+      Total Paid: $ {totalPrice}
+    </div>
           
         </li>
       ))}
