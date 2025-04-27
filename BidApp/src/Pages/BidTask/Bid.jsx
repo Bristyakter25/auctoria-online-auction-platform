@@ -219,9 +219,6 @@ const Bid = () => {
       toast.error("Server error while sending message.");
     }
   };
-
-  if (!product) return <p className="text-center">Loading...</p>;
-
   if (!product) return <LoadingSpinner></LoadingSpinner>;
 
   return (
@@ -265,7 +262,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg border relative "
+          className=" p-6 shadow-md rounded-lg relative bg-teal-50"
         >
           <div className="text-2xl font-bold mb-2 flex items-center ">
             {" "}
@@ -273,16 +270,24 @@ const Bid = () => {
               className="w-0 h-0 border-t-[28px] border-t-transparent border-l-[28px] border-l-teal-300
   border-b-[28px] border-b-transparent absolute -top-6 -right-2 -rotate-45 p-1"
             ></div>
-            <h2 className="w-8/12 text-gary-600 ">{product.productName} </h2>
-            <p className="text-lg flex justify-center items-center -top-1 right-1 absolute text-gary-600 dark:text-gray-700">
+            <h2 className="w-8/12 dark:text-gray-700  ">
+              {product.productName}{" "}
+            </h2>
+            <p className="text-lg dark:text-gray-700 flex justify-center items-center -top-1 right-1 absolute text-gary-600 dark:text-gray-700">
               {product.bids?.length}
             </p>{" "}
           </div>
-          <p className="text-md mb-4 text-gary-600 "> {product.category}</p>
-          <p className="text-gary-600 ">
-            <strong>End Time</strong> {formatDate(product.auctionEndTime)}
+          <p className="text-md mb-4 dark:text-gray-700  ">
+            {" "}
+            {product.category}
           </p>
-          <p className="text-sm mt-1 flex items-center gap-2 text-gary-600 ">
+          <p className="dark:text-gray-700 flex items-center gap-2 ">
+            <strong className="flex items-center">
+              <FaGavel /> End
+            </strong>{" "}
+            {formatDate(product.auctionEndTime)}
+          </p>
+          <p className="text-sm mt-1 flex items-center gap-2 dark:text-gray-700 ">
             <MdWatchLater size={24} />
             {calculateCountdown(product.auctionEndTime)}
           </p>
@@ -290,9 +295,9 @@ const Bid = () => {
           {/* Current Bid */}
           <div className="mt-4 flex items-center justify-between">
             <div className="flex px-4 py-1 border bg-green-300 rounded-full">
-              <p className="text-sm font-semibold text-gary-600 text-gray-700">
+              <p className="text-sm font-semibold">
                 Current Bid
-                <span className="text-3xl font-bold text-gary-600 text-gray-700">
+                <span className="text-3xl font-bold text-gray-700">
                   ${currentBid || "No bids yet"}
                 </span>
               </p>
@@ -308,7 +313,7 @@ const Bid = () => {
           </div>
 
           {/* Bid Input Field */}
-          <div className="mt-4 text-gary-600 dark:text-gray-700">
+          <div className="mt-4 text-gary-600 dark:text-gray-100">
             {product.status === "expired" ? (
               ""
             ) : (
@@ -317,7 +322,7 @@ const Bid = () => {
 
             <input
               type="number"
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border rounded-md "
               placeholder="Max your bid"
               value={bidAmount}
               onChange={(e) => setBidAmount(e.target.value)}
