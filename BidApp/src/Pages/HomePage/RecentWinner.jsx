@@ -17,7 +17,7 @@ const cardVariants = {
 import { io } from "socket.io-client";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });

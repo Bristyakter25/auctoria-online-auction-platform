@@ -7,11 +7,8 @@ const ProductHistory = () => {
 
   useEffect(() => {
     if (user?.email) {
-
-      // fetch(`https://auctoria-online-auction-platform.onrender.com/addProduct?email=${user.email}`)
-      fetch(`https://auctoria-online-auction-platform.onrender.com/productHistory?email=${user.email}`)
-
-      
+      // fetch(`http://localhost:5000/addProduct?email=${user.email}`)
+      fetch(`http://localhost:5000/productHistory?email=${user.email}`)
         .then((res) => res.json())
         .then((data) => setProducts(data));
     }
@@ -35,7 +32,7 @@ const ProductHistory = () => {
                 <th className="px-6 py-3 text-left  font-bold  uppercase tracking-wider">
                   Category
                 </th>
-              
+
                 <th className="px-6 py-3 text-left  font-bold uppercase tracking-wider">
                   Location
                 </th>
@@ -60,7 +57,7 @@ const ProductHistory = () => {
                   <td className="px-6 py-4 whitespace-nowrap  ">
                     {product.category}
                   </td>
-                
+
                   <td className="px-6 py-4 whitespace-nowrap ">
                     {product.location}
                   </td>

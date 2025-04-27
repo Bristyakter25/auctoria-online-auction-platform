@@ -15,7 +15,7 @@ const WishList = () => {
 
     setLoading(true);
 
-    fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${user.uid}`)
+    fetch(`http://localhost:5000/wishlist/${user.uid}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch wishlist");
@@ -39,30 +39,31 @@ const WishList = () => {
 
   return (
     <div className="">
-      
-<div className="text-center mb-10 py-40 bg-gradient-to-r from-yellow-100 via-white to-yellow-100"
->
+      <div className="text-center mb-10 py-40 bg-gradient-to-r from-yellow-100 via-white to-yellow-100">
+        <h2 className="text-5xl  font-bold mb-5">Your Wish listed items! </h2>
 
-            <h2 className="text-5xl  font-bold mb-5">Your Wish listed items! </h2>
-            
-            <div className="flex items-center justify-center gap-x-3 text-center ">
-            <Link to="/" className="text-lg hover:text-green-600">Home</Link>
-           <p className="mt-2 "> <FaLongArrowAltRight /></p>
-            <p className="text-lg ">Wish List Products</p>
-            </div>
-            </div>
+        <div className="flex items-center justify-center gap-x-3 text-center ">
+          <Link to="/" className="text-lg hover:text-green-600">
+            Home
+          </Link>
+          <p className="mt-2 ">
+            {" "}
+            <FaLongArrowAltRight />
+          </p>
+          <p className="text-lg ">Wish List Products</p>
+        </div>
+      </div>
       {error && <p className="text-center text-red-500">{error}</p>}{" "}
-      
       {wishListProducts.length > 0 ? (
         <div className="lg:w-[900px] w-[380px] mx-auto">
           <div className="grid gap-y-5  lg:grid-cols-2 sm:grid-cols-1 gap-x-4">
-          {wishListProducts.map((wishListProduct) => (
-            <WishListCard
-              key={wishListProduct._id}
-              wishListProduct={wishListProduct}
-            />
-          ))}
-        </div>
+            {wishListProducts.map((wishListProduct) => (
+              <WishListCard
+                key={wishListProduct._id}
+                wishListProduct={wishListProduct}
+              />
+            ))}
+          </div>
         </div>
       ) : (
         <p className="text-center text-gray-500">No items in your wishlist.</p>

@@ -15,7 +15,7 @@ import { MdWatchLater } from "react-icons/md";
 
 // import { MdCancel } from "react-icons/md";
 
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -57,15 +57,13 @@ const Bid = () => {
 
   const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
-  console.log("product data", product);
+  // console.log("product data", product);
   useEffect(() => {
-    console.log(`Fetching product with id: ${id}`);
-    fetch(
-      `https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`
-    )
+    // console.log(`Fetching product with id: ${id}`);
+    fetch(`http://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched product data:", data);
+        // console.log("Fetched product data:", data);
         if (data) {
           setProduct(data);
           if (data.bids?.length > 0) {
@@ -147,22 +145,20 @@ const Bid = () => {
     }
     // const bidId = generateSellerId();
     try {
-      const res = await fetch(
-        `https://auctoria-online-auction-platform.onrender.com/bid/${id}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            bidId: generateSellerId(),
-            sellerId: product.sellerId,
-            sellerEmail: product.email,
-            amount: Number(bidAmount),
-            user: user?.displayName,
-            email: user?.email,
-            productName: product.productName,
-          }),
-        }
-      );
+      const res = await fetch(`http://localhost:5000/bid/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bidId: generateSellerId(),
+          sellerId: product.sellerId,
+          sellerEmail: product.email,
+          amount: Number(bidAmount),
+          user: user?.displayName,
+          email: user?.email,
+          photo: user?.photoURL,
+          productName: product.productName,
+        }),
+      });
       if (res.ok) {
         toast.success("Your bid has been submitted successfully!", {
           position: "top-right",
@@ -200,17 +196,14 @@ const Bid = () => {
     };
 
     try {
-      // const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
-      const res = await fetch(
-        "https://auctoria-online-auction-platform.onrender.com/messages",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      // const res = await fetch("http://localhost:5000/messages", {
+      const res = await fetch("http://localhost:5000/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
       const data = await res.json();
 
