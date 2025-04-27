@@ -2,28 +2,31 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-
 const fetchOrders = async () => {
-  const response = await axios.get("https://auctoria-online-auction-platform.onrender.com/payments");
+  const response = await axios.get("http://localhost:5000/payments");
   return response.data;
 };
 
-
 const updateOrderStatus = async ({ orderId, status }) => {
-  const response = await axios.patch(`https://auctoria-online-auction-platform.onrender.com/payments/${orderId}`, { status });
+  const response = await axios.patch(
+    `http://localhost:5000/payments/${orderId}`,
+    { status }
+  );
   return response.data;
 };
 
 const RecentOrders = () => {
   const queryClient = useQueryClient();
 
-  
-  const { data: orders, error, isLoading } = useQuery({
+  const {
+    data: orders,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: ["orders"],
     queryFn: fetchOrders,
   });
 
-  
   const mutation = useMutation({
     mutationFn: updateOrderStatus,
     onSuccess: () => {
@@ -35,7 +38,6 @@ const RecentOrders = () => {
   if (isLoading) return <p>Loading orders...</p>;
   if (error) return <p>Error fetching orders: {error.message}</p>;
 
- 
   const handleMarkAsComplete = (orderId) => {
     mutation.mutate({ orderId, status: "completed" });
   };
@@ -46,7 +48,9 @@ const RecentOrders = () => {
 
   return (
     <div>
-      <h2 className="text-3xl  mt-5 text-center font-bold mb-4">Recent Orders</h2>
+      <h2 className="text-3xl  mt-5 text-center font-bold mb-4">
+        Recent Orders
+      </h2>
       {orders.length === 0 ? (
         <p>No recent orders found.</p>
       ) : (
@@ -55,9 +59,11 @@ const RecentOrders = () => {
             <thead>
               <tr>
                 <th>#</th>
-                
+
                 <th className="font-extrabold text-black text-xl">Image</th>
-                <th className="font-extrabold text-black text-xl">Product Name</th>
+                <th className="font-extrabold text-black text-xl">
+                  Product Name
+                </th>
                 <th className="font-extrabold text-black text-xl">Price</th>
                 <th className="font-extrabold text-black text-xl">Status</th>
                 <th className="font-extrabold text-black text-xl">Date</th>
@@ -66,11 +72,13 @@ const RecentOrders = () => {
             </thead>
             <tbody>
               {orders.map((order, index) => (
-                <tr key={order._id} className={index % 2 === 0 ? "bg-base-200" : ""}>
+                <tr
+                  key={order._id}
+                  className={index % 2 === 0 ? "bg-base-200" : ""}
+                >
                   <th>{index + 1}</th>
                   {order.products.map((product) => (
                     <React.Fragment key={product.bidId}>
-                     
                       <td>
                         <img
                           src={product.image}
@@ -79,12 +87,21 @@ const RecentOrders = () => {
                           onError={(e) => (e.target.src = "/fallback.jpg")}
                         />
                       </td>
-                      <td className="font-semibold  text-[17px]">{product.name}</td>
-                      <td className="font-semibold text-[17px]">${order.price}</td>
-                      <td className="capitalize font-semibold text-[17px]">{order.status}</td>
-                      <td className="font-semibold  text-[17px]">{new Date(order.date).toLocaleString()}</td>
                       <td className="font-semibold  text-[17px]">
-                        {order.status !== "completed" && order.status !== "cancelled" ? (
+                        {product.name}
+                      </td>
+                      <td className="font-semibold text-[17px]">
+                        ${order.price}
+                      </td>
+                      <td className="capitalize font-semibold text-[17px]">
+                        {order.status}
+                      </td>
+                      <td className="font-semibold  text-[17px]">
+                        {new Date(order.date).toLocaleString()}
+                      </td>
+                      <td className="font-semibold  text-[17px]">
+                        {order.status !== "completed" &&
+                        order.status !== "cancelled" ? (
                           <>
                             <button
                               onClick={() => handleMarkAsComplete(order._id)}
@@ -102,10 +119,13 @@ const RecentOrders = () => {
                         ) : (
                           <span
                             className={
-                              order.status === "completed" ? "text-green-500" : "text-red-500"
+                              order.status === "completed"
+                                ? "text-green-500"
+                                : "text-red-500"
                             }
                           >
-                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            {order.status.charAt(0).toUpperCase() +
+                              order.status.slice(1)}
                           </span>
                         )}
                       </td>

@@ -16,7 +16,7 @@ const BidHistory = () => {
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `https://auctoria-online-auction-platform.onrender.com/bidHistory/${user?.email}`
+        `http://localhost:5000/bidHistory/${user?.email}`
       );
       return res.data;
     },
@@ -48,7 +48,7 @@ const BidHistory = () => {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(
-          `https://auctoria-online-auction-platform.onrender.com/deleteBid/${productId}/${bidId}`
+          `http://localhost:5000/deleteBid/${productId}/${bidId}`
         );
         if (res.data.success) {
           Swal.fire({
@@ -83,7 +83,9 @@ const BidHistory = () => {
         <div className="text-xl font-semibold mb-4 text-green-700 mr-5">
           Total Amount to Pay: ${totalAmountToPay?.toFixed(2)}
           <Link to="/dashboard/pay" state={{ totalPrice: totalAmountToPay }}>
-            <button className="btn bg-green-400 hover:bg-green-700 hover:text-white ml-5">Pay Now!</button>
+            <button className="btn bg-green-400 hover:bg-green-700 hover:text-white ml-5">
+              Pay Now!
+            </button>
           </Link>
         </div>
       </div>
@@ -107,7 +109,7 @@ const BidHistory = () => {
             <tbody>
               {bids.map((bid, index) => (
                 <tr key={`${bid._id}-${index}`}>
-                    <td className="border px-4 py-2">
+                  <td className="border px-4 py-2">
                     <img
                       src={bid.productImage}
                       alt={bid.productName}
@@ -130,7 +132,6 @@ const BidHistory = () => {
                       Delete
                     </button>
                   </td>
-                
                 </tr>
               ))}
             </tbody>
