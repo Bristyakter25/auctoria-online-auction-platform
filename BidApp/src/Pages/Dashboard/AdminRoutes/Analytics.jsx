@@ -24,7 +24,7 @@ const Analytics = () => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    fetch("hhttp://localhost:5000/popularProducts")
+    fetch("http://localhost:5000/popularProducts")
       .then((res) => res.json())
       .then((data) => setPopularProducts(data))
       .catch((err) => console.error("Error loading popular products:", err));

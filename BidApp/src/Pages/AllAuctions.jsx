@@ -11,7 +11,7 @@ const AllAuctions = () => {
   const [filteredAuctions, setFilteredAuctions] = useState([]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   useEffect(() => {
-    fetch("hhttp://localhost:5000/addProducts")
+    fetch("http://localhost:5000/addProducts")
       .then((res) => res.json())
       .then((data) => {
         setAllAuctions(data);

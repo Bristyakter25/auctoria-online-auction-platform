@@ -17,7 +17,7 @@ const cardVariants = {
 import { io } from "socket.io-client";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
-const socket = io("hhttp://localhost:5000", {
+const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });

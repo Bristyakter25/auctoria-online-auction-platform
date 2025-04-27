@@ -6,7 +6,7 @@ const LatestAuctions = () => {
   const [recentProducts, setRecentProducts] = useState([]);
   console.log("all recent product", recentProducts);
   useEffect(() => {
-    fetch("hhttp://localhost:5000/recentProducts")
+    fetch("https://auctoria-online-auction-platform.onrender.com/recentProducts")
       .then((res) => res.json())
       .then((data) => {
         setRecentProducts(data);

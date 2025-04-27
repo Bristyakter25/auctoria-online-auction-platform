@@ -70,12 +70,9 @@ const RecentProductCard = ({ recentProduct }) => {
 
     const fetchWishlist = async () => {
       try {
-
-        const response = await fetch(`hhttp://localhost:5000/wishlist/${userId}`);
-
-     
-
-        
+        const response = await fetch(
+          `http://localhost:5000/wishlist/${userId}`
+        );
 
         const data = await response.json();
 
@@ -107,7 +104,7 @@ const RecentProductCard = ({ recentProduct }) => {
     };
 
     try {
-      const response = await fetch("hhttp://localhost:5000/addToWishlist", {
+      const response = await fetch("http://localhost:5000/addToWishlist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +124,7 @@ const RecentProductCard = ({ recentProduct }) => {
         refetchWishlist();
 
         const updatedWishlistResponse = await fetch(
-          `hhttp://localhost:5000/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
         const updatedData = await updatedWishlistResponse.json();
         const isProductInWishlist = updatedData.wishlist.some(

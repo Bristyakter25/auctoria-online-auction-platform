@@ -13,10 +13,9 @@ const port = process.env.PORT || 5000;
 const server = http.createServer(app);
 
 const allowedOrigins = [
-  "http://localhost:5174",
   "http://localhost:5173",
   "https://bidapp-81c51.web.app", // your frontend on Firebase
-  "hhttp://localhost:5000", // your Render backend itself (needed for self requests)
+  "http://localhost:5000", // your Render backend itself (needed for self requests)
 ];
 
 app.use(
@@ -80,11 +79,10 @@ async function run() {
     const reviewsCollection = client.db("Auctoria").collection("reviews");
 
     const reportsCollection = client.db("Auctoria").collection("reports");
-    const paymentCollection = client.db("Auctoria").collection('payments');
-    const messageCollection = client.db("Auctoria").collection('messages');
- 
-    const followingCollection = client.db("Auctoria").collection("followers");
+    const paymentCollection = client.db("Auctoria").collection("payments");
+    const messageCollection = client.db("Auctoria").collection("messages");
 
+    const followingCollection = client.db("Auctoria").collection("followers");
 
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
@@ -132,7 +130,7 @@ async function run() {
       next();
     };
 
-    app.get("/user-stats", async(req,res)=>{
+    app.get("/user-stats", async (req, res) => {
       const users = await usersCollection.estimatedDocumentCount();
       const products = await productsCollection.estimatedDocumentCount();
       const payments = await paymentCollection.estimatedDocumentCount();
@@ -777,8 +775,16 @@ async function run() {
 
     app.post("/bid/:id", async (req, res) => {
       const { id } = req.params;
-      const { bidId, amount, user, email, sellerId, sellerEmail, productName } =
-        req.body;
+      const {
+        bidId,
+        amount,
+        user,
+        email,
+        photo,
+        sellerId,
+        sellerEmail,
+        productName,
+      } = req.body;
       // console.log("seller user", user, sellerEmail);
       try {
         if (!ObjectId.isValid(id)) {
@@ -788,7 +794,11 @@ async function run() {
         const objectId = new ObjectId(id);
         const result = await productsCollection.updateOne(
           { _id: objectId },
-          { $push: { bids: { bidId, amount, user, email, time: new Date() } } }
+          {
+            $push: {
+              bids: { bidId, amount, user, email, photo, time: new Date() },
+            },
+          }
         );
         // console.log("Bid time:", new Date());
         // notification for Seller when user Bid the product
@@ -991,13 +1001,13 @@ async function run() {
 
     // Reports from user functionality
 
-   app.post("/report", async (req, res) => {
+    app.post("/report", async (req, res) => {
       const { productId, userEmail, reason } = req.body;
-    
+
       if (!productId || !userEmail || !reason) {
         return res.status(400).json({ error: "Missing required fields" });
       }
-    
+
       try {
         const report = {
           productId: new ObjectId(productId),
@@ -1005,19 +1015,21 @@ async function run() {
           reason,
           reportedAt: new Date(),
         };
-    
+
         const result = await reportsCollection.insertOne(report);
-        res.status(201).json({ message: "Report submitted", id: result.insertedId });
+        res
+          .status(201)
+          .json({ message: "Report submitted", id: result.insertedId });
       } catch (err) {
         console.error("Failed to report:", err);
         res.status(500).json({ error: "Internal server error" });
       }
     });
 
-    app.get('/report',async (req,res) =>{
+    app.get("/report", async (req, res) => {
       const result = await reportsCollection.find().toArray();
       res.send(result);
-    })
+    });
 
     // Review related API
 
@@ -1167,10 +1179,29 @@ async function run() {
       }
     });
 
+    app.get("/allBidHistory/:id", async (req, res) => {
+      const id = req.params.id;
+
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).send({ error: "Invalid product id" });
+      }
+      const query = { _id: new ObjectId(id) };
+      console.log("bid id", query);
+      try {
+        const result = await productsCollection.findOne(query);
+        if (!result) {
+          return res.status(404).json({ message: "Product পাওয়া যায়নি!" });
+        }
+        res.send(result.bids || []);
+      } catch (error) {
+        res.status(500).json({ message: "কিছু একটা সমস্যা হয়েছে", error });
+      }
+    });
+
     // 🛠 Delete Bid
     app.delete("/deleteBid/:productId/:bidId", async (req, res) => {
       const { productId, bidId } = req.params;
-      console.log("Deleting bid for product ID:", bidId, productId);
+      // console.log("Deleting bid for product ID:", bidId, productId);
 
       try {
         const result = await productsCollection.updateOne(

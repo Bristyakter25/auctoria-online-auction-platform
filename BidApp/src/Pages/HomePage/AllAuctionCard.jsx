@@ -75,7 +75,7 @@ const AllAuctionCard = ({ auction }) => {
     const fetchWishlist = async () => {
       try {
         const response = await fetch(
-          `hhttp://localhost:5000/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
 
         const data = await response.json();
@@ -104,14 +104,11 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
-      const response = await fetch(
-        "hhttp://localhost:5000/addToWishlist",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productId: _id, userId }),
-        }
-      );
+      const response = await fetch("http://localhost:5000/addToWishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: _id, userId }),
+      });
 
       if (response.ok) {
         setIsWishlisted(true);
@@ -125,7 +122,7 @@ const AllAuctionCard = ({ auction }) => {
         refetchWishlist();
 
         const updatedWishlistResponse = await fetch(
-          `hhttp://localhost:5000/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
         const updatedData = await updatedWishlistResponse.json();
         const isProductInWishlist = updatedData.wishlist.some(
@@ -151,7 +148,7 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/report", {
+      const response = await fetch("https://auctoria-online-auction-platform.onrender.com/report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -179,12 +176,12 @@ const AllAuctionCard = ({ auction }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className={cn(
-        "rounded-3xl relative  shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
+        "rounded-3xl relative z-10  shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
       )}
     >
       <div className="h-full">
         <img
-          className="object-cover w-full h-[200px] items-center rounded-t-xl"
+          className="object-cover w-full h-[200px] items-center rounded-t-xl relative "
           src={productImage}
           alt={productName}
         />
@@ -218,16 +215,18 @@ const AllAuctionCard = ({ auction }) => {
           </h2>
           <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
         </div>
-
-        <div className="flex justify-between items-center px-4 py-2 border-t">
+        <div className="flex justify-end p-2">
           <button
             onClick={() => navigate(`/SellerProfile/${email}`)}
-            className="hover:bg-teal-100 p-2 rounded-full"
+            className="bg-teal-100 p-2 rounded-full px-3 py-0.5 "
           >
-            <p>
-              <SlUserFollowing />
+            <p className="font-bold text-blue-500  ">
+              {/* <SlUserFollowing size={20} />  */}
+              Follow
             </p>
           </button>
+        </div>
+        <div className="flex justify-between items-center px-4 py-2 border-t">
           <button
             className="hover:bg-teal-100 p-2 rounded-full"
             onClick={handleAddToWishlist}

@@ -3,7 +3,7 @@ import useContextHooks from "./useContextHooks";
 import { useNavigate } from "react-router-dom";
 
 const axiosSecure = axios.create({
-  baseURL: "hhttp://localhost:5000",
+  baseURL: "http://localhost:5000",
 });
 const useAxiosSecure = () => {
   const naviate = useNavigate();

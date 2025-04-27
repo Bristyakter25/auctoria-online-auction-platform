@@ -1,18 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../../providers/AuthProvider";
-
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import LoadingSpinner from "../../components/ShareComponents/LoadingSpinner ";
 
 const BidHistory = () => {
-  const [bids, setBids] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
 
-  const { data: bidHistory = [], refetch } = useQuery({
+  const {
+    data: bids = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
@@ -20,19 +20,25 @@ const BidHistory = () => {
       );
       return res.data;
     },
+    enabled: !!user?.email,
   });
 
-  useEffect(() => {
-    if (Array.isArray(bidHistory)) {
-      setBids(bidHistory);
-      setLoading(false);
-    } else {
-      setBids([]);
+  if (isLoading) return "Loading...";
 
-      // setLoading(false);
+  // Group bids by productId and keep the latest one
+  const latestBidsMap = new Map();
+
+  bids.forEach((bid) => {
+    const existing = latestBidsMap.get(bid.productId);
+    if (!existing || new Date(bid.timestamp) > new Date(existing.timestamp)) {
+      latestBidsMap.set(bid.productId, bid); // keep latest
     }
-    setLoading(false);
-  }, [bidHistory]);
+  });
+
+  const latestBids = Array.from(latestBidsMap.values());
+
+  // Calculate total from latest bids only
+  const totalAmountToPay = latestBids.reduce((total, bid) => total + bid.bidAmount, 0);
 
   const handleDelete = async (productId, bidId) => {
     const result = await Swal.fire({
@@ -67,47 +73,45 @@ const BidHistory = () => {
       }
     }
   };
-  if (loading) return <LoadingSpinner></LoadingSpinner>;
-  const totalAmountToPay = bids?.reduce((total, bid) => {
-    if (bid.email === user?.email) {
-      total += bid.bidAmount;
-    }
-    return total;
-  }, 0);
 
   return (
     <div className="p-6 py-40">
-      <div className="flex justify-between">
-        <h2 className="text-2xl font-bold mb-4">My Bid History</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">My Bid History</h2>
 
-        <div className="text-xl font-semibold mb-4 text-green-700 mr-5">
-          Total Amount to Pay: ${totalAmountToPay?.toFixed(2)}
-          <Link to="/dashboard/pay" state={{ totalPrice: totalAmountToPay }}>
-            <button className="btn bg-green-400 hover:bg-green-700 hover:text-white ml-5">Pay Now!</button>
+        <div className="flex items-center gap-4 text-green-700 font-semibold">
+          <span>Total Amount to Pay: ${totalAmountToPay.toFixed(2)}</span>
+          <Link
+            to="/dashboard/pay"
+            state={{ totalPrice: totalAmountToPay, cart: latestBids }}
+          >
+            <button className="btn bg-green-400 hover:bg-green-700 hover:text-white">
+              Pay Now!
+            </button>
           </Link>
         </div>
       </div>
 
-      {bids.length === 0 ? (
+      {latestBids.length === 0 ? (
         <p>No bids found.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="table-auto w-full border">
-            <thead>
+            <thead className="bg-gray-100">
               <tr>
+                <th className="border px-4 py-2">Image</th>
                 <th className="border px-4 py-2">Product Name</th>
-                <th className="border px-4 py-2"> Name</th>
-                <th className="border px-4 py-2"> Email</th>
+                <th className="border px-4 py-2">Name</th>
+                <th className="border px-4 py-2">Email</th>
                 <th className="border px-4 py-2">Amount</th>
                 <th className="border px-4 py-2">Time</th>
                 <th className="border px-4 py-2">Action</th>
-                <th className="border px-4 py-2">Image</th>
               </tr>
             </thead>
             <tbody>
-              {bids.map((bid, index) => (
+              {latestBids.map((bid, index) => (
                 <tr key={`${bid._id}-${index}`}>
-                    <td className="border px-4 py-2">
+                  <td className="border px-4 py-2">
                     <img
                       src={bid.productImage}
                       alt={bid.productName}
@@ -118,7 +122,6 @@ const BidHistory = () => {
                   <td className="border px-4 py-2">{bid.name}</td>
                   <td className="border px-4 py-2">{bid.email}</td>
                   <td className="border px-4 py-2">${bid.bidAmount}</td>
-
                   <td className="border px-4 py-2">
                     {new Date(bid.timestamp).toLocaleString()}
                   </td>
@@ -130,7 +133,6 @@ const BidHistory = () => {
                       Delete
                     </button>
                   </td>
-                
                 </tr>
               ))}
             </tbody>

@@ -34,7 +34,7 @@ export const WishlistProvider = ({ children }) => {
 
     try {
       setLoading(true);
-      const res = await fetch(`hhttp://localhost:5000/wishlist/${user.uid}`);
+      const res = await fetch(`http://localhost:5000/wishlist/${user.uid}`);
       if (!res.ok) throw new Error("Fetch failed");
 
       const data = await res.json();

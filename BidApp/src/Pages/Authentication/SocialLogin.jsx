@@ -22,7 +22,7 @@ const SocialLogin = () => {
           createdAt: new Date(),
         };
 
-        fetch("hhttp://localhost:5000/users", {
+        fetch("http://localhost:5000/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(userData),
