@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import UseAxiosPublic from "../../hooks/useAxiosPublic";
 
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
