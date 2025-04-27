@@ -1,39 +1,93 @@
 import { CardContent } from "../SellerProfile/CardContent";
 import { Avatar, AvatarImage, AvatarFallback } from "../SellerProfile/Avatar";
-import { Star, Eye, UserPlus, BadgeCheck, Flag } from "lucide-react";
-import { Button } from "../SellerProfile/Button";
 import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "../SellerProfile/Tabs";
+  Star,
+  Eye,
+  UserPlus,
+  BadgeCheck,
+  Flag,
+  CheckCircle,
+  AwardIcon,
+} from "lucide-react";
+import { Button } from "../SellerProfile/Button";
 import { motion } from "framer-motion";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../providers/AuthProvider";
+import { useParams } from "react-router-dom";
+import useAxiosPublic from "../hooks/useAxiosPublic";
+import { toast } from "react-toastify";
+import FavoritePage from "./FavoriteSeller";
+import FollowingSellerProduct from "./FollowingSellerProduct";
+import { useQuery } from "@tanstack/react-query";
 const fadeIn = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
 };
 
 const SellerProfile = () => {
+  const { user } = useContext(AuthContext);
+  const { email: sellerEmail } = useParams();
+  console.log("sellerEmail:", sellerEmail);
+  const email = user?.email;
+  const axiosPublic = useAxiosPublic();
+  const [isFollowing, setIsFollowing] = useState();
+  console.log("hsgfshfjhajdghds", isFollowing);
+  // useEffect(() => {
+  //   const fetchFollowing = async () => {
+  //     try {
+  //       const res = await axiosPublic.get(`/followers/${sellerEmail}`);
+  //       console.log("followers Data", res.data);
+  //       setIsFollowing();
+  //     } catch (error) {
+  //       console.error("Error fetching following sellers:", error);
+  //     }
+  //   };
+  //   if (email) {
+  //     fetchFollowing();
+  //   }
+  // }, [email, axiosPublic]);
+  const { data: followersStatus = [], refetch } = useQuery({
+    queryKey: ["followersStatus"],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/followers/${sellerEmail}`);
+      const isFollowing = res.data.followers.some(
+        (follower) =>
+          follower.followerEmail === email && follower.status === "following"
+      );
+      setIsFollowing(isFollowing);
+      return res.data;
+    },
+    enabled: !!sellerEmail,
+  });
+  const handleFollowing = async () => {
+    try {
+      const res = await axiosPublic.post(`/following/${email}`, {
+        email: sellerEmail,
+      });
+      // console.log(sellerEmail);
+      toast.success("Seller followed successfully!");
+      console.log("follwoing", res.data);
+    } catch (error) {
+      console.error("Error following seller:", error);
+    }
+  };
+
   return (
     <motion.div
-      className="max-w-5xl mx-auto p-6"
+      className="max-w-7xl mx-auto p-6 mt-28 "
       initial="hidden"
       animate="visible"
       variants={fadeIn}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <motion.div
-        className="rounded-2xl backdrop-blur-md bg-white/30 border border-white/10 shadow-2xl overflow-hidden"
+        className="lg:flex gap-3 rounded-2xl backdrop-blur-md border border-white/10 dark:border-none shadow-2xl overflow-hidden"
         variants={fadeIn}
         transition={{ duration: 0.5 }}
       >
         <CardContent className="p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
           <Avatar className="w-24 h-24 shadow-lg">
-            <AvatarImage
-              src="https://via.placeholder.com/150"
-              alt="Seller Avatar"
-            />
+            <AvatarImage src={user?.photoURL} alt="Seller Avatar" />
             <AvatarFallback>SN</AvatarFallback>
           </Avatar>
           <div className="flex-1">
@@ -50,11 +104,33 @@ const SellerProfile = () => {
               <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-4 rounded-xl shadow-lg hover:shadow-pink-500/50 transition-all text-sm">
                 Contact Seller
               </Button>
-              <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-2 px-4 rounded-xl shadow-lg hover:shadow-cyan-400/50 transition-all text-sm flex items-center gap-1">
+              {/* <Button
+                onClick={handleFollowing}
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-2 px-4 rounded-xl shadow-lg hover:shadow-cyan-400/50 transition-all text-sm flex items-center gap-1"
+              >
                 <UserPlus className="w-4 h-4" /> Follow
+              </Button> */}
+
+              <Button
+                onClick={handleFollowing}
+                className={`bg-gradient-to-r ${
+                  isFollowing
+                    ? "from-green-400 to-green-500"
+                    : "from-blue-500 to-cyan-500"
+                } text-white py-2 px-4 rounded-xl shadow-lg hover:shadow-cyan-400/50 transition-all text-sm flex items-center gap-1`}
+              >
+                {isFollowing ? (
+                  <CheckCircle className="w-4 h-4" />
+                ) : (
+                  <UserPlus className="w-4 h-4" />
+                )}
+                {isFollowing ? "Following" : "Follow"}
               </Button>
             </div>
           </div>
+        </CardContent>
+        <CardContent className="">
+          <FavoritePage />
         </CardContent>
       </motion.div>
 
@@ -71,7 +147,8 @@ const SellerProfile = () => {
         <h3 className="text-2xl font-bold mb-6 bg-gradient-to-r from-fuchsia-500 to-sky-400 bg-clip-text text-transparent">
           Listed Products
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <FollowingSellerProduct />
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <motion.div
             className="rounded-2xl backdrop-blur-lg bg-white/20 border border-white/10 shadow-lg hover:shadow-xl transition duration-300"
             whileHover={{ scale: 1.05 }}
@@ -92,12 +169,10 @@ const SellerProfile = () => {
               </Button>
             </CardContent>
           </motion.div>
-
-          {/* Repeat product cards dynamically */}
-        </div>
+        </div> */}
       </motion.div>
 
-      <motion.div
+      {/* <motion.div
         className="mt-12"
         initial="hidden"
         whileInView="visible"
@@ -123,7 +198,7 @@ const SellerProfile = () => {
             <p className="text-xs text-gray-400 mt-1">- Buyer02</p>
           </div>
         </div>
-      </motion.div>
+      </motion.div> */}
     </motion.div>
   );
 };
