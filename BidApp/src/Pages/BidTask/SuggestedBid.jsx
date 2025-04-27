@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState, useEffect } from "react";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { io } from "socket.io-client";
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+const socket = io("hhttp://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });

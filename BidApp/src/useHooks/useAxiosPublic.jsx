@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosPublic = axios.create({
-  baseURL: "https://auctoria-online-auction-platform.onrender.com",
+  baseURL: "hhttp://localhost:5000",
 });
 const useAxiosPublic = () => {
   return axiosPublic;

@@ -9,13 +9,16 @@ import Tabs from "./Tabs";
 import SuggestedBid from "./SuggestedBid";
 import AuctionWinner from "./AuctionWinner";
 
+
+
 import { BsFillChatTextFill } from "react-icons/bs";
 
 import { MdWatchLater } from "react-icons/md";
 
 // import { MdCancel } from "react-icons/md";
 
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+
+const socket = io("hhttp://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -60,7 +63,7 @@ const Bid = () => {
   console.log("product data", product);
   useEffect(() => {
     console.log(`Fetching product with id: ${id}`);
-    fetch(`https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`)
+    fetch(`hhttp://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched product data:", data);
@@ -145,7 +148,7 @@ const Bid = () => {
     }
     // const bidId = generateSellerId();
     try {
-      const res = await fetch(`https://auctoria-online-auction-platform.onrender.com/bid/${id}`, {
+      const res = await fetch(`hhttp://localhost:5000/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -195,7 +198,12 @@ const Bid = () => {
     };
 
     try {
-      const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
+
+      // const res = await fetch("hhttp://localhost:5000/messages", {
+        const res = await fetch("hhttp://localhost:5000/messages", {
+
+    
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",

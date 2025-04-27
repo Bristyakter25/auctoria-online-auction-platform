@@ -16,7 +16,7 @@ const BidHistory = () => {
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `https://auctoria-online-auction-platform.onrender.com/bidHistory/${user?.email}`
+        `hhttp://localhost:5000/bidHistory/${user?.email}`
       );
       return res.data;
     },
@@ -48,7 +48,7 @@ const BidHistory = () => {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(
-          `https://auctoria-online-auction-platform.onrender.com/deleteBid/${productId}/${bidId}`
+          `hhttp://localhost:5000/deleteBid/${productId}/${bidId}`
         );
         if (res.data.success) {
           Swal.fire({
