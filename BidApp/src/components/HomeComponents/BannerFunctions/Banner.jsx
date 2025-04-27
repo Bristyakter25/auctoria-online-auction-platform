@@ -107,7 +107,7 @@ const Banner = () => {
               <motion.img
                 src={pic2}
                 alt="Vintage clock"
-                className="w-[250px] rounded-2xl mb-3 h-[160px] cursor-pointer"
+                className="w-[250px] rounded-2xl mb-3 h-[200px] cursor-pointer"
                 variants={floatVariant}
                 animate="animate"
                 whileHover="whileHover"
@@ -125,7 +125,7 @@ const Banner = () => {
               <motion.img
                 src={pic4}
                 alt="Vintage lamp"
-                className="w-[250px] rounded-2xl mb-3 mt-2 h-[140px] cursor-pointer"
+                className="w-[250px] rounded-2xl mb-3 mt-2 h-[172px] cursor-pointer"
                 variants={floatVariant}
                 animate="animate"
                 whileHover="whileHover"
