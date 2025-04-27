@@ -4,7 +4,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-
+import { FaLongArrowAltRight } from "react-icons/fa";
 const BidHistory = () => {
   const { user } = useContext(AuthContext);
 
@@ -75,9 +75,23 @@ const BidHistory = () => {
   };
 
   return (
-    <div className="p-6 py-40">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">My Bid History</h2>
+    <div className="">
+      <div className="text-center mb-10 py-32 bg-gradient-to-r from-yellow-100 via-white to-yellow-100">
+              <h2 className="text-5xl  font-bold mb-5">Bid History </h2>
+      
+              <div className="flex items-center justify-center gap-x-3 text-center ">
+                <Link to="/" className="text-lg hover:text-green-600">
+                  Home
+                </Link>
+                <p className="mt-2 ">
+                  {" "}
+                  <FaLongArrowAltRight />
+                </p>
+                <p className="text-lg ">Bid History</p>
+              </div>
+            </div>
+      <div className="flex justify-end px-4 items-center mb-6">
+        
 
         <div className="flex items-center gap-4 text-green-700 font-semibold">
           <span>Total Amount to Pay: ${totalAmountToPay.toFixed(2)}</span>
