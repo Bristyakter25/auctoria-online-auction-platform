@@ -201,6 +201,17 @@ const Dashboard = () => {
                   <span>Bid History</span>
                 </NavLink>
               </li>
+              <li>
+                <NavLink
+                  to="/dashboard/paymentHistory"
+                  className={({ isActive }) =>
+                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                  }
+                >
+                  <BsBox2Heart />
+                  <span>Payment History</span>
+                </NavLink>
+              </li>
             </>
           )}
 
