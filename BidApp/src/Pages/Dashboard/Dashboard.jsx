@@ -1,13 +1,14 @@
-import { FaBars, FaHome } from "react-icons/fa";
-import { GrCircleInformation, GrHome } from "react-icons/gr";
+// src/pages/Dashboard/Dashboard.jsx
+
+import { FaBars, FaHome, FaChartBar, FaUsersCog, FaChartPie, FaClipboardList, FaCommentDots } from "react-icons/fa";
+import { GrCircleInformation } from "react-icons/gr";
 import { FaHospitalUser } from "react-icons/fa6";
 import { RiAuctionLine } from "react-icons/ri";
 import { BsBox2Heart } from "react-icons/bs";
 import { MdOutlineAddToQueue } from "react-icons/md";
-import { FaChartBar } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router-dom";
 import useRole from "../../hooks/useRole";
-import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
+import MenuItem from "./MenuItem";
 
 const Dashboard = () => {
   const [role, isLoading] = useRole();
@@ -46,51 +47,50 @@ const Dashboard = () => {
       {/* Sidebar */}
       <div className="drawer-side">
         <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
-        <ul className="menu p-4 w-64 bg-purple-100 dark:bg-gray-700 text-black dark:text-white min-h-full">
+        <ul className="menu p-4 w-64 bg-purple-300 dark:bg-gray-800 text-black dark:text-white min-h-full space-y-2">
+          <h2 className="text-center font-bold text-2xl text-purple-700 dark:text-purple-300 mb-6">Dashboard</h2>
 
           {/* Common Menu */}
-          <h2 className="text-center font-bold text-xl text-[#4635B1] dark:text-purple-300 mb-4">Dashboard Menu</h2>
-          <li><NavLink to="/dashboard/auctionChart"><FaChartBar /> Auction Chart</NavLink></li>
-          {/* <li><NavLink to="/"><GrHome /> Home</NavLink></li> */}
-          <li><NavLink to="/allAuctions"><RiAuctionLine /> All Auctions</NavLink></li>
-          <li><NavLink to="/dashboard/profile"><FaHospitalUser /> Manage Profile</NavLink></li>
+          <MenuItem to="/dashboard/auctionChart" icon={<FaChartBar />} text="Auction Chart"></MenuItem>
+          <MenuItem to="/allAuctions" icon={<RiAuctionLine />} text="All Auctions" />
+          <MenuItem to="/dashboard/profile" icon={<FaHospitalUser />} text="Manage Profile" />
 
-          <div className="divider"></div>
+          <div className="border-t border-gray-300 my-4"></div>
 
           {/* Admin Panel */}
           {role === "admin" && (
             <>
-              <h2 className="text-center font-bold text-xl text-[#4635B1] dark:text-purple-300 mb-4">Admin Panel</h2>
-              <li><NavLink to="/dashboard/manageUsers"><FaHospitalUser /> Manage Users</NavLink></li>
-              <li><NavLink to="/dashboard/analytics"><FaHospitalUser /> Analytics</NavLink></li>
-              <li><NavLink to="/dashboard/recentOrders"><FaHospitalUser /> Recent Orders</NavLink></li>
-              <li><NavLink to="/dashboard/reviews"><FaHospitalUser /> Review & Feedback</NavLink></li>
+              <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">Admin Panel</h3>
+              <MenuItem to="/dashboard/manageUsers" icon={<FaUsersCog />} text="Manage Users" />
+              <MenuItem to="/dashboard/analytics" icon={<FaChartPie />} text="Analytics" />
+              <MenuItem to="/dashboard/recentOrders" icon={<FaClipboardList />} text="Recent Orders" />
+              <MenuItem to="/dashboard/reviews" icon={<FaCommentDots />} text="Review & Feedback" />
             </>
           )}
 
           {/* Seller Panel */}
           {role === "seller" && (
             <>
-              <h2 className="text-center font-bold text-xl text-[#4635B1] dark:text-purple-300 mb-4">Seller Panel</h2>
-              <li><NavLink to="/addProduct"><MdOutlineAddToQueue /> Add Product</NavLink></li>
-              <li><NavLink to="/dashboard/updateBidInfo"><GrCircleInformation /> Update Bid Info</NavLink></li>
-              <li><NavLink to="/dashboard/product-history"><BsBox2Heart /> Product History</NavLink></li>
+              <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">Seller Panel</h3>
+              <MenuItem to="/addProduct" icon={<MdOutlineAddToQueue />} text="Add Product" />
+              <MenuItem to="/dashboard/updateBidInfo" icon={<GrCircleInformation />} text="Update Bid Info" />
+              <MenuItem to="/dashboard/product-history" icon={<BsBox2Heart />} text="Product History" />
             </>
           )}
 
           {/* User Panel */}
           {role === "user" && (
             <>
-              <h2 className="text-center font-bold text-xl text-[#4635B1] dark:text-purple-300 mb-4">User Panel</h2>
-              <li><NavLink to="/dashboard/wishList"><BsBox2Heart /> Wish Listed Products</NavLink></li>
-              <li><NavLink to="/dashboard/bid-history"><BsBox2Heart /> Bid History</NavLink></li>
+              <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">User Panel</h3>
+              <MenuItem to="/dashboard/wishList" icon={<BsBox2Heart />} text="Wish List" />
+              <MenuItem to="/dashboard/bid-history" icon={<BsBox2Heart />} text="Bid History" />
             </>
           )}
 
-          <div className="divider"></div>
+          <div className="border-t border-gray-300 my-4"></div>
 
           {/* Always visible */}
-          <li><NavLink to="/"><FaHome /> Back to Home</NavLink></li>
+          <MenuItem to="/" icon={<FaHome />} text="Back to Home" />
         </ul>
       </div>
     </div>

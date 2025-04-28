@@ -8,7 +8,7 @@ import {
 import { motion } from "framer-motion";
 import SellerReview from "./SellerReview";
 import AuctionHistory from "./AuctionHistory";
-
+import AllBidHistory from "./AllBidHistory";
 import {
   FaFacebookSquare,
   FaLinkedin,
@@ -21,7 +21,7 @@ import AuctionWinner from "./AuctionWinner";
 
 const tabs = ["Item Details", "History", "Reviews", "Winner", "Share"];
 const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
-  //   console.log("seller email", sellerEmail);
+  console.log("product", product);
   const [activeTab, setActiveTab] = useState("Item Details");
   const [studentId, setStudentId] = useState(null);
   //   console.log("student id", studentId);
@@ -37,8 +37,8 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-3 cursor-pointer text-base lg:text-lg font-semibold transition-all ${
               activeTab === tab
-                ? "border-b-2 border-teal-300 text-gray-600"
-                : "text-gray-600"
+                ? "border-b-2 border-teal-300 text-teal-500 "
+                : " "
             }`}
           >
             {tab}
@@ -60,10 +60,9 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
           </>
         )}
 
-        {activeTab === "Bid History" && (
+        {activeTab === "History" && (
           <>
-            {" "}
-            <AuctionHistory />{" "}
+            <AllBidHistory id={product._id} />
           </>
         )}
         {activeTab === "Reviews" && (

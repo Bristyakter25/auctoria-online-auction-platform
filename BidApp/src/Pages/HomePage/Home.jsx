@@ -22,6 +22,7 @@ import RecentWinner from "./RecentWinner";
 import SellerProfile from "../../SellerProfile/SellerProfile";
 import ContactWithMap from "../../components/HomeComponents/ContactWithMap";
 import Testimonials from "../../components/HomeComponents/Testimonials";
+// import SellerProfile from "../../SellerProfile/SellerProfile";
 
 const Home = () => {
   return (
@@ -40,6 +41,9 @@ const Home = () => {
         {/* <MeetCards /> */}
         <AuctionProcess></AuctionProcess>
         <Question />
+        {/* <Partners /> */}
+        {/* <BiddingMadness /> */}
+        <ContactForm />
         {/* <SellerProfile /> */}
         <TrustedPartners></TrustedPartners>
       </div>
