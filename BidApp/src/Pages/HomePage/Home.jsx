@@ -20,6 +20,8 @@ import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
 import Banner from "../../components/HomeComponents/BannerFunctions/Banner";
 import RecentWinner from "./RecentWinner";
 import SellerProfile from "../../SellerProfile/SellerProfile";
+import ContactWithMap from "../../components/HomeComponents/ContactWithMap";
+import Testimonials from "../../components/HomeComponents/Testimonials";
 
 const Home = () => {
   return (
@@ -29,16 +31,16 @@ const Home = () => {
         {/* <EidGreeting /> */}
         <RecentWinner />
         <LatestAuctions></LatestAuctions>
-        <Question />
+       
         <FeaturedProducts></FeaturedProducts>
         {/* <GetInKnow></GetInKnow> */}
         <AboutSection></AboutSection>
+
+        <Testimonials></Testimonials>
         {/* <MeetCards /> */}
         <AuctionProcess></AuctionProcess>
-        {/* <Partners /> */}
-        {/* <BiddingMadness /> */}
-        <ContactForm />
-        <SellerProfile />
+        <Question />
+        {/* <SellerProfile /> */}
         <TrustedPartners></TrustedPartners>
       </div>
     </div>

@@ -46,7 +46,7 @@ const RecentOrders = () => {
 
   return (
     <div>
-      <h2 className="text-3xl  mt-5 text-center font-bold mb-4">Recent Orders</h2>
+      <h2 className="text-3xl text-black  mt-5 text-center font-bold mb-4">Recent Orders</h2>
       {orders.length === 0 ? (
         <p>No recent orders found.</p>
       ) : (
@@ -54,7 +54,7 @@ const RecentOrders = () => {
           <table className="table w-full">
             <thead>
               <tr>
-                <th>#</th>
+                <th className="text-black">#</th>
                 
                 <th className="font-extrabold text-black text-xl">Image</th>
                 <th className="font-extrabold text-black text-xl">Product Name</th>
@@ -66,7 +66,7 @@ const RecentOrders = () => {
             </thead>
             <tbody>
               {orders.map((order, index) => (
-                <tr key={order._id} className={index % 2 === 0 ? "bg-base-200" : ""}>
+                <tr key={order._id} className={index % 2 === 0 ? "" : ""}>
                   <th>{index + 1}</th>
                   {order.products.map((product) => (
                     <React.Fragment key={product.bidId}>
@@ -79,10 +79,10 @@ const RecentOrders = () => {
                           onError={(e) => (e.target.src = "/fallback.jpg")}
                         />
                       </td>
-                      <td className="font-semibold  text-[17px]">{product.name}</td>
-                      <td className="font-semibold text-[17px]">${order.price}</td>
-                      <td className="capitalize font-semibold text-[17px]">{order.status}</td>
-                      <td className="font-semibold  text-[17px]">{new Date(order.date).toLocaleString()}</td>
+                      <td className="font-semibold text-black  text-[17px]">{product.name}</td>
+                      <td className="font-semibold text-black text-[17px]">${order.price}</td>
+                      <td className="capitalize text-black font-semibold text-[17px]">{order.status}</td>
+                      <td className="font-semibold text-black  text-[17px]">{new Date(order.date).toLocaleString()}</td>
                       <td className="font-semibold  text-[17px]">
                         {order.status !== "completed" && order.status !== "cancelled" ? (
                           <>
