@@ -134,11 +134,12 @@ async function run() {
       const users = await usersCollection.estimatedDocumentCount();
       const products = await productsCollection.estimatedDocumentCount();
       const payments = await paymentCollection.estimatedDocumentCount();
+      const reviews = await reviewsCollection.estimatedDocumentCount();
       const totalpayments = await paymentCollection.find().toArray();
       const totalAmount = totalpayments.reduce((acc, payment) => {
         return acc + payment.price; // Assuming 'amount' is the field you want to sum
       })
-      res.send({users,products,payments,totalAmount})
+      res.send({users,products,payments,reviews,totalAmount})
     })
 
     //verify user role api
@@ -190,6 +191,48 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+
+   // Route to get all products (unchanged)
+// app.get("/allProducts", async (req, res) => {
+//   const cursor = productsCollection.find();
+//   const result = await cursor.toArray();
+//   res.send(result);
+// });
+
+// Route to get category summary with count & image
+app.get("/categorySummary", async (req, res) => {
+  try {
+    const cursor = productsCollection.find();
+    const products = await cursor.toArray();
+
+    const categories = [
+      "Collectibles",
+      "Art",
+      "Cars",
+      "Jewelry",
+      "Watches",
+      "Antiques",
+      "Luxury Bags",
+      "Electronics"
+    ];
+
+    const categorizedData = categories.map((category) => {
+      const items = products.filter((item) => item.category === category);
+      return {
+        category,
+        count: items.length,
+        image: items[0]?.image || null // assuming each item has an 'image' field
+      };
+    });
+
+    res.send(categorizedData);
+  } catch (error) {
+    console.error("Error fetching categorized data:", error);
+    res.status(500).send({ message: "Server error" });
+  }
+});
+
+    
     // 🛠 Add Product
     app.post("/addProducts", async (req, res) => {
       const productData = req.body;
@@ -1190,11 +1233,11 @@ async function run() {
       try {
         const result = await productsCollection.findOne(query);
         if (!result) {
-          return res.status(404).json({ message: "Product পাওয়া যায়নি!" });
+          return res.status(404).json({ message: "product is not found" });
         }
         res.send(result.bids || []);
       } catch (error) {
-        res.status(500).json({ message: "কিছু একটা সমস্যা হয়েছে", error });
+        res.status(500).json({ message: "Failed to fetch bid history", error });
       }
     });
 

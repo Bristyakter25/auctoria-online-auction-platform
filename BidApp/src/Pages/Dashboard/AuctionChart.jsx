@@ -1,5 +1,6 @@
 import React from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import StatsCards from "../BidTask/StatsCards";
 
 const auctionData = [
   {
@@ -36,6 +37,8 @@ const processedData = auctionData.map(item => ({
 
 const AuctionChart = () => {
   return (
+    <div>
+      <StatsCards></StatsCards>
     <ResponsiveContainer width="100%" height={400}>
       <BarChart data={processedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -45,6 +48,7 @@ const AuctionChart = () => {
         <Bar dataKey="bids" fill="#8884d8" />
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 };
 
