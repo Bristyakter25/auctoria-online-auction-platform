@@ -31,7 +31,7 @@ const SellerProfile = () => {
   const email = user?.email;
   const axiosPublic = useAxiosPublic();
   const [isFollowing, setIsFollowing] = useState();
-  console.log("hsgfshfjhajdghds", isFollowing);
+  // console.log("hsgfshfjhajdghds", isFollowing);
   // useEffect(() => {
   //   const fetchFollowing = async () => {
   //     try {
@@ -66,7 +66,8 @@ const SellerProfile = () => {
       });
       // console.log(sellerEmail);
       toast.success("Seller followed successfully!");
-      console.log("follwoing", res.data);
+      refetch();
+      // console.log("follwoing", res.data);
     } catch (error) {
       console.error("Error following seller:", error);
     }
@@ -86,10 +87,10 @@ const SellerProfile = () => {
         transition={{ duration: 0.5 }}
       >
         <CardContent className="p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
-          <Avatar className="w-24 h-24 shadow-lg">
+          {/* <Avatar className="w-24 h-24 shadow-lg">
             <AvatarImage src={user?.photoURL} alt="Seller Avatar" />
             <AvatarFallback>SN</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
           <div className="flex-1">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent mb-1 flex items-center gap-2">
               Seller Name <BadgeCheck className="text-blue-400 w-5 h-5" />
