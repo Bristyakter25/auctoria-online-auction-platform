@@ -9,6 +9,7 @@ import { MdOutlineAddToQueue } from "react-icons/md";
 import { NavLink, Outlet } from "react-router-dom";
 import useRole from "../../hooks/useRole";
 import MenuItem from "./MenuItem";
+import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
 
 const Dashboard = () => {
   const [role, isLoading] = useRole();
