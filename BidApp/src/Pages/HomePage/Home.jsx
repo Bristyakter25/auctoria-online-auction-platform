@@ -22,6 +22,8 @@ import RecentWinner from "./RecentWinner";
 import SellerProfile from "../../SellerProfile/SellerProfile";
 import ContactWithMap from "../../components/HomeComponents/ContactWithMap";
 import Testimonials from "../../components/HomeComponents/Testimonials";
+import StatsCards from "../BidTask/StatsCards";
+import CategoryCards from "../BidTask/CategoryCards";
 // import SellerProfile from "../../SellerProfile/SellerProfile";
 
 const Home = () => {
@@ -44,10 +46,11 @@ const Home = () => {
         {/* <MeetCards /> */}
 
         <AuctionProcess></AuctionProcess>
+        <CategoryCards></CategoryCards>
         <Question />
         {/* <Partners /> */}
         {/* <BiddingMadness /> */}
-        <ContactForm />
+       <StatsCards></StatsCards>
         {/* <SellerProfile /> */}
         <TrustedPartners></TrustedPartners>
       </div>

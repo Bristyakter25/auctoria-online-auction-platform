@@ -16,7 +16,7 @@ const BidHistory = () => {
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `hhttp://localhost:5000/bidHistory/${user?.email}`
+        `http://localhost:5000/bidHistory/${user?.email}`
       );
       return res.data;
     },

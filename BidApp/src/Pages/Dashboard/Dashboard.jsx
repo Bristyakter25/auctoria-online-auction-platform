@@ -18,6 +18,7 @@ import useRole from "../../hooks/useRole";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import BidHistory from "../BidTask/BidHistory";
+import MenuItem from "./MenuItem";
 import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
 
 const Dashboard = () => {
