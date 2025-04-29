@@ -1294,7 +1294,7 @@ async function run() {
             email: { $in: favoriteSellerEmail },
             status: "active",
           })
-          // .sort({ createdAt: -1 })
+          .sort({ createdAt: -1 })
           .limit(5)
           .toArray();
         // console.log("following list ", followingList);
@@ -1305,32 +1305,6 @@ async function run() {
           .json({ message: "Server error while fetching followed listings." });
       }
     });
-
-    // app.get("/followers/:email", async (req, res) => {
-    //   const { sellerEmail } = req.params;
-    //   const { email } = req.query;
-    //   try {
-    //     const seller = await usersCollection.findOne({
-    //       email: sellerEmail,
-    //     });
-    //     const isFollowing = await followingCollection.findOne({
-    //       sellerEmail,
-    //       followerEmail: email,
-    //       status: "following",
-    //     });
-    //     console.log("following ", isFollowing);
-    //     const profileData = {
-    //       ...seller,
-    //       isFollowing: !!isFollowing,
-    //     };
-    //     res.send(profileData);
-    //   } catch (error) {
-    //     res.status(500).json({
-    //       message: "Server error while fetching followers listings.",
-    //       error: error.message,
-    //     });
-    //   }
-    // });
 
     app.get("/followers/:sellerEmail", async (req, res) => {
       const { sellerEmail } = req.params;
@@ -1343,22 +1317,12 @@ async function run() {
         const followers = await followingCollection
           .find({ sellerEmail, status: "following" })
           .toArray();
-        // const isFollowing = await followingCollection.findOne({
-        //   sellerEmail,
-        //   followerEmail,
-        //   status: "following",
-        // });
-
-        // const profileData = {
-        //   ...seller,
-        //   isFollowing: !!isFollowing,
-        // };
         const profileData = {
           ...seller,
           followers: followers,
           followerCount: followers.length,
         };
-        console.log("followers data is", profileData);
+        // console.log("followers data is", profileData);
         res.send(profileData);
       } catch (error) {
         res.status(500).json({
@@ -1386,7 +1350,7 @@ async function run() {
           status: "following",
           followedAt: new Date(),
         };
-        console.log("Following data", followData);
+        // console.log("Following data", followData);
         const alreadyFollowed = await followingCollection.findOne({
           followerEmail: email,
           sellerEmail,
@@ -1394,10 +1358,10 @@ async function run() {
         if (!alreadyFollowed) {
           await followingCollection.insertOne(followData);
         }
-        console.log("Following data ibgsdjfh", alreadyFollowed);
+        // console.log("Following data ibgsdjfh", alreadyFollowed);
         res.send({ success: true, updatedUser });
       } catch (error) {
-        console.error("Error adding favorite product:", error);
+        // console.error("Error adding favorite product:", error);
         res.status(500).json({ message: "Server error" });
       }
     });
