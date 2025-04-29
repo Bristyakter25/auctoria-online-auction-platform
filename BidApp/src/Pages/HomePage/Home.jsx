@@ -32,15 +32,19 @@ const Home = () => {
       <Banner></Banner>
       <div className="lg:max-w-7xl mx-auto">
         {/* <EidGreeting /> */}
-        <RecentWinner />
         <LatestAuctions></LatestAuctions>
-       
+
         <FeaturedProducts></FeaturedProducts>
+        <RecentWinner />
+
+        <AuctionProcess></AuctionProcess>
+
         {/* <GetInKnow></GetInKnow> */}
         <AboutSection></AboutSection>
 
         <Testimonials></Testimonials>
         {/* <MeetCards /> */}
+
         <AuctionProcess></AuctionProcess>
         <CategoryCards></CategoryCards>
         <Question />
