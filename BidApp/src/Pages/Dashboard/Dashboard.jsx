@@ -1,4 +1,13 @@
-import { FaBars, FaHome, FaChartBar, FaUsersCog, FaChartPie, FaClipboardList, FaCommentDots, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaBars,
+  FaHome,
+  FaChartBar,
+  FaUsersCog,
+  FaChartPie,
+  FaClipboardList,
+  FaCommentDots,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { GrCircleInformation } from "react-icons/gr";
 import { FaHospitalUser } from "react-icons/fa6";
 import { RiAuctionLine } from "react-icons/ri";
@@ -9,6 +18,7 @@ import useRole from "../../hooks/useRole";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import BidHistory from "../BidTask/BidHistory";
+import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
 
 const Dashboard = () => {
   const [role, isLoading] = useRole();
@@ -19,7 +29,7 @@ const Dashboard = () => {
       navigate("/login");
     });
   };
-  
+
   return (
     <div className="drawer lg:drawer-open">
       {/* Drawer Toggle Checkbox */}
@@ -27,7 +37,6 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="drawer-content flex flex-col">
-    
         {/* Mobile Toggle Button */}
         <div className="lg:hidden p-4">
           <label htmlFor="dashboard-drawer" className="btn btn-primary">
@@ -35,24 +44,40 @@ const Dashboard = () => {
           </label>
         </div>
 
-        <div className="p-4">
-          <Outlet />
+        {/* Content */}
+        <div className="flex-1 flex flex-col bg-gray-100">
+          <div className="p-4 bg-white border-b flex justify-between items-center">
+            <button className="lg:hidden text-gray-600 text-2xl"></button>
+            <h1 className="text-lg text-black font-bold">Dashboard</h1>
+            <div>
+              <ThemeToggle></ThemeToggle>
+            </div>
+          </div>
+
+          <div className="p-4 overflow-auto flex-1">
+            <Outlet />
+          </div>
         </div>
-       
       </div>
 
       {/* Sidebar */}
       <div className="drawer-side">
         <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
         <ul className="menu p-4 w-64 bg-purple-300 dark:bg-gray-800 text-black dark:text-white min-h-full space-y-2">
-          <h2 className="text-center font-bold text-2xl text-purple-400  mb-6">Dashboard</h2>
+          <h2 className="text-center font-bold text-2xl text-purple-400  mb-6">
+            Dashboard
+          </h2>
 
           {/* Common Menu */}
           <li>
             <NavLink
               to="/dashboard/auctionChart"
               className={({ isActive }) =>
-                `flex items-center space-x-2 text-lg p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                `flex items-center space-x-2 text-lg p-2 ${
+                  isActive
+                    ? "bg-purple-600 text-white"
+                    : "text-black dark:text-white"
+                } hover:bg-purple-600 rounded-lg`
               }
             >
               <FaChartBar />
@@ -63,7 +88,11 @@ const Dashboard = () => {
             <NavLink
               to="/allAuctions"
               className={({ isActive }) =>
-                `flex items-center space-x-2 text-lg p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                `flex items-center space-x-2 text-lg p-2 ${
+                  isActive
+                    ? "bg-purple-600 text-white"
+                    : "text-black dark:text-white"
+                } hover:bg-purple-600 rounded-lg`
               }
             >
               <RiAuctionLine />
@@ -74,7 +103,11 @@ const Dashboard = () => {
             <NavLink
               to="/dashboard/profile"
               className={({ isActive }) =>
-                `flex items-center space-x-2 text-lg p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                `flex items-center space-x-2 text-lg p-2 ${
+                  isActive
+                    ? "bg-purple-600 text-white"
+                    : "text-black dark:text-white"
+                } hover:bg-purple-600 rounded-lg`
               }
             >
               <FaHospitalUser />
@@ -87,12 +120,18 @@ const Dashboard = () => {
           {/* Admin Panel */}
           {role === "admin" && (
             <>
-              <h3 className="text-xl text-center font-semibold text-purple-400 pt-4 mb-2">Admin Panel</h3>
+              <h3 className="text-xl text-center font-semibold text-purple-400 pt-4 mb-2">
+                Admin Panel
+              </h3>
               <li>
                 <NavLink
                   to="/dashboard/manageUsers"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <FaUsersCog />
@@ -103,7 +142,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/analytics"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <FaChartPie />
@@ -114,7 +157,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/recentOrders"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <FaClipboardList />
@@ -125,7 +172,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/reviews"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <FaCommentDots />
@@ -138,12 +189,18 @@ const Dashboard = () => {
           {/* Seller Panel */}
           {role === "seller" && (
             <>
-              <h3 className="text-xl text-center pt-4 font-semibold text-purple-400  mb-2">Seller Panel</h3>
+              <h3 className="text-xl text-center pt-4 font-semibold text-purple-400  mb-2">
+                Seller Panel
+              </h3>
               <li>
                 <NavLink
                   to="/addProduct"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <MdOutlineAddToQueue />
@@ -154,7 +211,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/updateBidInfo"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <GrCircleInformation />
@@ -165,7 +226,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/product-history"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <BsBox2Heart />
@@ -178,12 +243,18 @@ const Dashboard = () => {
           {/* User Panel */}
           {role === "user" && (
             <>
-              <h3 className="text-xl pt-4 font-semibold text-purple-400 text-center mb-2">User Panel</h3>
+              <h3 className="text-xl pt-4 font-semibold text-purple-400 text-center mb-2">
+                User Panel
+              </h3>
               <li>
                 <NavLink
                   to="/dashboard/wishList"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <BsBox2Heart />
@@ -194,7 +265,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/bid-history"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center text-lg space-x-2 p-2 ${
+                      isActive
+                        ? "bg-purple-600 text-white"
+                        : "text-black dark:text-white"
+                    } hover:bg-purple-600 rounded-lg`
                   }
                 >
                   <BsBox2Heart />
@@ -211,7 +286,11 @@ const Dashboard = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                `flex items-center text-lg space-x-2 p-2 ${
+                  isActive
+                    ? "bg-purple-600 text-white"
+                    : "text-black dark:text-white"
+                } hover:bg-purple-600 rounded-lg`
               }
             >
               <FaHome />
@@ -231,7 +310,6 @@ const Dashboard = () => {
           </li>
         </ul>
       </div>
-     
     </div>
   );
 };

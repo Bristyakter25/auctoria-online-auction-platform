@@ -19,6 +19,9 @@ import AuctionProcess from "../About Us/AuctionProcess";
 import TrustedPartners from "../../components/HomeComponents/TrustedPartners";
 import Banner from "../../components/HomeComponents/BannerFunctions/Banner";
 import RecentWinner from "./RecentWinner";
+import SellerProfile from "../../SellerProfile/SellerProfile";
+import ContactWithMap from "../../components/HomeComponents/ContactWithMap";
+import Testimonials from "../../components/HomeComponents/Testimonials";
 // import SellerProfile from "../../SellerProfile/SellerProfile";
 
 const Home = () => {
@@ -28,15 +31,19 @@ const Home = () => {
       <div className="lg:max-w-7xl mx-auto">
         {/* <EidGreeting /> */}
         <LatestAuctions></LatestAuctions>
+
         <FeaturedProducts></FeaturedProducts>
         <RecentWinner />
-        
+
         <AuctionProcess></AuctionProcess>
-       
+
         {/* <GetInKnow></GetInKnow> */}
         <AboutSection></AboutSection>
+
+        <Testimonials></Testimonials>
         {/* <MeetCards /> */}
-       
+
+        <AuctionProcess></AuctionProcess>
         <Question />
         {/* <Partners /> */}
         {/* <BiddingMadness /> */}
