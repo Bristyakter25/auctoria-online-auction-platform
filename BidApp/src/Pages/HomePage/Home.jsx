@@ -27,14 +27,17 @@ const Home = () => {
       <Banner></Banner>
       <div className="lg:max-w-7xl mx-auto">
         {/* <EidGreeting /> */}
-        <RecentWinner />
         <LatestAuctions></LatestAuctions>
-        <Question />
         <FeaturedProducts></FeaturedProducts>
+        <RecentWinner />
+        
+        <AuctionProcess></AuctionProcess>
+       
         {/* <GetInKnow></GetInKnow> */}
         <AboutSection></AboutSection>
         {/* <MeetCards /> */}
-        <AuctionProcess></AuctionProcess>
+       
+        <Question />
         {/* <Partners /> */}
         {/* <BiddingMadness /> */}
         <ContactForm />

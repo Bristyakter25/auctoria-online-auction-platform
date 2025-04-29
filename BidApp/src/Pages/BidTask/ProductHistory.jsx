@@ -7,8 +7,11 @@ const ProductHistory = () => {
 
   useEffect(() => {
     if (user?.email) {
-      // fetch(`http://localhost:5000/addProduct?email=${user.email}`)
+
+
+      
       fetch(`http://localhost:5000/productHistory?email=${user.email}`)
+
         .then((res) => res.json())
         .then((data) => setProducts(data));
     }

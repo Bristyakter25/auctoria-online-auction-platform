@@ -5,7 +5,7 @@ function AuctionProcess() {
  return (
   <div className="py-12 bg-base-200">
    <div className="container mx-auto px-4">
-    <h2 className="text-3xl font-bold text-center  mb-2">Select Our Product At Our Auction.</h2>
+    <h2 className="text-3xl font-bold text-center  mb-2">Select Your Product At Our Auction.</h2>
     <p className="text-center text-gray-500 mb-8">Feel free adapt this based on the specific managed services, features</p>
     <Marquee pauseOnHover speed={50} gradient={false}>
     <div className="grid grid-cols-4  gap-6">

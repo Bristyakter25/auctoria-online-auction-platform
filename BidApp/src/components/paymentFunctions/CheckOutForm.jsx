@@ -18,7 +18,8 @@ const location = useLocation();
 const {totalPrice, cart} = location.state;
 const {user} =useContext(AuthContext);
     useEffect( () =>{
-axiosSecure.post('/create-payment-intent', {price: totalPrice},{cart: cart})
+      axiosSecure.post('/create-payment-intent', { price: totalPrice, cart: cart })
+
 .then(res => {
     console.log(res.data.clientSecret);
     setClientSecret(res.data.clientSecret);
@@ -124,7 +125,9 @@ axiosSecure.post('/create-payment-intent', {price: totalPrice},{cart: cart})
       {cart.map((item, index) => (
         <li key={index} className="border p-3 rounded shadow-sm">
           <p><strong>Product Name:</strong> {item.productName}</p>
-          <p><strong>Price:</strong> ${item.amount}</p>
+          <div className="mt-4 text-lg font-semibold">
+      Total Paid: $ {totalPrice}
+    </div>
           
         </li>
       ))}
