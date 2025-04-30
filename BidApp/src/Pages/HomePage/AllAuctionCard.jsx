@@ -1,19 +1,20 @@
 import { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoEye } from "react-icons/io5";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
-
 import { FaFlag } from "react-icons/fa";
-
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGavel, FaUser } from "react-icons/fa";
-
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import { WishlistContext } from "../../providers/wishListProvider";
 import { cn } from "../../utils/cn";
 import { SlUserFollowing } from "react-icons/sl";
-
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "../../SellerProfile/Button";
+import { CheckCircle, UserPlus } from "lucide-react";
 const AllAuctionCard = ({ auction }) => {
   const navigate = useNavigate();
   const {
@@ -25,12 +26,12 @@ const AllAuctionCard = ({ auction }) => {
     status,
     winner,
     auctionEndTime,
-    email,
+    email: sellerEmail,
   } = auction;
   // console.log("auction data", auction);
   const { user } = useContext(AuthContext);
   const userId = user?.uid;
-
+  const axiosPublic = useAxiosPublic();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const { refetchWishlist } = useContext(WishlistContext);
 
@@ -43,7 +44,11 @@ const AllAuctionCard = ({ auction }) => {
 
   const [showModal, setShowModal] = useState(false);
   const [reportReason, setReportReason] = useState("");
-
+  const [following, setFollowing] = useState(false);
+  // console.log("following dtaa ", following);
+  // const { email: sellerEmail } = useParams();
+  // console.log("sellerEmail:", sellerEmail);
+  const userEmail = user?.email;
   useEffect(() => {
     if (!auctionEndTime) return;
 
@@ -104,11 +109,14 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
-      const response = await fetch("https://auctoria-online-auction-platform.onrender.com/addToWishlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: _id, userId }),
-      });
+      const response = await fetch(
+        "https://auctoria-online-auction-platform.onrender.com/addToWishlist",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId: _id, userId }),
+        }
+      );
 
       if (response.ok) {
         setIsWishlisted(true);
@@ -169,6 +177,52 @@ const AllAuctionCard = ({ auction }) => {
       console.error("Error reporting product:", error);
     }
   };
+  //Following Seller Data
+  const { data: followersStatus = [], refetch } = useQuery({
+    queryKey: ["followersStatus", sellerEmail],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/followers/${sellerEmail}`);
+      console.log("Requesting followers for", sellerEmail);
+      // const isFollowing = res.data.followers.some(
+      //   (follower) =>
+      //     follower.followerEmail === userEmail &&
+      //     follower.status === "following"
+      // );
+      // console.log("Requesting followers for", userEmail);
+      // console.log("isFollowing data", isFollowing, res.data);
+      // setFollowing(isFollowing);
+      // console.log("Followers from API:", res.data.followers);
+      return res.data;
+    },
+    enabled: !!sellerEmail && !!userEmail,
+  });
+  useEffect(() => {
+    if (followersStatus?.followers && userEmail) {
+      const isFollowing = followersStatus.followers.some(
+        (follower) =>
+          follower.followerEmail === userEmail &&
+          follower.status === "following"
+      );
+      setFollowing(isFollowing);
+    }
+  }, [followersStatus, userEmail]);
+
+  const handleFollowing = async () => {
+    try {
+      const res = await axiosPublic.post(`/following/${userEmail}`, {
+        email: sellerEmail,
+      });
+
+      console.log("sellerEmail", sellerEmail);
+      toast.success("Seller followed successfully!");
+      setFollowing(true);
+      refetch();
+      return res.data;
+      // console.log("follwoing", res.data);
+    } catch (error) {
+      console.error("Error following seller:", error);
+    }
+  };
 
   return (
     <motion.div
@@ -217,14 +271,30 @@ const AllAuctionCard = ({ auction }) => {
         </div>
         <div className="flex justify-end p-2">
           <button
-            onClick={() => navigate(`/SellerProfile/${email}`)}
+            // onClick={() => navigate(`/SellerProfile/${email}`)}
+            onClick={handleFollowing}
             className="bg-teal-100 p-2 rounded-full px-3 py-0.5 "
           >
             <p className="font-bold text-blue-500  ">
               {/* <SlUserFollowing size={20} />  */}
-              Follow
+              {following ? "Following" : "follow"}
             </p>
           </button>
+          {/* <Button
+            onClick={handleFollowing}
+            className={`bg-gradient-to-r ${
+              following
+                ? "from-green-400 to-green-500"
+                : "from-blue-500 to-cyan-500"
+            } text-white py-2 px-4 rounded-xl shadow-lg hover:shadow-cyan-400/50 transition-all text-sm flex items-center gap-1`}
+          >
+            {following ? (
+              <CheckCircle className="w-4 h-4" />
+            ) : (
+              <UserPlus className="w-4 h-4" />
+            )}
+            {following ? "Following" : "Follow"}
+          </Button> */}
         </div>
         <div className="flex justify-between items-center px-4 py-2 border-t">
           <button
@@ -253,7 +323,7 @@ const AllAuctionCard = ({ auction }) => {
             className="hover:bg-teal-100 p-2 rounded-full"
             onClick={() => setShowModal(true)}
           >
-            <FaFlag size={20} className="text-red-600" title="Report" />
+            <FaFlag size={20} className="text-gray-600" title="Report" />
           </button>
         </div>
       </div>

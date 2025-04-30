@@ -138,9 +138,9 @@ async function run() {
       const totalpayments = await paymentCollection.find().toArray();
       const totalAmount = totalpayments.reduce((acc, payment) => {
         return acc + payment.price; // Assuming 'amount' is the field you want to sum
-      })
-      res.send({users,products,payments,reviews,totalAmount})
-    })
+      });
+      res.send({ users, products, payments, reviews, totalAmount });
+    });
 
     //verify user role api
     app.get("/user/role/:email", async (req, res) => {
@@ -192,47 +192,46 @@ async function run() {
       res.send(result);
     });
 
-   // Route to get all products (unchanged)
-// app.get("/allProducts", async (req, res) => {
-//   const cursor = productsCollection.find();
-//   const result = await cursor.toArray();
-//   res.send(result);
-// });
+    // Route to get all products (unchanged)
+    // app.get("/allProducts", async (req, res) => {
+    //   const cursor = productsCollection.find();
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // });
 
-// Route to get category summary with count & image
-app.get("/categorySummary", async (req, res) => {
-  try {
-    const cursor = productsCollection.find();
-    const products = await cursor.toArray();
+    // Route to get category summary with count & image
+    app.get("/categorySummary", async (req, res) => {
+      try {
+        const cursor = productsCollection.find();
+        const products = await cursor.toArray();
 
-    const categories = [
-      "Collectibles",
-      "Art",
-      "Cars",
-      "Jewelry",
-      "Watches",
-      "Antiques",
-      "Luxury Bags",
-      "Electronics"
-    ];
+        const categories = [
+          "Collectibles",
+          "Art",
+          "Cars",
+          "Jewelry",
+          "Watches",
+          "Antiques",
+          "Luxury Bags",
+          "Electronics",
+        ];
 
-    const categorizedData = categories.map((category) => {
-      const items = products.filter((item) => item.category === category);
-      return {
-        category,
-        count: items.length,
-        image: items[0]?.image || null // assuming each item has an 'image' field
-      };
+        const categorizedData = categories.map((category) => {
+          const items = products.filter((item) => item.category === category);
+          return {
+            category,
+            count: items.length,
+            image: items[0]?.image || null, // assuming each item has an 'image' field
+          };
+        });
+
+        res.send(categorizedData);
+      } catch (error) {
+        console.error("Error fetching categorized data:", error);
+        res.status(500).send({ message: "Server error" });
+      }
     });
 
-    res.send(categorizedData);
-  } catch (error) {
-    console.error("Error fetching categorized data:", error);
-    res.status(500).send({ message: "Server error" });
-  }
-});
-
-    
     // 🛠 Add Product
     app.post("/addProducts", async (req, res) => {
       const productData = req.body;
@@ -1319,7 +1318,7 @@ app.get("/categorySummary", async (req, res) => {
       console.log("favorite sellers found:", sellers);
       res.send(sellers);
     });
-
+    // follower Seller Product List Api
     app.get("/followingSeller/:email", async (req, res) => {
       const { email } = req.params;
       if (!email) {
@@ -1369,7 +1368,7 @@ app.get("/categorySummary", async (req, res) => {
           followers: followers,
           followerCount: followers.length,
         };
-        // console.log("followers data is", profileData);
+        console.log("followers data is", profileData);
         res.send(profileData);
       } catch (error) {
         res.status(500).json({
@@ -1379,9 +1378,9 @@ app.get("/categorySummary", async (req, res) => {
       }
     });
 
-    app.post("/following/:email", async (req, res) => {
+    app.post("/following/:userEmail", async (req, res) => {
       // const { sellerId } = req.body;
-      const { email } = req.params;
+      const { userEmail: email } = req.params;
       const { email: sellerEmail } = req.body;
       try {
         const user = await usersCollection.findOne({ email: email });
