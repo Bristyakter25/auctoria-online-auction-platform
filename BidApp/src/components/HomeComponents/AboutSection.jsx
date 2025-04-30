@@ -18,7 +18,7 @@ const AboutSection = () => {
             Get In <span className="italic text-gray-500">Know</span>
           </h2>
           <p className=" mb-6">
-            Welcome to Zarty – where digital innovation meets strategic excellence.
+            Welcome to Auctoria – where digital innovation meets strategic excellence.
             As a dynamic force in the realm of digital marketing, we are dedicated to
             propelling businesses into the spotlight of online success with our rich
             expertise.
