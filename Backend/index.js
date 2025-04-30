@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://bidapp-81c51.web.app", // your frontend on Firebase
-  "http://localhost:5000", // your Render backend itself (needed for self requests)
+  "https://auctoria-online-auction-platform.onrender.com", // your Render backend itself (needed for self requests)
 ];
 
 app.use(
@@ -559,6 +559,26 @@ async function run() {
         res.status(500).json({ message: "Error fetching payments", error });
       }
     });
+
+    app.get("/payments/:email", async (req, res) => {
+      try {
+        const userEmail = req.params.email;  // Get email from route parameter
+    
+        // Fetch payments based on the provided email
+        const result = await paymentCollection.find({ email: userEmail }).toArray();
+    
+        if (result.length === 0) {
+          return res.status(404).json({ message: "No payments found for this email" });
+        }
+    
+        // Return the filtered payments
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching payments", error });
+      }
+    });
+    
+    
 
     // change the status handled by admin
 
