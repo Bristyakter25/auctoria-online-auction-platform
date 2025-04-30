@@ -87,7 +87,6 @@
 import { useContext, useEffect, useState } from "react";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import { AuthContext } from "../providers/AuthProvider";
-import { Tooltip } from "@mui/material";
 
 const FollowingSellerProduct = () => {
   const axiosPublic = useAxiosPublic();
@@ -99,6 +98,7 @@ const FollowingSellerProduct = () => {
     const fetchFollowing = async () => {
       try {
         const res = await axiosPublic.get(`/followingSeller/${userEmail}`);
+        // console.log("feeds data", res.data);
         setFeed(res.data);
       } catch (error) {
         console.error("Error fetching following sellers:", error);
@@ -110,41 +110,6 @@ const FollowingSellerProduct = () => {
   }, [userEmail, axiosPublic]);
 
   return (
-    // <div className="p-4 max-w-3xl mx-auto">
-    //   {/* <h2 className="text-2xl font-bold mb-4 text-center">Seller Products</h2> */}
-    //   <div className="overflow-x-auto">
-    //     <table className="min-w-full border border-gray-200 rounded-md">
-    //       <thead className="bg-gray-100">
-    //         <tr>
-    //           {/* <th className="py-2 px-4 border">Photo</th>
-    //           <th className="py-2 px-4 border">Seller Name</th>
-    //           <th className="py-2 px-4 border">Product Name</th>
-    //           <th className="py-2 px-4 border">Category</th> */}
-    //         </tr>
-    //       </thead>
-    //       <tbody>
-    //         {feed.map((seller) => (
-    //           <tr key={seller._id} className="text-center">
-    //             <td className="py-2 px-4 border">
-    //               <Tooltip title="Seller Photo">
-    //                 <img
-    //                   src={seller.productImage}
-    //                   alt="Seller"
-    //                   className="w-12 h-12 rounded-full mx-auto"
-    //                 />
-    //               </Tooltip>
-    //             </td>
-    //             <td className="py-2 px-4 border">
-    //               {seller.sellerName || "N/A"}
-    //             </td>
-    //             <td className="py-2 px-4 border">{seller.productName}</td>
-    //             <td className="py-2 px-4 border">{seller.category || "N/A"}</td>
-    //           </tr>
-    //         ))}
-    //       </tbody>
-    //     </table>
-    //   </div>
-    // </div>
     <div className="container  p-2 mx-auto sm:p-4 dark:text-gray-800 ">
       <div className="overflow-x-auto rounded-2xl">
         <table className="min-w-full text-xs">
@@ -168,15 +133,15 @@ const FollowingSellerProduct = () => {
           </thead>
           <tbody>
             {feed.map((seller) => (
-              <tr className="border-b border-opacity-20 dark:border-gray-300 dark:bg-gray-50">
-                <td className="p-3">
+              <tr className="border-b border-opacity-20 text-sm dark:border-gray-300 dark:bg-gray-50">
+                <td className="p-3 w-1/6">
                   <img
                     src={seller.productImage}
                     alt="Seller"
-                    className="w-12 h-12 rounded-full mx-auto"
+                    className="w-16 h-16 object-cover rounded-xl mx-auto"
                   />
                 </td>
-                <td className="p-3">
+                <td className="p-3 ">
                   <p>{seller.sellerName || "N/A"}</p>
                 </td>
                 <td className="p-3">
@@ -190,6 +155,7 @@ const FollowingSellerProduct = () => {
                   {/* <span className="px-3 py-1 font-semibold rounded-md dark:bg-violet-600 dark:text-gray-50">
                     <span>Pending</span>
                   </span> */}
+                  <p>{seller.location}</p>
                 </td>
               </tr>
             ))}

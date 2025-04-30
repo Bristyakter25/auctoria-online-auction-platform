@@ -69,7 +69,7 @@ export const AnimatedTooltip = ({ favorites }) => {
             onMouseMove={handleMouseMove}
             height={100}
             width={100}
-            src={user?.photoURL}
+            src={item?.photoURL}
             alt={item.name}
             className="h-14 w-14 rounded-full border-2 border-white object-cover transition duration-300 group-hover:scale-105"
           />
