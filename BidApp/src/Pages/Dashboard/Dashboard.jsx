@@ -46,7 +46,7 @@ const Dashboard = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col bg-gray-100">
+        <div className="flex-1 flex flex-col ">
           <div className="p-4 bg-white border-b flex justify-between items-center">
             <button className="lg:hidden text-gray-600 text-2xl"></button>
             <h1 className="text-lg text-black font-bold">Dashboard</h1>

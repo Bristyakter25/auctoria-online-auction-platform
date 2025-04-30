@@ -1,5 +1,14 @@
 import React from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
+import SellerProfile from "../../SellerProfile/SellerProfile";
 import StatsCards from "../BidTask/StatsCards";
 
 const auctionData = [
@@ -27,10 +36,10 @@ const auctionData = [
     _id: "67db28bc7f21b13115625fea",
     productName: "iPhone 13 Pro Max",
     bids: [400],
-  }
+  },
 ];
 
-const processedData = auctionData.map(item => ({
+const processedData = auctionData.map((item) => ({
   name: item.productName,
   bids: item.bids.length,
 }));
@@ -39,15 +48,19 @@ const AuctionChart = () => {
   return (
     <div>
       <StatsCards></StatsCards>
-    <ResponsiveContainer width="100%" height={400}>
-      <BarChart data={processedData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Bar dataKey="bids" fill="#8884d8" />
-      </BarChart>
-    </ResponsiveContainer>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart
+          data={processedData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="bids" fill="#8884d8" />
+        </BarChart>
+      </ResponsiveContainer>
+      <SellerProfile />
     </div>
   );
 };
