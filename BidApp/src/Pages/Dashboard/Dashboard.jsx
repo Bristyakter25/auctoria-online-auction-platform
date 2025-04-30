@@ -44,17 +44,22 @@ const Dashboard = () => {
       {/* Sidebar */}
       <div className="drawer-side">
         <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
-        <ul className="menu p-4 w-64 bg-purple-300 dark:bg-gray-800 text-black dark:text-white min-h-full space-y-2">
+        <ul className="menu p-4 w-64 bg-purple-300 dark:bg-[#0C0950] text-black dark:text-white min-h-full space-y-2">
           <h2 className="text-center font-bold text-2xl text-purple-400  mb-6">Dashboard</h2>
 
           {/* Common Menu */}
           <li>
-            <NavLink
-              to="/dashboard/auctionChart"
-              className={({ isActive }) =>
-                `flex items-center space-x-2 text-lg p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
-              }
-            >
+          <NavLink
+  to="/dashboard/auctionChart"
+  className={({ isActive }) =>
+    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
+  }
+>
+
               <FaChartBar />
               <span>Auction Chart</span>
             </NavLink>
@@ -63,7 +68,11 @@ const Dashboard = () => {
             <NavLink
               to="/allAuctions"
               className={({ isActive }) =>
-                `flex items-center space-x-2 text-lg p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
               }
             >
               <RiAuctionLine />
@@ -74,7 +83,11 @@ const Dashboard = () => {
             <NavLink
               to="/dashboard/profile"
               className={({ isActive }) =>
-                `flex items-center space-x-2 text-lg p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
               }
             >
               <FaHospitalUser />
@@ -92,7 +105,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/manageUsers"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <FaUsersCog />
@@ -103,7 +120,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/analytics"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <FaChartPie />
@@ -114,7 +135,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/recentOrders"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <FaClipboardList />
@@ -125,7 +150,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/reviews"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <FaCommentDots />
@@ -143,7 +172,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/addProduct"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <MdOutlineAddToQueue />
@@ -154,7 +187,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/updateBidInfo"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <GrCircleInformation />
@@ -165,7 +202,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/product-history"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <BsBox2Heart />
@@ -183,7 +224,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/wishList"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <BsBox2Heart />
@@ -194,7 +239,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/bid-history"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <BsBox2Heart />
@@ -205,7 +254,11 @@ const Dashboard = () => {
                 <NavLink
                   to="/dashboard/paymentHistory"
                   className={({ isActive }) =>
-                    `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
                   }
                 >
                   <BsBox2Heart />
@@ -222,7 +275,11 @@ const Dashboard = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `flex items-center text-lg space-x-2 p-2 ${isActive ? "bg-purple-600 text-white" : "text-black dark:text-white"} hover:bg-purple-600 rounded-lg`
+                `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+    }`
               }
             >
               <FaHome />
@@ -232,13 +289,17 @@ const Dashboard = () => {
 
           {/* Logout Button */}
           <li>
-            <button
-              onClick={handleSignOut}
-              className="flex items-center text-lg space-x-2 p-2 text-white hover:bg-purple-600 rounded-lg w-full text-left mt-8"
-            >
-              <FaSignOutAlt />
-              <span>Logout</span>
-            </button>
+          <button
+  onClick={handleSignOut}
+  className="flex items-center text-lg space-x-2 p-2 w-full text-left mt-8 
+             rounded-lg text-white transition-all duration-300 
+             bg-gradient-to-r from-purple-500/30 to-pink-500/30 
+             backdrop-blur-md shadow-md hover:from-purple-600/40 
+             hover:to-pink-600/40 hover:shadow-lg"
+>
+  <FaSignOutAlt />
+  <span>Logout</span>
+</button>
           </li>
         </ul>
       </div>

@@ -1,14 +1,13 @@
 import { useEffect, useState, useContext } from "react";
-
 import { AuthContext } from "../../../providers/AuthProvider";
 
 const PaymentHistory = () => {
   const [payments, setPayments] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
 
-  // Get user data from context
-  const { user } = useContext(AuthContext)
-  const userEmail = user?.email; // Assuming user object has email field
+  const { user } = useContext(AuthContext);
+  const userEmail = user?.email;
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -18,14 +17,13 @@ const PaymentHistory = () => {
       }
 
       try {
-        // Fetch payments based on user email
         const res = await fetch(`http://localhost:5000/payments/${userEmail}`);
         const data = await res.json();
-        
+
         if (res.ok) {
           setPayments(data);
         } else {
-          console.error(data.message); // Display error message if no payments found
+          console.error(data.message);
         }
       } catch (error) {
         console.error("Error fetching payments:", error);
@@ -33,17 +31,39 @@ const PaymentHistory = () => {
     };
 
     fetchPayments();
-  }, [userEmail]); // Re-fetch data when userEmail changes
+  }, [userEmail]);
+
+ 
+  const filteredPayments = payments.filter((payment) => {
+    const matchesSearch = payment.transactionId
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === "All" || payment.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
         <input
           type="text"
           placeholder="Search by Transaction ID"
           className="input input-bordered w-full max-w-xs"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+
+        <select
+          className="select select-bordered w-full max-w-xs"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="All">All</option>
+          <option value="completed">Success</option>
+          <option value="cancelled">Failed</option>
+          <option value="pending">Pending</option>
+        </select>
       </div>
 
       <div className="overflow-x-auto">
@@ -58,19 +78,40 @@ const PaymentHistory = () => {
             </tr>
           </thead>
           <tbody>
-            {payments.map((payment, index) => (
-              <tr key={payment._id}>
-                <td>{index + 1}</td>
-                <td>{payment.transactionId}</td>
-                <td>${payment.price}</td> {/* Price instead of amount as per your data */}
-                <td>{new Date(payment.date).toLocaleDateString()}</td>
-                <td>
-                  <span className={`badge ${payment.status === 'Success' ? 'badge-success' : 'badge-error'}`}>
-                    {payment.status}
-                  </span>
+            {filteredPayments.length > 0 ? (
+              filteredPayments.map((payment, index) => (
+                <tr key={payment._id}>
+                  <td>{index + 1}</td>
+                  <td>{payment.transactionId}</td>
+                  <td>${payment.price}</td>
+                  <td>{new Date(payment.date).toLocaleDateString()}</td>
+                  <td>
+  {payment.status === "completed" && (
+    <button className="px-3 w-[100px] py-1 text-green-700 bg-green-100 rounded-full font-semibold text-sm">
+      Success
+    </button>
+  )}
+  {payment.status === "pending" && (
+    <button className="px-3 w-[100px]  py-1 text-orange-600 bg-orange-100 rounded-full font-semibold text-sm">
+      Pending
+    </button>
+  )}
+  {payment.status === "cancelled" && (
+  <button className="px-3 w-[100px]  py-1 text-red-600 bg-red-100 rounded-full font-semibold text-sm">
+    Cancelled
+  </button>
+)}
+</td>
+
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="text-center">
+                  No matching payments found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
