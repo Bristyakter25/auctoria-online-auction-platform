@@ -53,8 +53,12 @@ const SuggestedBid = ({ category }) => {
     <div>
       {suggestedBid !== null && (
         <div className="flex">
-          <h3 className="text-base mb-3">You can bid this amount </h3>
-          <p className="text-base font-bold">${suggestedBid}</p>
+          <h3 className="text-base mb-3 text-gray-700">
+            You can bid this amount{" "}
+          </h3>
+          <p className="text-base font-bold text-gray-700">
+            ${Number(suggestedBid)}
+          </p>
         </div>
       )}
       {error && <p className="text-red-500 mt-2">{error}</p>}

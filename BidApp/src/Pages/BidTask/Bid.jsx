@@ -282,7 +282,7 @@ const Bid = () => {
             {product.category}
           </p>
           <p className="dark:text-gray-700 flex items-center gap-2 ">
-            <strong className="flex items-center">
+            <strong className="flex items-center gap-3">
               <FaGavel /> End
             </strong>{" "}
             {formatDate(product.auctionEndTime)}

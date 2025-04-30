@@ -40,11 +40,11 @@ const ContactForm = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <h2 className="font-bold text-center  text-5xl pt-10 pb-5">
         Get in Touch
       </h2>
-      <div className="flex items-center justify-center p-10">
+      <div className="lg:flex items-center   justify-center p-10">
         <form
           ref={form}
           onSubmit={emailSubmit}

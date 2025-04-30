@@ -10,7 +10,7 @@ const ProductHistory = () => {
 
 
       
-      fetch(`https://auctoria-online-auction-platform.onrender.com/productHistory?email=${user.email}`)
+      fetch(`http://localhost:5000/productHistory?email=${user.email}`)
 
         .then((res) => res.json())
         .then((data) => setProducts(data));

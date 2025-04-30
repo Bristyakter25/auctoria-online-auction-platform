@@ -134,7 +134,12 @@ async function run() {
       const users = await usersCollection.estimatedDocumentCount();
       const products = await productsCollection.estimatedDocumentCount();
       const payments = await paymentCollection.estimatedDocumentCount();
-      res.send({ users, products, payments });
+      const reviews = await reviewsCollection.estimatedDocumentCount();
+      const totalpayments = await paymentCollection.find().toArray();
+      const totalAmount = totalpayments.reduce((acc, payment) => {
+        return acc + payment.price; // Assuming 'amount' is the field you want to sum
+      });
+      res.send({ users, products, payments, reviews, totalAmount });
     });
 
     //verify user role api
@@ -186,6 +191,47 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+
+    // Route to get all products (unchanged)
+    // app.get("/allProducts", async (req, res) => {
+    //   const cursor = productsCollection.find();
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // });
+
+    // Route to get category summary with count & image
+    app.get("/categorySummary", async (req, res) => {
+      try {
+        const cursor = productsCollection.find();
+        const products = await cursor.toArray();
+
+        const categories = [
+          "Collectibles",
+          "Art",
+          "Cars",
+          "Jewelry",
+          "Watches",
+          "Antiques",
+          "Luxury Bags",
+          "Electronics",
+        ];
+
+        const categorizedData = categories.map((category) => {
+          const items = products.filter((item) => item.category === category);
+          return {
+            category,
+            count: items.length,
+            image: items[0]?.image || null, // assuming each item has an 'image' field
+          };
+        });
+
+        res.send(categorizedData);
+      } catch (error) {
+        console.error("Error fetching categorized data:", error);
+        res.status(500).send({ message: "Server error" });
+      }
+    });
+
     // 🛠 Add Product
     app.post("/addProducts", async (req, res) => {
       const productData = req.body;
@@ -1206,11 +1252,11 @@ async function run() {
       try {
         const result = await productsCollection.findOne(query);
         if (!result) {
-          return res.status(404).json({ message: "Product পাওয়া যায়নি!" });
+          return res.status(404).json({ message: "product is not found" });
         }
         res.send(result.bids || []);
       } catch (error) {
-        res.status(500).json({ message: "কিছু একটা সমস্যা হয়েছে", error });
+        res.status(500).json({ message: "Failed to fetch bid history", error });
       }
     });
 
@@ -1292,7 +1338,7 @@ async function run() {
       console.log("favorite sellers found:", sellers);
       res.send(sellers);
     });
-
+    // follower Seller Product List Api
     app.get("/followingSeller/:email", async (req, res) => {
       const { email } = req.params;
       if (!email) {
@@ -1314,7 +1360,7 @@ async function run() {
             email: { $in: favoriteSellerEmail },
             status: "active",
           })
-          // .sort({ createdAt: -1 })
+          .sort({ createdAt: -1 })
           .limit(5)
           .toArray();
         // console.log("following list ", followingList);
@@ -1325,32 +1371,6 @@ async function run() {
           .json({ message: "Server error while fetching followed listings." });
       }
     });
-
-    // app.get("/followers/:email", async (req, res) => {
-    //   const { sellerEmail } = req.params;
-    //   const { email } = req.query;
-    //   try {
-    //     const seller = await usersCollection.findOne({
-    //       email: sellerEmail,
-    //     });
-    //     const isFollowing = await followingCollection.findOne({
-    //       sellerEmail,
-    //       followerEmail: email,
-    //       status: "following",
-    //     });
-    //     console.log("following ", isFollowing);
-    //     const profileData = {
-    //       ...seller,
-    //       isFollowing: !!isFollowing,
-    //     };
-    //     res.send(profileData);
-    //   } catch (error) {
-    //     res.status(500).json({
-    //       message: "Server error while fetching followers listings.",
-    //       error: error.message,
-    //     });
-    //   }
-    // });
 
     app.get("/followers/:sellerEmail", async (req, res) => {
       const { sellerEmail } = req.params;
@@ -1363,16 +1383,6 @@ async function run() {
         const followers = await followingCollection
           .find({ sellerEmail, status: "following" })
           .toArray();
-        // const isFollowing = await followingCollection.findOne({
-        //   sellerEmail,
-        //   followerEmail,
-        //   status: "following",
-        // });
-
-        // const profileData = {
-        //   ...seller,
-        //   isFollowing: !!isFollowing,
-        // };
         const profileData = {
           ...seller,
           followers: followers,
@@ -1388,9 +1398,9 @@ async function run() {
       }
     });
 
-    app.post("/following/:email", async (req, res) => {
+    app.post("/following/:userEmail", async (req, res) => {
       // const { sellerId } = req.body;
-      const { email } = req.params;
+      const { userEmail: email } = req.params;
       const { email: sellerEmail } = req.body;
       try {
         const user = await usersCollection.findOne({ email: email });
@@ -1406,7 +1416,7 @@ async function run() {
           status: "following",
           followedAt: new Date(),
         };
-        console.log("Following data", followData);
+        // console.log("Following data", followData);
         const alreadyFollowed = await followingCollection.findOne({
           followerEmail: email,
           sellerEmail,
@@ -1414,10 +1424,10 @@ async function run() {
         if (!alreadyFollowed) {
           await followingCollection.insertOne(followData);
         }
-        console.log("Following data ibgsdjfh", alreadyFollowed);
+        // console.log("Following data ibgsdjfh", alreadyFollowed);
         res.send({ success: true, updatedUser });
       } catch (error) {
-        console.error("Error adding favorite product:", error);
+        // console.error("Error adding favorite product:", error);
         res.status(500).json({ message: "Server error" });
       }
     });
