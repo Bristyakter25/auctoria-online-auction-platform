@@ -5,7 +5,7 @@ const ManageUsers = () => {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = () => {
-    fetch("https://auctoria-online-auction-platform.onrender.com/users")
+    fetch("http://localhost:5000/users")
       .then((res) => res.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
@@ -26,7 +26,7 @@ const ManageUsers = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://auctoria-online-auction-platform.onrender.com/users/${id}`, {
+        fetch(`http://localhost:5000/users/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())

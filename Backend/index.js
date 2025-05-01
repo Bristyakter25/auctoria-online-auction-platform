@@ -760,65 +760,55 @@ async function run() {
     });
 
     // bid suggest related API
-
-    app.get("/suggest-bid/:category", async (req, res) => {
-      const category = req.params.category;
-
+    app.get("/suggest-bid/:id", async (req, res) => {
+      const { id } = req.params;
+      // console.log("📌 product id:", id, "| type:", typeof id);
       try {
-        const categoryProducts = await productsCollection
-          .find({ category: category })
-          .toArray();
-        if (categoryProducts.length === 0) {
-          return res
-            .status(404)
-            .json({ message: "there is no category product" });
+        if (!ObjectId.isValid(id)) {
+          return res.status(400).json({ message: "Invalid productId format" });
         }
-        console.log("category is", categoryProducts);
-        let totalStartingPrice = 0;
+        const product = await productsCollection.findOne({
+          $or: [{ _id: new ObjectId(id) }, { _id: id }],
+        });
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+
         let totalBidAmount = 0;
         let totalBids = 0;
-        categoryProducts.forEach((product) => {
-          const startingBid = parseFloat(
-            product.basePrice || product.startingBid || 0
-          );
-          totalStartingPrice += startingBid;
-
-          if (product.bids && Array.isArray(product.bids)) {
-            product.bids.forEach((bid) => {
-              const bidAmount = parseFloat(bid.amount);
-              if (!isNaN(bidAmount)) {
-                totalBidAmount += bidAmount;
-                totalBids++;
-              }
-            });
-          }
-        });
-
-        const averageStartingPrice =
-          categoryProducts.length > 0
-            ? totalStartingPrice / categoryProducts.length
-            : 0;
-        const averageBid =
-          totalBids > 0 ? totalBidAmount / totalBids : averageStartingPrice;
-        const suggestedBidBaseOnStartingPrice = averageStartingPrice * 1.05;
-        const suggestedBidBaseOnBids = averageBid * 1.03;
-
-        const suggestedBid = Math.round(
-          Math.max(
-            suggestedBidBaseOnStartingPrice,
-            suggestedBidBaseOnBids,
-            averageStartingPrice
-          )
+        const startingBid = parseFloat(
+          product.basePrice || product.startingBid || 0
         );
-        io.emit("suggestedBidUpdate", {
-          category,
-          suggestedBid,
-        });
 
-        res.send({ category, suggestedBid });
+        if (product.bids && Array.isArray(product.bids)) {
+          product.bids.forEach((bid) => {
+            const bidAmount = parseFloat(bid.amount);
+            if (!isNaN(bidAmount)) {
+              totalBidAmount += bidAmount;
+              totalBids++;
+            }
+          });
+        }
+
+        let suggestedBid;
+
+        if (totalBids > 0) {
+          const averageBid = totalBidAmount / totalBids;
+          suggestedBid = Math.round(averageBid * 1.03);
+          suggestedBid = Math.max(suggestedBid, startingBid);
+        } else {
+          const suggestedFromStartingBid = startingBid * 1.05;
+          suggestedBid = Math.round(suggestedFromStartingBid);
+
+          suggestedBid = Math.round(
+            Math.max(suggestedFromStartingBid, startingBid)
+          );
+        }
+
+        res.send({ id, suggestedBid });
       } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "problem to make suggest bid" });
+        res.status(500).json({ error: "problem calculating suggested bid" });
       }
     });
 

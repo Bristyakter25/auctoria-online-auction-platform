@@ -16,8 +16,6 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import AuctionWinner from "./AuctionWinner";
-// import AdmissionForm from "../../Components/Dropdown/AdminDashboard/Student/AdmissionForm";
-// import ParentsForm from "../../Components/Dropdown/AdminDashboard/Student/ParentsForm";
 
 const tabs = ["Item Details", "History", "Reviews", "Winner", "Share"];
 const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
@@ -37,7 +35,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-3 cursor-pointer text-base lg:text-lg font-semibold transition-all ${
               activeTab === tab
-                ? "border-b-2 border-teal-300 text-teal-500 "
+                ? "border-b-2 border-blue-400 text-blue-500 "
                 : " "
             }`}
           >
@@ -80,7 +78,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
           <div className="flex flex-col gap-4">
             {/* Facebook Share */}
             <FacebookShareButton
-              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+              url={`http://localhost:5000/bid/${product._id}`}
               quote={product?.productName || ""}
               hashtag="#AuctionItem"
             >
@@ -92,7 +90,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
 
             {/* Twitter Share */}
             <TwitterShareButton
-              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+              url={`http://localhost:5000/bid/${product._id}`}
               title={product?.productName || ""}
               hashtags={["Auction", "OnlineBidding"]}
             >
@@ -104,7 +102,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
 
             {/* LinkedIn Share */}
             <LinkedinShareButton
-              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+              url={`http://localhost:5000/bid/${product._id}`}
               title={product?.productName || ""}
               summary={`Check out this item: ${product?.productName}`}
               source="Auctoria Auction"
