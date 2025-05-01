@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://bidapp-81c51.web.app", // your frontend on Firebase
-  "https://auctoria-online-auction-platform.onrender.com", // your Render backend itself (needed for self requests)
+  "http://localhost:5000", // your Render backend itself (needed for self requests)
 ];
 
 app.use(
@@ -239,14 +239,7 @@ async function run() {
         if (!productData) {
           return res.status(400).json({ message: "Missing fields" });
         }
-        // if (productData.auctionStartDate) {
-        //   const startTime = new Date(productData.auctionStartDate);
-
-        //   // const auctionEndTime = new Date(startTime);
-        //   // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
-        //   const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
-        //   productData.auctionEndTime = auctionEndTime.toISOString();
-        // }
+        
         productData.endingSoonNotified = false;
         const result = await productsCollection.insertOne(productData);
         const notification = {
@@ -262,15 +255,7 @@ async function run() {
         res.status(500).json({ message: "Error adding product", error: err });
       }
     });
-    //show specific seller products
-    // app.get("/addProducts/:email", async (req, res) => {
-    //   const { email } = req.params;
-    //   const query = { email: email };
-    //   const result = await productsCollection.find(query).toArray();
-    //   res.send(result);
-    // });
-
-    // 🛠 Get Single Product by ID
+    
 
     app.get("/productHistory", async (req, res) => {
       const email = req.query.email;
@@ -314,6 +299,34 @@ async function run() {
         res.status(500).json({ error: "Invalid product ID" });
       }
     });
+// Update product info
+app.put('/updateProduct/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedProduct = req.body;
+
+  if (!updatedProduct) {
+    return res.status(400).json({ message: "Missing update data" });
+  }
+
+  
+  delete updatedProduct._id;
+
+  try {
+    const result = await productsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updatedProduct }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update product", error });
+  }
+});
+
 
     // Get Popular Product based on bid
 
