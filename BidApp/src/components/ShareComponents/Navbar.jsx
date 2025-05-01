@@ -70,17 +70,24 @@ const Navbar = () => {
         {/* Right Side for Desktop */}
        
         <div className="hidden md:flex items-center gap-4">
+
         <div className=" text-xl">
                 <ThemeToggle></ThemeToggle>
               </div>
           <NotificationBell user={user} className="dark:bg-black bg-white dark:text-white text-black"/>
+
+          
+
           <Link
             to="/wishlist"
             className="relative dark:bg-black  dark:text-white bg-gray-100 p-2 rounded-full"
           >
             <IoMdHeartEmpty
               size={24}
+
               className="text-gray-700 dark:text-white hover:text-blue-500"
+
+              
             />
             {wishlist.length > 0 && (
               <span className="absolute -top-0 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
@@ -134,7 +141,7 @@ const Navbar = () => {
         <div className="md:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-2xl text-gray-700"
+            className="text-2xl "
           >
             {mobileMenuOpen ? <AiOutlineClose /> : <AiOutlineMenu />}
           </button>
@@ -149,11 +156,15 @@ const Navbar = () => {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden px-4 pb-4 bg-teal-100 text-gray-700 font-medium space-y-2 overflow-hidden"
+            className="md:hidden px-4 pb-4 bg-blue-100 text-gray-700 font-medium space-y-2 overflow-hidden"
           >
             {navLinks}
             <div className="flex items-center  gap-3 mt-3">
+
               <NotificationBell user={user} className="text-gray-600 dark:bg-black bg-white dark:text-white" />
+
+       
+
               <Link
                 to="/wishlist"
                 className="relative bg-gray-100 p-2 rounded-full"

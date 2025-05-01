@@ -16,8 +16,6 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import AuctionWinner from "./AuctionWinner";
-// import AdmissionForm from "../../Components/Dropdown/AdminDashboard/Student/AdmissionForm";
-// import ParentsForm from "../../Components/Dropdown/AdminDashboard/Student/ParentsForm";
 
 const tabs = ["Item Details", "History", "Reviews", "Winner", "Share"];
 const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
@@ -37,7 +35,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-3 cursor-pointer text-base lg:text-lg font-semibold transition-all ${
               activeTab === tab
-                ? "border-b-2 border-teal-300 text-teal-500 "
+                ? "border-b-2 border-blue-400 text-blue-500 "
                 : " "
             }`}
           >

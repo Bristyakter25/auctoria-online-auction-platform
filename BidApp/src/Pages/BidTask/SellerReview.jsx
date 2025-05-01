@@ -6,7 +6,11 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../providers/AuthProvider";
 import UseAxiosPublic from "../../hooks/useAxiosPublic";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  const options = { day: "numeric", month: "long", year: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+};
 const SellerReview = ({ sellerEmail, sellerId }) => {
   console.log("seller email and id", sellerEmail, sellerId);
   const axiosPublic = UseAxiosPublic();
@@ -67,7 +71,7 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
   console.log("review data", clientReviews);
 
   return (
-    <div className="w-full lg:flex justify-between gap-4 space-y-3 lg:space-y-0">
+    <div className="w-full lg:flex justify-between gap-4 space-y-3 lg:space-y-0 ">
       <div className=" lg:w-7/12">
         <h3 className="text-2xl font-semibold mb-4">All Reviews</h3>
         {/* <div className="divider"></div> */}
@@ -76,37 +80,32 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
             {clientReviews.map((review, index) => (
               <div
                 key={index}
-                className=" rounded-md flex items-center bg-gray-50 "
+                className=" rounded-md flex items-center bg-white/10 shadow-md "
               >
-                <div>
-                  {/* <img
-                    className="hidden object-cover w-12 h-12 mr-5 rounded-full sm:block border"
-                    src={<FaUser size={}/>}
-                    alt="avatar"
-                  /> */}
-                  <FaCircleUser
-                    size={36}
-                    className="text-gray-500 items-center"
-                  />
-                </div>
                 <div className="w-full p-3 mx-3">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold">{review.reviewerName}</p>
-                    <div className="flex text-yellow-400">
+                  <div>
+                    <FaCircleUser
+                      size={36}
+                      className="text-gray-500 items-center"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between ml-6">
+                    <p className="font-semibold ">{review.reviewerName}</p>
+                    <div className="flex text-yellow-400 ">
                       {[...Array(review.rating)].map((_, i) => (
                         <FaStar key={i} />
                       ))}
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">{review.comment}</p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-sm  mt-1 ml-6">{review.comment}</p>
+                  <p className="text-xs text-gray-400 mt-1 ml-6">
                     {review.createdAt
-                      ? new Date(review?.createdAt).toLocaleString()
+                      ? formatDate(review?.createdAt)
                       : "Loading..."}
                   </p>
                   {/* Admin reply section */}
                   {review.adminReply && (
-                    <div className="flex items-start mt-4 ml-5 bg-gray-300 p-3 rounded-lg">
+                    <div className="flex items-start mt-4 ml-5 bg-blue-200 p-3 rounded-lg">
                       <FaCircleUser size={25} className="text-gray-500 mr-3" />
                       <div>
                         <p className="font-semibold text-gray-700">Admin</p>
@@ -124,15 +123,11 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
           <p className="text-gray-500">No reviews yet.</p>
         )}
       </div>
-      <div className="lg:w-5/12 h-[400px] p-6  rounded-xl shadow-md border bg-gray-50">
-        <h2 className="text-2xl font-bold mb-4 text-center text-gary-600 dark:text-gray-700">
-          Seller Reviews
-        </h2>
+      <div className="lg:w-5/12 h-[400px] p-6 rounded-xl shadow-lg bg-white/10">
+        <h2 className="text-2xl font-bold mb-4 text-center ">Seller Reviews</h2>
 
         <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2 text-gary-600 dark:text-gray-700">
-            Your Rating*
-          </h3>
+          <h3 className="text-lg font-semibold mb-2 ">Your Rating*</h3>
           <div className="flex items-center space-x-1 mb-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <motion.div
@@ -151,14 +146,14 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
             ))}
           </div>
           <textarea
-            className="textarea textarea-bordered w-full mb-2 lg:mt-4"
+            className="textarea textarea-bordered w-full mb-2 lg:mt-4 bg-white/10"
             placeholder="Write your review here..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           ></textarea>
           <motion.button
             whileTap={{ scale: 0.95 }}
-            className="btn w-full bg-teal-300 mt-5 border-none"
+            className="btn w-full bg-blue-500 hover:bg-blue-600 mt-5 border-none"
             onClick={handleSubmit}
           >
             Submit Review

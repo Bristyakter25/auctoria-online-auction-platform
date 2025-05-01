@@ -10,7 +10,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { WishlistContext } from "../../providers/wishListProvider";
-import { cn } from "../../utils/cn";
+// import { cn } from "../../utils/cn";
 import { SlUserFollowing } from "react-icons/sl";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../../SellerProfile/Button";
@@ -25,6 +25,7 @@ const AllAuctionCard = ({ auction }) => {
     productImage,
     status,
     winner,
+    startingBid,
     auctionEndTime,
     email: sellerEmail,
   } = auction;
@@ -109,6 +110,7 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
+
       const response = await fetch(
         "http://localhost:5000/addToWishlist",
         {
@@ -117,6 +119,8 @@ const AllAuctionCard = ({ auction }) => {
           body: JSON.stringify({ productId: _id, userId }),
         }
       );
+
+      
 
       if (response.ok) {
         setIsWishlisted(true);
@@ -229,9 +233,7 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={cn(
-        "rounded-3xl relative z-10  shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
-      )}
+      className="rounded-3xl relative z-10 cursor-pointer shadow-xl hover:shadow-2xl transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
     >
       <div className="h-full">
         <img
@@ -239,7 +241,7 @@ const AllAuctionCard = ({ auction }) => {
           src={productImage}
           alt={productName}
         />
-        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-gray-800">
+        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-500">
           <div className="flex items-center gap-2 text-sm">
             {status === "expired" ? (
               <>
@@ -264,66 +266,52 @@ const AllAuctionCard = ({ auction }) => {
         </div>
 
         <div className="px-4 h-[80px]">
-          <h2 className="text-lg font-bold text-gray-800 mb-1 line-clamp-1">
-            {productName}
-          </h2>
-          <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+          <h2 className="text-lg font-bold mb-1 line-clamp-1">{productName}</h2>
+          <p className="text-sm line-clamp-2">{description}</p>
         </div>
-        <div className="flex justify-end p-2">
+        <div className="flex items-center justify-between p-2 ">
+          <div>
+            {" "}
+            <p>Base Price</p>
+            <p>$ {startingBid}.00</p>
+          </div>
+
           <button
             // onClick={() => navigate(`/SellerProfile/${email}`)}
             onClick={handleFollowing}
-            className="bg-teal-100 p-2 rounded-full px-3 py-0.5 "
+            className="bg-blue-200 p-2 rounded-full px-3 py-0.5 "
           >
             <p className="font-bold text-blue-500  ">
               {/* <SlUserFollowing size={20} />  */}
               {following ? "Following" : "follow"}
             </p>
           </button>
-          {/* <Button
-            onClick={handleFollowing}
-            className={`bg-gradient-to-r ${
-              following
-                ? "from-green-400 to-green-500"
-                : "from-blue-500 to-cyan-500"
-            } text-white py-2 px-4 rounded-xl shadow-lg hover:shadow-cyan-400/50 transition-all text-sm flex items-center gap-1`}
-          >
-            {following ? (
-              <CheckCircle className="w-4 h-4" />
-            ) : (
-              <UserPlus className="w-4 h-4" />
-            )}
-            {following ? "Following" : "Follow"}
-          </Button> */}
         </div>
         <div className="flex justify-between items-center px-4 py-2 border-t">
           <button
-            className="hover:bg-teal-100 p-2 rounded-full"
+            className="hover:bg-blue-200 p-2 rounded-full"
             onClick={handleAddToWishlist}
             disabled={isWishlisted}
           >
             {isWishlisted ? (
               <IoMdHeart size={24} className="text-red-500" />
             ) : (
-              <IoMdHeartEmpty
-                size={24}
-                className="text-gray-500 hover:text-red-400"
-              />
+              <IoMdHeartEmpty size={24} className=" hover:text-red-400" />
             )}
           </button>
 
           <button
-            className="hover:bg-teal-100 p-2 rounded-full"
+            className="hover:bg-blue-200 p-2 rounded-full"
             onClick={() => navigate(`/bid/${_id}`)}
           >
-            <IoEye size={24} className="text-gray-600" />
+            <IoEye size={24} className="" />
           </button>
 
           <button
-            className="hover:bg-teal-100 p-2 rounded-full"
+            className="hover:bg-blue-200 p-2 rounded-full"
             onClick={() => setShowModal(true)}
           >
-            <FaFlag size={20} className="text-gray-600" title="Report" />
+            <FaFlag size={20} className="" title="Report" />
           </button>
         </div>
       </div>
@@ -331,14 +319,12 @@ const AllAuctionCard = ({ auction }) => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-xl w-80 shadow-lg">
-            <h3 className="text-lg font-semibold mb-2 text-gray-800">
-              Report this Auction
-            </h3>
+            <h3 className="text-lg font-semibold mb-2 ">Report this Auction</h3>
             <textarea
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
               placeholder="Enter reason..."
-              className="w-full border rounded-md p-2 text-sm text-gray-700 mb-4"
+              className="w-full border rounded-md p-2 text-sm mb-4"
               rows={3}
             />
             <div className="flex justify-end gap-2">
