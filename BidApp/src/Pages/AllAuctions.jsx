@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import AllAuctionCard from "./HomePage/AllAuctionCard";
-import { cn } from "../utils/cn";
 import { motion, AnimatePresence } from "framer-motion";
 const AllAuctions = () => {
   const [allAuctions, setAllAuctions] = useState([]);
@@ -9,9 +7,9 @@ const AllAuctions = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("All");
   const [filteredAuctions, setFilteredAuctions] = useState([]);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+
   useEffect(() => {
-    fetch("https://auctoria-online-auction-platform.onrender.com/addProducts")
+    fetch("http://localhost:5000/addProducts")
       .then((res) => res.json())
       .then((data) => {
         setAllAuctions(data);
@@ -67,43 +65,30 @@ const AllAuctions = () => {
           <option value="Art">Art</option>
         </select>
       </div>
-      <div
-        className={cn(
-          "max-w-7xl mx-auto gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 "
-        )}
-      >
-        {filteredAuctions.length > 0 ? (
-          filteredAuctions.map((auction, idx) => (
-            <div
-              key={auction?._id || idx} // Use auction _id as key if available, fallback to index
-              className="relative group block p-2 h-full w-full"
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <AnimatePresence>
-                {hoveredIndex === idx && (
-                  <motion.span
-                    className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-stone-800/[0.8] block rounded-3xl"
-                    layoutId="hoverBackground" // Keep layoutId for animation
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: 1,
-                      transition: { duration: 0.15 },
-                    }}
-                    exit={{
-                      opacity: 0,
-                      transition: { duration: 0.15, delay: 0.2 },
-                    }}
-                  />
-                )}
-              </AnimatePresence>
-
-              <AllAuctionCard key={idx} auction={auction} />
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">No auctions found</p>
-        )}
+      <div className="max-w-7xl mx-auto gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ">
+        <AnimatePresence>
+          {filteredAuctions.length > 0 ? (
+            filteredAuctions.map((auction, idx) => (
+              <motion.div
+                key={auction?._id || idx}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 30 }}
+                transition={{
+                  duration: 0.5,
+                  ease: "easeInOut",
+                  delay: idx * 0.05,
+                }}
+                whileHover={{ scale: 1.03 }}
+                className="relative group block p-2 h-full w-full"
+              >
+                <AllAuctionCard key={idx} auction={auction} />
+              </motion.div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No auctions found</p>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

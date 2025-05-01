@@ -37,7 +37,7 @@ const Home = () => {
         <FeaturedProducts></FeaturedProducts>
         <RecentWinner />
 
-        <AuctionProcess></AuctionProcess>
+        {/* <AuctionProcess></AuctionProcess> */}
 
         {/* <GetInKnow></GetInKnow> */}
         <AboutSection></AboutSection>
@@ -50,7 +50,7 @@ const Home = () => {
         <Question />
         {/* <Partners /> */}
         {/* <BiddingMadness /> */}
-       <StatsCards></StatsCards>
+        <StatsCards></StatsCards>
         {/* <SellerProfile /> */}
         <TrustedPartners></TrustedPartners>
       </div>

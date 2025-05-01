@@ -10,7 +10,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { WishlistContext } from "../../providers/wishListProvider";
-import { cn } from "../../utils/cn";
+// import { cn } from "../../utils/cn";
 import { SlUserFollowing } from "react-icons/sl";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "../../SellerProfile/Button";
@@ -25,6 +25,7 @@ const AllAuctionCard = ({ auction }) => {
     productImage,
     status,
     winner,
+    startingBid,
     auctionEndTime,
     email: sellerEmail,
   } = auction;
@@ -80,7 +81,7 @@ const AllAuctionCard = ({ auction }) => {
     const fetchWishlist = async () => {
       try {
         const response = await fetch(
-          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
 
         const data = await response.json();
@@ -109,14 +110,11 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
-      const response = await fetch(
-        "https://auctoria-online-auction-platform.onrender.com/addToWishlist",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productId: _id, userId }),
-        }
-      );
+      const response = await fetch("http://localhost:5000/addToWishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: _id, userId }),
+      });
 
       if (response.ok) {
         setIsWishlisted(true);
@@ -130,7 +128,7 @@ const AllAuctionCard = ({ auction }) => {
         refetchWishlist();
 
         const updatedWishlistResponse = await fetch(
-          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
         const updatedData = await updatedWishlistResponse.json();
         const isProductInWishlist = updatedData.wishlist.some(
@@ -229,9 +227,7 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={cn(
-        "rounded-3xl relative z-10  shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
-      )}
+      className="rounded-3xl relative z-10 cursor-pointer shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
     >
       <div className="h-full">
         <img
@@ -269,32 +265,23 @@ const AllAuctionCard = ({ auction }) => {
           </h2>
           <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
         </div>
-        <div className="flex justify-end p-2">
+        <div className="flex items-center justify-between p-2 ">
+          <div>
+            {" "}
+            <p>Base Price</p>
+            <p>$ {startingBid}.00</p>
+          </div>
+
           <button
             // onClick={() => navigate(`/SellerProfile/${email}`)}
             onClick={handleFollowing}
-            className="bg-teal-100 p-2 rounded-full px-3 py-0.5 "
+            className="bg-blue-200 p-2 rounded-full px-3 py-0.5 "
           >
             <p className="font-bold text-blue-500  ">
               {/* <SlUserFollowing size={20} />  */}
               {following ? "Following" : "follow"}
             </p>
           </button>
-          {/* <Button
-            onClick={handleFollowing}
-            className={`bg-gradient-to-r ${
-              following
-                ? "from-green-400 to-green-500"
-                : "from-blue-500 to-cyan-500"
-            } text-white py-2 px-4 rounded-xl shadow-lg hover:shadow-cyan-400/50 transition-all text-sm flex items-center gap-1`}
-          >
-            {following ? (
-              <CheckCircle className="w-4 h-4" />
-            ) : (
-              <UserPlus className="w-4 h-4" />
-            )}
-            {following ? "Following" : "Follow"}
-          </Button> */}
         </div>
         <div className="flex justify-between items-center px-4 py-2 border-t">
           <button

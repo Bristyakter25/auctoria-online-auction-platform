@@ -15,7 +15,7 @@ const WishList = () => {
 
     setLoading(true);
 
-    fetch(`https://auctoria-online-auction-platform.onrender.com/wishlist/${user.uid}`)
+    fetch(`http://localhost:5000/wishlist/${user.uid}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch wishlist");
