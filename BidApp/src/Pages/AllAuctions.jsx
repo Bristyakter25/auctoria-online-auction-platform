@@ -47,13 +47,13 @@ const AllAuctions = () => {
           placeholder="Search auctions"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border p-2 rounded lg:w-3/12"
+          className="border p-2 rounded lg:w-3/12 bg-white/10"
         />
 
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="border p-2 rounded lg:w-2/12  "
+          className="border p-2 rounded lg:w-2/12 bg-white/10 "
         >
           <option value="All">All</option>
           <option value="Antiques">Antiques</option>
