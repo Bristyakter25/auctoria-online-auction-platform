@@ -58,7 +58,10 @@ const NotificationBell = ({ user }) => {
       {/* Notification Bell */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+
+        
         className="relative p-2 bg-gray-100 rounded-full cursor-pointer transition"
+
       >
         <IoNotificationsOutline
           size={24}
