@@ -65,7 +65,7 @@ const AllAuctions = () => {
           <option value="Art">Art</option>
         </select>
       </div>
-      <div className="max-w-7xl mx-auto gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ">
         <AnimatePresence>
           {filteredAuctions.length > 0 ? (
             filteredAuctions.map((auction, idx) => (

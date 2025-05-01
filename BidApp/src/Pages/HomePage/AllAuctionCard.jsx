@@ -227,7 +227,7 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-3xl relative z-10 cursor-pointer shadow-xl hover:shadow-2xl transition duration-300 bg-white overflow-hidden hover:border border-teal-400"
+      className="rounded-3xl relative z-10 cursor-pointer shadow-xl hover:shadow-2xl transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
     >
       <div className="h-full">
         <img
@@ -235,7 +235,7 @@ const AllAuctionCard = ({ auction }) => {
           src={productImage}
           alt={productName}
         />
-        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-teal-400 to-teal-500 text-gray-800">
+        <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-blue-400 to-blue-500">
           <div className="flex items-center gap-2 text-sm">
             {status === "expired" ? (
               <>
@@ -260,10 +260,8 @@ const AllAuctionCard = ({ auction }) => {
         </div>
 
         <div className="px-4 h-[80px]">
-          <h2 className="text-lg font-bold text-gray-800 mb-1 line-clamp-1">
-            {productName}
-          </h2>
-          <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+          <h2 className="text-lg font-bold mb-1 line-clamp-1">{productName}</h2>
+          <p className="text-sm line-clamp-2">{description}</p>
         </div>
         <div className="flex items-center justify-between p-2 ">
           <div>
@@ -285,32 +283,29 @@ const AllAuctionCard = ({ auction }) => {
         </div>
         <div className="flex justify-between items-center px-4 py-2 border-t">
           <button
-            className="hover:bg-teal-100 p-2 rounded-full"
+            className="hover:bg-blue-200 p-2 rounded-full"
             onClick={handleAddToWishlist}
             disabled={isWishlisted}
           >
             {isWishlisted ? (
               <IoMdHeart size={24} className="text-red-500" />
             ) : (
-              <IoMdHeartEmpty
-                size={24}
-                className="text-gray-500 hover:text-red-400"
-              />
+              <IoMdHeartEmpty size={24} className=" hover:text-red-400" />
             )}
           </button>
 
           <button
-            className="hover:bg-teal-100 p-2 rounded-full"
+            className="hover:bg-blue-200 p-2 rounded-full"
             onClick={() => navigate(`/bid/${_id}`)}
           >
-            <IoEye size={24} className="text-gray-600" />
+            <IoEye size={24} className="" />
           </button>
 
           <button
-            className="hover:bg-teal-100 p-2 rounded-full"
+            className="hover:bg-blue-200 p-2 rounded-full"
             onClick={() => setShowModal(true)}
           >
-            <FaFlag size={20} className="text-gray-600" title="Report" />
+            <FaFlag size={20} className="" title="Report" />
           </button>
         </div>
       </div>
@@ -318,14 +313,12 @@ const AllAuctionCard = ({ auction }) => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-xl w-80 shadow-lg">
-            <h3 className="text-lg font-semibold mb-2 text-gray-800">
-              Report this Auction
-            </h3>
+            <h3 className="text-lg font-semibold mb-2 ">Report this Auction</h3>
             <textarea
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
               placeholder="Enter reason..."
-              className="w-full border rounded-md p-2 text-sm text-gray-700 mb-4"
+              className="w-full border rounded-md p-2 text-sm mb-4"
               rows={3}
             />
             <div className="flex justify-end gap-2">
