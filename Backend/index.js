@@ -740,96 +740,9 @@ async function run() {
     });
 
     // bid suggest related API
-
-    // app.get("/suggest-bid/:category", async (req, res) => {
-    //   const category = req.params.category;
-
-    //   try {
-    //     const categoryProducts = await productsCollection
-    //       .find({ category: category })
-    //       .toArray();
-    //     if (categoryProducts.length === 0) {
-    //       return res
-    //         .status(404)
-    //         .json({ message: "there is no category product" });
-    //     }
-    //     console.log("category is", categoryProducts);
-    //     let totalStartingPrice = 0;
-    //     let totalBidAmount = 0;
-    //     let totalBids = 0;
-    //     categoryProducts.forEach((product) => {
-    //       const startingBid = parseFloat(
-    //         product.basePrice || product.startingBid || 0
-    //       );
-    //       totalStartingPrice += startingBid;
-
-    //       if (product.bids && Array.isArray(product.bids)) {
-    //         product.bids.forEach((bid) => {
-    //           const bidAmount = parseFloat(bid.amount);
-    //           if (!isNaN(bidAmount)) {
-    //             totalBidAmount += bidAmount;
-    //             totalBids++;
-    //           }
-    //         });
-    //       }
-    //     });
-
-    //     const averageStartingPrice =
-    //       categoryProducts.length > 0
-    //         ? totalStartingPrice / categoryProducts.length
-    //         : 0;
-    //     const averageBid =
-    //       totalBids > 0 ? totalBidAmount / totalBids : averageStartingPrice;
-    //     const suggestedBidBaseOnStartingPrice = averageStartingPrice * 1.05;
-    //     const suggestedBidBaseOnBids = averageBid * 1.03;
-
-    //     const suggestedBid = Math.round(
-    //       Math.max(
-    //         suggestedBidBaseOnStartingPrice,
-    //         suggestedBidBaseOnBids,
-    //         averageStartingPrice
-    //       )
-    //     );
-    //     io.emit("suggestedBidUpdate", {
-    //       category,
-    //       suggestedBid,
-    //     });
-
-    //     res.send({ category, suggestedBid });
-    //   } catch (err) {
-    //     console.error(err);
-    //     res.status(500).json({ error: "problem to make suggest bid" });
-    //   }
-    // });
-
-    // const { ObjectId } = require("mongodb");
-
-    // async function calculateGlobalAverageBid() {
-    //   const allProducts = await productsCollection
-    //     .find({ bids: { $exists: true, $ne: [] } })
-    //     .toArray();
-
-    //   let totalBid = 0;
-    //   let totalCount = 0;
-
-    //   allProducts.forEach((product) => {
-    //     product.bids.forEach((bid) => {
-    //       const amount = parseFloat(
-    //         bid.amount.toString().replace(/,/g, "").trim()
-    //       );
-    //       if (!isNaN(amount) && amount > 0 && amount < 1000000) {
-    //         totalBid += amount;
-    //         totalCount++;
-    //       }
-    //     });
-    //   });
-
-    //   return totalCount > 0 ? totalBid / totalCount : 0;
-    // }
-
     app.get("/suggest-bid/:id", async (req, res) => {
       const { id } = req.params;
-      console.log("📌 product id:", id, "| type:", typeof id);
+      // console.log("📌 product id:", id, "| type:", typeof id);
       try {
         if (!ObjectId.isValid(id)) {
           return res.status(400).json({ message: "Invalid productId format" });
