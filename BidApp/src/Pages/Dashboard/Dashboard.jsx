@@ -17,8 +17,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import useRole from "../../hooks/useRole";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
-import BidHistory from "../BidTask/BidHistory";
-import MenuItem from "./MenuItem";
+
 import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
 
 const Dashboard = () => {
@@ -211,21 +210,7 @@ const Dashboard = () => {
                   <span>Add Product</span>
                 </NavLink>
               </li>
-              <li>
-                <NavLink
-                  to="/dashboard/updateBidInfo"
-                  className={({ isActive }) =>
-                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
-                      isActive
-                        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
-                        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
-                    }`
-                  }
-                >
-                  <GrCircleInformation />
-                  <span>Update Bid Info</span>
-                </NavLink>
-              </li>
+              
               <li>
                 <NavLink
                   to="/dashboard/product-history"

@@ -31,7 +31,7 @@ const AddProduct = () => {
 
     console.log(productData);
 
-    fetch("https://auctoria-online-auction-platform.onrender.com/addProducts", {
+    fetch("http://localhost:5000/addProducts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -11,7 +11,7 @@ import AuctionChart from "../Pages/Dashboard/AuctionChart";
 import Profile from "../components/HomeComponents/profile";
 
 import WishList from "../Pages/WishList";
-import UpdateBid from "../components/sellerComponents/updateBid";
+
 import Bid from "../Pages/BidTask/Bid";
 
 import BidHistory from "../Pages/BidTask/BidHistory";
@@ -91,7 +91,7 @@ export const router = createBrowserRouter([
       { path: "product-history", element: <ProductHistory></ProductHistory> },
       { path: "paymentHistory", element: <PaymentHistory></PaymentHistory> },
       { path: "profile", element: <Profile /> },
-      { path: "updatedBidInfo", element: <UpdateBid /> },
+    
       {
         path: "pay",
         element: <Payment></Payment>,

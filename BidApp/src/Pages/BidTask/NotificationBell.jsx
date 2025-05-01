@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import UseAxiosPublic from "../../hooks/useAxiosPublic";
 
-const socket = io("https://auctoria-online-auction-platform.onrender.com", {
+const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -58,7 +58,7 @@ const NotificationBell = ({ user }) => {
       {/* Notification Bell */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 bg-gray-100 rounded-full cursor-pointer hover:text-teal-500 transition"
+        className="relative p-2 bg-gray-100 dark:bg-black  dark:text-white rounded-full cursor-pointer hover:text-teal-500 transition"
       >
         <IoNotificationsOutline size={24} />
         {notifications.length > 0 && (
