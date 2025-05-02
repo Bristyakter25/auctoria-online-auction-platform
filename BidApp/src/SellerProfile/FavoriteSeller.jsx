@@ -1,5 +1,3 @@
-
-
 import { useContext, useEffect, useState } from "react";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 import { AuthContext } from "../providers/AuthProvider";
@@ -38,9 +36,9 @@ const FavoritePage = () => {
             <HeartIcon className="text-white w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">আমার প্রিয় বিক্রেতারা</h1>
+            <h1 className="text-2xl font-bold">My favorite Seller</h1>
             <p className="text-sm text-gray-400">
-              মোট {favorites.length} জন বিক্রেতা সংরক্ষিত
+              Total seller {favorites.length}
             </p>
           </div>
         </div>
@@ -82,7 +80,7 @@ const FavoritePage = () => {
                     onClick={() => navigate(`/seller-profile/${seller._id}`)}
                     className="bg-pink-600 hover:bg-pink-700 text-white text-sm px-4 py-1.5 rounded-full transition"
                   >
-                    প্রোফাইল দেখুন
+                    Profile
                   </button>
                 </div>
               </div>
@@ -90,7 +88,7 @@ const FavoritePage = () => {
           </div>
         ) : (
           <div className="text-center text-gray-400 py-16">
-            এখনো কোনো প্রিয় বিক্রেতা নেই।
+            There is no seller
           </div>
         )}
       </div>

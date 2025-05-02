@@ -29,20 +29,22 @@ const BidHistory = () => {
 
   if (isLoading) return "Loading...";
 
-  // Group bids by productId and keep the latest one
   const latestBidsMap = new Map();
 
   bids.forEach((bid) => {
     const existing = latestBidsMap.get(bid.productId);
     if (!existing || new Date(bid.timestamp) > new Date(existing.timestamp)) {
-      latestBidsMap.set(bid.productId, bid); // keep latest
+      latestBidsMap.set(bid.productId, bid);
     }
   });
 
   const latestBids = Array.from(latestBidsMap.values());
 
   // Calculate total from latest bids only
-  const totalAmountToPay = latestBids.reduce((total, bid) => total + bid.bidAmount, 0);
+  const totalAmountToPay = latestBids.reduce(
+    (total, bid) => total + bid.bidAmount,
+    0
+  );
 
   const handleDelete = async (productId, bidId) => {
     const result = await Swal.fire({
@@ -79,6 +81,7 @@ const BidHistory = () => {
   };
 
   return (
+
     <div className="dark:text-white ">
       <div className="text-center mb-10  dark:text-white py-32 bg-gradient-to-r from-white to-sky-200 dark:from-[#00072D] dark:to-[#001F54]">
               <h2 className="text-5xl dark:text-white font-bold mb-5">Bid History </h2>
@@ -98,6 +101,8 @@ const BidHistory = () => {
         
 
         <div className="flex items-center gap-4 text-blue-500 dark:text-blue-300 font-semibold">
+
+    
           <span>Total Amount to Pay: ${totalAmountToPay.toFixed(2)}</span>
           <Link
             to="/dashboard/pay"
