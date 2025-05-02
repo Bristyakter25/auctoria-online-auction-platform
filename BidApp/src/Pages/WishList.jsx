@@ -39,11 +39,11 @@ const WishList = () => {
 
   return (
     <div className="">
-      <div className="text-center mb-10 py-40 bg-gradient-to-r from-yellow-100 via-white to-yellow-100">
-        <h2 className="text-5xl  font-bold mb-5">Your Wish listed items! </h2>
+      <div className="text-center mb-10 py-40 ark:text-white py-32 bg-gradient-to-r from-white to-sky-200 dark:from-[#00072D] dark:to-[#001F54]">
+        <h2 className="text-5xl dark:text-white font-bold mb-5">Your Wish listed items! </h2>
 
-        <div className="flex items-center justify-center gap-x-3 text-center ">
-          <Link to="/" className="text-lg hover:text-green-600">
+        <div className="flex dark:text-white items-center justify-center gap-x-3 text-center ">
+          <Link to="/" className="text-lg hover:text-blue-500">
             Home
           </Link>
           <p className="mt-2 ">
