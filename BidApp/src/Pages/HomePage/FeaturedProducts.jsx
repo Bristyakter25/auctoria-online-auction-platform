@@ -40,9 +40,8 @@ const FeaturedProducts = () => {
         Explore our top-picked featured items loved by shoppers across the
         country.
       </p>
-    
 
-      <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-7">
+      <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-7 mx-3 lg:mx-0">
         {filteredAuctions.length > 0 ? (
           filteredAuctions.map((auction) => (
             <FeaturedProductCard key={auction._id} auction={auction} />

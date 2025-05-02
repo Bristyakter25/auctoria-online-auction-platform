@@ -1,12 +1,5 @@
-
-
 import { useEffect, useState } from "react";
-import {
-  FaUsers,
-  FaBoxOpen,
-  FaMoneyCheckAlt,
-  FaStar,
-} from "react-icons/fa";
+import { FaUsers, FaBoxOpen, FaMoneyCheckAlt, FaStar } from "react-icons/fa";
 
 const StatsCards = () => {
   const [stats, setStats] = useState({
@@ -80,7 +73,7 @@ const StatsCards = () => {
   ];
 
   return (
-    <div className="grid lg:w-[1204px] w-[350px] mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
+    <div className="grid max-w-7xl mx-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
       {cardData.map((card) => (
         <div
           key={card.id}
@@ -88,7 +81,9 @@ const StatsCards = () => {
         >
           <div>{card.icon}</div>
           <div>
-            <h2 className="text-2xl font-bold dark:text-white">{card.title}+</h2>
+            <h2 className="text-2xl font-bold dark:text-white">
+              {card.title}+
+            </h2>
             <p className="text-gray-500 dark:text-white">{card.desc}</p>
           </div>
         </div>
@@ -98,4 +93,3 @@ const StatsCards = () => {
 };
 
 export default StatsCards;
-
