@@ -36,11 +36,11 @@ const Question = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-      <h1 className="text-4xl font-bold   text-center">
+    <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+      <h1 className="text-4xl font-bold  dark:text-[#4D55CC]  text-center">
         Frequently Asked Questions
       </h1>
-      <h1 className=" mb-20 text-center">
+      <h1 className=" mb-20 text-center dark:text-white text-gray-700 mt-4">
         Feel free adapt this based on the specific managed services, features
       </h1>
       <div className="lg:flex gap-10 items-start">

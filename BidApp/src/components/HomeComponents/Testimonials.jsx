@@ -8,7 +8,7 @@ import "swiper/css/pagination";
 const Testimonials = () => {
   return (
     <div
-      className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8"
+      className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8"
       style={{
         backgroundImage:
           "url(https://www.bidout-wp.egenslab.com/wp-content/themes/bidout/assets/images/bg/client-bg.png)",
@@ -16,8 +16,10 @@ const Testimonials = () => {
         backgroundPosition: "center",
       }}
     >
-      <h2 className="text-3xl font-bold text-center  mb-6">What Client Say</h2>
-      <p className="text-center  max-w-3xl mx-auto mb-12">
+      <h2 className="text-3xl font-bold text-center dark:text-[#4D55CC] text-gray-700 mb-6">
+        What Client Say
+      </h2>
+      <p className="text-center  max-w-3xl mx-auto mb-12 dark:text-white  text-gray-700">
         Before on the world's best & largest Bidding marketplace with our
         beautiful Bidding products. We want to live a part of your smile,
         success and future growth.
