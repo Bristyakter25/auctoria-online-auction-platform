@@ -181,15 +181,6 @@ const AllAuctionCard = ({ auction }) => {
     queryFn: async () => {
       const res = await axiosPublic.get(`/followers/${sellerEmail}`);
       console.log("Requesting followers for", sellerEmail);
-      // const isFollowing = res.data.followers.some(
-      //   (follower) =>
-      //     follower.followerEmail === userEmail &&
-      //     follower.status === "following"
-      // );
-      // console.log("Requesting followers for", userEmail);
-      // console.log("isFollowing data", isFollowing, res.data);
-      // setFollowing(isFollowing);
-      // console.log("Followers from API:", res.data.followers);
       return res.data;
     },
     enabled: !!sellerEmail && !!userEmail,
@@ -231,7 +222,7 @@ const AllAuctionCard = ({ auction }) => {
     >
       <div className="h-full">
         <img
-          className="object-cover w-full h-[200px] items-center rounded-t-xl relative "
+          className="object-cover w-full h-[200px] items-center rounded-t-xl relative font-sans"
           src={productImage}
           alt={productName}
         />
@@ -259,7 +250,7 @@ const AllAuctionCard = ({ auction }) => {
           )}
         </div>
 
-        <div className="px-4 h-[80px]">
+        <div className="px-2 h-[80px]">
           <h2 className="text-lg font-bold mb-1 line-clamp-1">{productName}</h2>
           <p className="text-sm line-clamp-2">{description}</p>
         </div>

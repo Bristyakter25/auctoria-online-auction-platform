@@ -27,6 +27,7 @@ import ChatBox from "../Pages/BidTask/ChatBox";
 import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInstruction";
 import ContactHome from "../Pages/Contact/ContactHome";
 import SellerProfile from "../SellerProfile/SellerProfile";
+import CategoryPage from "../Pages/BidTask/CategoryPage";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
       {
         path: "/sellerProfile/:email",
         element: <SellerProfile />,
+      },
+      {
+        path: "/categoryProduct/:categoryName",
+        element: <CategoryPage />,
       },
     ],
   },
