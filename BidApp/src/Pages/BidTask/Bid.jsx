@@ -10,7 +10,8 @@ import SuggestedBid from "./SuggestedBid";
 import AuctionWinner from "./AuctionWinner";
 import { BsFillChatTextFill } from "react-icons/bs";
 import { MdWatchLater } from "react-icons/md";
-
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
@@ -38,6 +39,7 @@ const calculateCountdown = (endTime) => {
 
 const Bid = () => {
   const { user, loading } = useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
   const item = {
     images: [
       // "https://i.ibb.co.com/LXSdnhYY/deniz-demirci-Ftl-G2pnqh-M4-unsplash.jpg",
@@ -55,9 +57,24 @@ const Bid = () => {
   const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
   // console.log("product data", product);
+
+  const {
+    data: usersRole = [],
+    refetch,
+    isLoading: userIsLoading,
+  } = useQuery({
+    queryKey: "usersRole",
+    queryFn: async () => {
+      const res = await axiosPublic.get("/users");
+      return res.data;
+    },
+  });
+  const roleUsers = usersRole[0] || {};
+  const { role } = roleUsers;
+
+  const isAdminOrSeller = user && (role === "admin" || role === "seller");
+
   useEffect(() => {
-
-
     fetch(`http://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -123,6 +140,22 @@ const Bid = () => {
 
   console.log("bid id", generateSellerId());
   const handleBid = async () => {
+    if (userIsLoading) {
+      toast.info("Loading user information, please wait.");
+      return;
+    }
+    if (!user) {
+      toast.error("Please log in to place a bid.", { position: "top-right" });
+      return;
+    }
+    // Check if the user is an admin or seller
+    if (isAdminOrSeller) {
+      toast.warning("Admins and Sellers cannot place bids on items.", {
+        position: "top-right",
+      });
+      return; // Stop the function here
+    }
+
     if (!bidAmount || isNaN(bidAmount) || Number(bidAmount) <= 0) {
       toast.error("Please enter a valid bid amount!", {
         position: "top-right",
@@ -194,7 +227,6 @@ const Bid = () => {
     };
 
     try {
-
       // const res = await fetch("http://localhost:5000/messages", {
 
       const res = await fetch("http://localhost:5000/messages", {
@@ -262,7 +294,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg relative bg-white/10"
+          className=" p-6 shadow-md rounded-lg relative bg-white/10 dark:text-white text-gray-700"
         >
           <div className="text-2xl font-bold mb-2 flex items-center ">
             {" "}
