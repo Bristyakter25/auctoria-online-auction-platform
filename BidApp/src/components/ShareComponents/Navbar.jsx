@@ -35,7 +35,10 @@ const Navbar = () => {
       <NavLink to="/addProduct" className="hover:text-blue-500 block py-1">
         Add Product
       </NavLink>
-      <NavLink to="/bid-history" className="hover:text-blue-500 block py-1">
+      <NavLink to="/aiChat" className="hover:text-teal-500 block py-1">
+        Ask Ai
+      </NavLink>
+      <NavLink to="/bid-history" className="hover:text-teal-500 block py-1">
         Bid History
       </NavLink>{" "}
       <NavLink to="contact-home" className="hover:text-blue-500 block py-1">

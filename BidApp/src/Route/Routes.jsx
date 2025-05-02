@@ -27,8 +27,7 @@ import ChatBox from "../Pages/BidTask/ChatBox";
 import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInstruction";
 import ContactHome from "../Pages/Contact/ContactHome";
 import SellerProfile from "../SellerProfile/SellerProfile";
-import CategoryPage from "../Pages/BidTask/CategoryPage";
-import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
+import AiChat from "../Pages/AiChat/AiChat";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +35,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/aiChat", element: <AiChat/> },
       { path: "about-us", element: <AboutHome></AboutHome> },
       { path: "contact-home", element: <ContactHome></ContactHome> },
 
