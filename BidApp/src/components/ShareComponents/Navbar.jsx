@@ -59,7 +59,7 @@ const Navbar = () => {
       {user && (
         <NavLink
           to="/dashboard/auctionChart"
-          className="hover:text-blue-500 block py-1"
+          className="hover:text-blue-500 block text-lg py-1"
         >
           Dashboard
         </NavLink>
