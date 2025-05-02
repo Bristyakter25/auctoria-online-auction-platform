@@ -1,10 +1,8 @@
-
 import Question from "../../components/HomeComponents/Question";
 
 import LatestAuctions from "../../components/HomeComponents/latestAuctions";
 
 import FeaturedProducts from "./FeaturedProducts";
-
 
 import AboutSection from "../../components/HomeComponents/AboutSection";
 import AuctionProcess from "../About Us/AuctionProcess";
@@ -21,7 +19,7 @@ import CategoryCards from "../BidTask/CategoryCards";
 const Home = () => {
   return (
     <div className="w-full">
-     <Banner></Banner>
+      <Banner></Banner>
       <div className="lg:max-w-7xl mx-auto">
         {/* <EidGreeting /> */}
         <LatestAuctions></LatestAuctions>
@@ -29,21 +27,16 @@ const Home = () => {
         <FeaturedProducts></FeaturedProducts>
         <RecentWinner />
 
-        {/* <AuctionProcess></AuctionProcess> */}
-
-        {/* <GetInKnow></GetInKnow> */}
         <AboutSection></AboutSection>
-
+        <CategoryCards></CategoryCards>
         <Testimonials></Testimonials>
-        {/* <MeetCards /> */}
 
         <AuctionProcess></AuctionProcess>
-        <CategoryCards></CategoryCards>
+
         <Question />
-        {/* <Partners /> */}
-        {/* <BiddingMadness /> */}
+
         <StatsCards></StatsCards>
-        {/* <SellerProfile /> */}
+
         <TrustedPartners></TrustedPartners>
       </div>
     </div>

@@ -4,14 +4,14 @@ import Marquee from "react-fast-marquee";
 
 const TrustedPartners = () => {
   return (
-  <div>
-    <h2 className="text-center text-2xl font-semibold mb-4 mt-20 ">
+  <div className='lg:w-[1124px] w-[350px] mx-auto'>
+    <h2 className="lg:text-4xl text-3xl mt-32 dark:text-[#4D55CC]  font-bold text-center mb-4">
         We Worked With Global Largest Brand
       </h2>
-      <h2 className='text-center mb-10'>
+      <h2 className='text-center dark:text-white mb-10'>
       Explore on the world's best & largest Bidding marketplace with our beautiful Bidding products. <br /> We want to be a part of your smile, success and future growth.
       </h2>
-      <div className="bg-[#eaf4fc] py-5  h-40">
+      <div className="bg-[#eaf4fc] dark:bg-transparent  py-5  h-40">
       
       <Marquee pauseOnHover speed={50} gradient={false}>
         <div className="flex mt-5 gap-16 items-center">

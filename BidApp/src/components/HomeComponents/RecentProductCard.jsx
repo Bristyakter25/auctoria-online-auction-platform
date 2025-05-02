@@ -145,10 +145,11 @@ const RecentProductCard = ({ recentProduct }) => {
   return (
     <>
       {status === "upcoming" || status === "live" ? (
-        <div className="card card-compact bg-white dark:bg-transparent hover:shadow-xl  rounded-2xl transition-all duration-1000 hover:scale-105">
+        <div className="card card-compact bg-white dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]">
+
           <figure className="relative">
             <img
-              className="w-full h-[300px]  rounded-xl"
+              className="w-full h-[280px]  rounded-xl"
               src={productImage}
               alt="product"
             />
@@ -185,7 +186,7 @@ const RecentProductCard = ({ recentProduct }) => {
                 <span className="font-bold text-lg">Auction Start Date: </span>{" "}
                 {formatDate(auctionStartDate)}
               </p>
-              <p className="mb-3">
+              <p className="mb-3 text-2xl font-semibold">
                 <span className="font-bold text-lg">Starting Bid: </span>${startingBid}
               </p>
               <p className="mb-3">
