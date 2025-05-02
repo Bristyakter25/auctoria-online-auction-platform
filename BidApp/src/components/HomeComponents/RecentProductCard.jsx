@@ -22,6 +22,7 @@ const RecentProductCard = ({ recentProduct }) => {
     auctionStartDate,
     status,
     _id,
+    category,
     auctionEndTime, // Assuming this field exists in recentProduct
   } = recentProduct;
   // console.log("recent product", recentProduct);
@@ -71,7 +72,7 @@ const RecentProductCard = ({ recentProduct }) => {
     const fetchWishlist = async () => {
       try {
         const response = await fetch(
-          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
 
         const data = await response.json();
@@ -104,7 +105,7 @@ const RecentProductCard = ({ recentProduct }) => {
     };
 
     try {
-      const response = await fetch("https://auctoria-online-auction-platform.onrender.com/addToWishlist", {
+      const response = await fetch("http://localhost:5000/addToWishlist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +125,7 @@ const RecentProductCard = ({ recentProduct }) => {
         refetchWishlist();
 
         const updatedWishlistResponse = await fetch(
-          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
+          `http://localhost:5000/wishlist/${userId}`
         );
         const updatedData = await updatedWishlistResponse.json();
         const isProductInWishlist = updatedData.wishlist.some(
@@ -144,10 +145,10 @@ const RecentProductCard = ({ recentProduct }) => {
   return (
     <>
       {status === "upcoming" || status === "live" ? (
-        <div className="card card-compact bg-white hover:shadow-xl border rounded-2xl transition-all duration-1000 hover:scale-105">
+        <div className="card card-compact border dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]">
           <figure className="relative">
             <img
-              className="w-full h-[230px] object-cover "
+              className="w-full h-[280px]  rounded-xl"
               src={productImage}
               alt="product"
             />
@@ -159,7 +160,7 @@ const RecentProductCard = ({ recentProduct }) => {
             >
               {status}
             </p>
-            <div className="absolute bottom-2  left-1/2 transform -translate-x-1/2 bg-white text-gray-800 px-2 py-0.5 rounded-full text-sm shadow-md z-10 flex items-center gap-2">
+            <div className="absolute bottom-2  left-1/2 transform -translate-x-1/2 bg-white  text-gray-800 px-2 py-0.5 rounded-full text-sm shadow-md z-10 flex items-center gap-2">
               <div className=" px-1 py-0.5 rounded">
                 <span className="font-bold">{timeLeft.days}</span> Days
               </div>
@@ -177,18 +178,24 @@ const RecentProductCard = ({ recentProduct }) => {
               </div>
             </div>
           </figure>
-          <div className="px-2 p-1">
-            <div className="h-[110px] space-y-1 text-gray-700">
-              <h2 className="card-title font-bold text-xl">{productName}</h2>
-              <p>
-                <span className="font-bold"></span>{" "}
-                {formatDate(auctionStartDate)}
-              </p>
-              <p>
-                <span className="font-bold"></span>${startingBid}
-              </p>
+          <div className="px-2 p-1 ">
+            <div className="h-[170px] my-2  dark:text-white text-gray-700 px-2 ">
+              <h2 className=" h-[60px] font-bold text-xl">{productName}</h2>
+              <div className="">
+                <p className="mb-2 font-semibold">
+                  <span className=" text-lg">Auction Start: </span>{" "}
+                  {formatDate(auctionStartDate)}
+                </p>
+                <div className="flex justify-between">
+                  <p className="mb-1 text-xl font-semibold flex flex-col">
+                    <span className="text-lg">Base Price: </span>${startingBid}
+                    .00
+                  </p>
+                  <p className="mb-1 text-lg font-semibold">{category}</p>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between p-3">
+            <div className="flex justify-between">
               <button
                 className="text-white w-10 h-10 hover:bg-gray-100 border rounded-full flex items-center justify-center"
                 onClick={handleAddToWishlist}
@@ -205,7 +212,7 @@ const RecentProductCard = ({ recentProduct }) => {
               </button>
               <button
                 className="w-10 h-10 border rounded-full flex items-center justify-center hover:bg-gray-100"
-                onClick={() => navigate(`/bid/${_id}`)}
+                onClick={() => navigate(`/bid/${_id})`)}
               >
                 <IoEye size={20} className="text-gray-600" />
               </button>

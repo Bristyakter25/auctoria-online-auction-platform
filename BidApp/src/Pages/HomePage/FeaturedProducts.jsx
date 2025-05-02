@@ -8,7 +8,7 @@ const FeaturedProducts = () => {
   const [filteredAuctions, setFilteredAuctions] = useState([]);
 
   useEffect(() => {
-    fetch("https://auctoria-online-auction-platform.onrender.com/featuredProducts")
+    fetch("http://localhost:5000/featuredProducts")
       .then((res) => res.json())
       .then((data) => {
         setFeaturedAuctions(data);
@@ -33,39 +33,15 @@ const FeaturedProducts = () => {
 
   return (
     <div className="">
-      <h2 className="lg:text-4xl text-3xl  mt-10 font-bold text-center mb-4">
+      <h2 className="lg:text-4xl text-3xl mt-24 dark:text-[#4D55CC]  font-bold text-center mb-4">
         Featured Products
       </h2>
-      <p className="text-xl text-center">
+      <p className="text-xl dark:text-white text-center">
         Explore our top-picked featured items loved by shoppers across the
         country.
       </p>
-      {/* 
-      <div className="text-center my-5 flex flex-wrap justify-center gap-4">
-        <input
-          type="text"
-          placeholder="Search auctions"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border w-[400px] p-2 rounded"
-        />
 
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="border p-2 w-[250px] rounded"
-        >
-          <option value="All">All</option>
-          <option value="Antiques">Antiques</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Collectibles">Collectibles</option>
-          <option value="Jewelry">Jewelry</option>
-          <option value="Watches">Watches</option>
-          <option value="Art">Art</option>
-        </select>
-      </div> */}
-
-      <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      <div className="grid mt-10 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-7 mx-3 lg:mx-0">
         {filteredAuctions.length > 0 ? (
           filteredAuctions.map((auction) => (
             <FeaturedProductCard key={auction._id} auction={auction} />

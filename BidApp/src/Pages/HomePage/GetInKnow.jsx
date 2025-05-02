@@ -2,7 +2,7 @@ import checkImage from "../../assets/check-mark.png";
 const GetInKnow = () => {
   return (
     <div className="my-10">
-      <h2 className="text-5xl text-black mt-20  font-bold text-center mb-4">
+      <h2 className="text-5xl text-black dark:text-white mt-20  font-bold text-center mb-4">
         Get In know
       </h2>
       <p className="text-center text-xl font-semibold mb-10">

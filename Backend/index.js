@@ -134,12 +134,13 @@ async function run() {
       const users = await usersCollection.estimatedDocumentCount();
       const products = await productsCollection.estimatedDocumentCount();
       const payments = await paymentCollection.estimatedDocumentCount();
+      const reviews = await reviewsCollection.estimatedDocumentCount();
       const totalpayments = await paymentCollection.find().toArray();
       const totalAmount = totalpayments.reduce((acc, payment) => {
         return acc + payment.price; // Assuming 'amount' is the field you want to sum
-      })
-      res.send({users,products,payments,totalAmount})
-    })
+      });
+      res.send({ users, products, payments, reviews, totalAmount });
+    });
 
     //verify user role api
     app.get("/user/role/:email", async (req, res) => {
@@ -190,6 +191,81 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+
+    // Route to get all products (unchanged)
+    // app.get("/allProducts", async (req, res) => {
+    //   const cursor = productsCollection.find();
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // });
+
+    // Route to get category summary with count & image
+
+    app.get("/products/:categoryName", async (req, res) => {
+      const { categoryName } = req.params;
+      try {
+        const products = await productsCollection
+          .find({ category: categoryName })
+          .toArray();
+        res.send(products);
+      } catch (error) {
+        res.status(500).send({ message: "Error fetching category products" });
+      }
+    });
+
+    app.get("/categorySummary", async (req, res) => {
+      try {
+        // const products = await cursor;
+
+        const allCategory = [
+          "Collectibles",
+          "Art",
+          "Cars",
+          "Jewelry",
+          "Watches",
+          "Antiques",
+          "Luxury Bags",
+          "Electronics",
+        ];
+        const categoryPipeline = [
+          {
+            $match: {
+              category: { $in: allCategory },
+            },
+          },
+          { $sort: { _id: -1 } },
+          {
+            $group: {
+              _id: "$category",
+              count: { $sum: 1 },
+              image: { $first: "productImage" },
+            },
+          },
+          { $project: { category: "$_id", count: 1, image: 1, _id: 0 } },
+        ];
+        const products = await productsCollection
+          .aggregate(categoryPipeline)
+          .toArray();
+        const finalResult = allCategory.map((category) => {
+          const matchItems = products.find(
+            (item) => item.category === category
+          );
+          return (
+            matchItems || {
+              category: category,
+              count: 0,
+              image: null,
+            }
+          );
+        });
+
+        res.send(finalResult);
+      } catch (error) {
+        console.error("Error fetching categorized data:", error);
+        res.status(500).send({ message: "Server error" });
+      }
+    });
+
     // 🛠 Add Product
     app.post("/addProducts", async (req, res) => {
       const productData = req.body;
@@ -197,14 +273,7 @@ async function run() {
         if (!productData) {
           return res.status(400).json({ message: "Missing fields" });
         }
-        // if (productData.auctionStartDate) {
-        //   const startTime = new Date(productData.auctionStartDate);
-
-        //   // const auctionEndTime = new Date(startTime);
-        //   // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
-        //   const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
-        //   productData.auctionEndTime = auctionEndTime.toISOString();
-        // }
+        
         productData.endingSoonNotified = false;
         const result = await productsCollection.insertOne(productData);
         const notification = {
@@ -220,15 +289,7 @@ async function run() {
         res.status(500).json({ message: "Error adding product", error: err });
       }
     });
-    //show specific seller products
-    // app.get("/addProducts/:email", async (req, res) => {
-    //   const { email } = req.params;
-    //   const query = { email: email };
-    //   const result = await productsCollection.find(query).toArray();
-    //   res.send(result);
-    // });
-
-    // 🛠 Get Single Product by ID
+    
 
     app.get("/productHistory", async (req, res) => {
       const email = req.query.email;
@@ -272,6 +333,34 @@ async function run() {
         res.status(500).json({ error: "Invalid product ID" });
       }
     });
+// Update product info
+app.put('/updateProduct/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedProduct = req.body;
+
+  if (!updatedProduct) {
+    return res.status(400).json({ message: "Missing update data" });
+  }
+
+  
+  delete updatedProduct._id;
+
+  try {
+    const result = await productsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updatedProduct }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update product", error });
+  }
+});
+
 
     // Get Popular Product based on bid
 
@@ -564,6 +653,26 @@ async function run() {
       }
     });
 
+    app.get("/payments/:email", async (req, res) => {
+      try {
+        const userEmail = req.params.email;  // Get email from route parameter
+    
+        // Fetch payments based on the provided email
+        const result = await paymentCollection.find({ email: userEmail }).toArray();
+    
+        if (result.length === 0) {
+          return res.status(404).json({ message: "No payments found for this email" });
+        }
+    
+        // Return the filtered payments
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching payments", error });
+      }
+    });
+    
+    
+
     // change the status handled by admin
 
     app.patch("/payments/:id", async (req, res) => {
@@ -698,65 +807,55 @@ async function run() {
     });
 
     // bid suggest related API
-
-    app.get("/suggest-bid/:category", async (req, res) => {
-      const category = req.params.category;
-
+    app.get("/suggest-bid/:id", async (req, res) => {
+      const { id } = req.params;
+      // console.log("📌 product id:", id, "| type:", typeof id);
       try {
-        const categoryProducts = await productsCollection
-          .find({ category: category })
-          .toArray();
-        if (categoryProducts.length === 0) {
-          return res
-            .status(404)
-            .json({ message: "there is no category product" });
+        if (!ObjectId.isValid(id)) {
+          return res.status(400).json({ message: "Invalid productId format" });
         }
-        console.log("category is", categoryProducts);
-        let totalStartingPrice = 0;
+        const product = await productsCollection.findOne({
+          $or: [{ _id: new ObjectId(id) }, { _id: id }],
+        });
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
+
         let totalBidAmount = 0;
         let totalBids = 0;
-        categoryProducts.forEach((product) => {
-          const startingBid = parseFloat(
-            product.basePrice || product.startingBid || 0
-          );
-          totalStartingPrice += startingBid;
-
-          if (product.bids && Array.isArray(product.bids)) {
-            product.bids.forEach((bid) => {
-              const bidAmount = parseFloat(bid.amount);
-              if (!isNaN(bidAmount)) {
-                totalBidAmount += bidAmount;
-                totalBids++;
-              }
-            });
-          }
-        });
-
-        const averageStartingPrice =
-          categoryProducts.length > 0
-            ? totalStartingPrice / categoryProducts.length
-            : 0;
-        const averageBid =
-          totalBids > 0 ? totalBidAmount / totalBids : averageStartingPrice;
-        const suggestedBidBaseOnStartingPrice = averageStartingPrice * 1.05;
-        const suggestedBidBaseOnBids = averageBid * 1.03;
-
-        const suggestedBid = Math.round(
-          Math.max(
-            suggestedBidBaseOnStartingPrice,
-            suggestedBidBaseOnBids,
-            averageStartingPrice
-          )
+        const startingBid = parseFloat(
+          product.basePrice || product.startingBid || 0
         );
-        io.emit("suggestedBidUpdate", {
-          category,
-          suggestedBid,
-        });
 
-        res.send({ category, suggestedBid });
+        if (product.bids && Array.isArray(product.bids)) {
+          product.bids.forEach((bid) => {
+            const bidAmount = parseFloat(bid.amount);
+            if (!isNaN(bidAmount)) {
+              totalBidAmount += bidAmount;
+              totalBids++;
+            }
+          });
+        }
+
+        let suggestedBid;
+
+        if (totalBids > 0) {
+          const averageBid = totalBidAmount / totalBids;
+          suggestedBid = Math.round(averageBid * 1.03);
+          suggestedBid = Math.max(suggestedBid, startingBid);
+        } else {
+          const suggestedFromStartingBid = startingBid * 1.05;
+          suggestedBid = Math.round(suggestedFromStartingBid);
+
+          suggestedBid = Math.round(
+            Math.max(suggestedFromStartingBid, startingBid)
+          );
+        }
+
+        res.send({ id, suggestedBid });
       } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "problem to make suggest bid" });
+        res.status(500).json({ error: "problem calculating suggested bid" });
       }
     });
 
@@ -1190,11 +1289,11 @@ async function run() {
       try {
         const result = await productsCollection.findOne(query);
         if (!result) {
-          return res.status(404).json({ message: "Product পাওয়া যায়নি!" });
+          return res.status(404).json({ message: "product is not found" });
         }
         res.send(result.bids || []);
       } catch (error) {
-        res.status(500).json({ message: "কিছু একটা সমস্যা হয়েছে", error });
+        res.status(500).json({ message: "Failed to fetch bid history", error });
       }
     });
 
@@ -1276,7 +1375,7 @@ async function run() {
       console.log("favorite sellers found:", sellers);
       res.send(sellers);
     });
-
+    // follower Seller Product List Api
     app.get("/followingSeller/:email", async (req, res) => {
       const { email } = req.params;
       if (!email) {
@@ -1298,7 +1397,7 @@ async function run() {
             email: { $in: favoriteSellerEmail },
             status: "active",
           })
-          // .sort({ createdAt: -1 })
+          .sort({ createdAt: -1 })
           .limit(5)
           .toArray();
         // console.log("following list ", followingList);
@@ -1309,32 +1408,6 @@ async function run() {
           .json({ message: "Server error while fetching followed listings." });
       }
     });
-
-    // app.get("/followers/:email", async (req, res) => {
-    //   const { sellerEmail } = req.params;
-    //   const { email } = req.query;
-    //   try {
-    //     const seller = await usersCollection.findOne({
-    //       email: sellerEmail,
-    //     });
-    //     const isFollowing = await followingCollection.findOne({
-    //       sellerEmail,
-    //       followerEmail: email,
-    //       status: "following",
-    //     });
-    //     console.log("following ", isFollowing);
-    //     const profileData = {
-    //       ...seller,
-    //       isFollowing: !!isFollowing,
-    //     };
-    //     res.send(profileData);
-    //   } catch (error) {
-    //     res.status(500).json({
-    //       message: "Server error while fetching followers listings.",
-    //       error: error.message,
-    //     });
-    //   }
-    // });
 
     app.get("/followers/:sellerEmail", async (req, res) => {
       const { sellerEmail } = req.params;
@@ -1347,16 +1420,6 @@ async function run() {
         const followers = await followingCollection
           .find({ sellerEmail, status: "following" })
           .toArray();
-        // const isFollowing = await followingCollection.findOne({
-        //   sellerEmail,
-        //   followerEmail,
-        //   status: "following",
-        // });
-
-        // const profileData = {
-        //   ...seller,
-        //   isFollowing: !!isFollowing,
-        // };
         const profileData = {
           ...seller,
           followers: followers,
@@ -1372,9 +1435,9 @@ async function run() {
       }
     });
 
-    app.post("/following/:email", async (req, res) => {
+    app.post("/following/:userEmail", async (req, res) => {
       // const { sellerId } = req.body;
-      const { email } = req.params;
+      const { userEmail: email } = req.params;
       const { email: sellerEmail } = req.body;
       try {
         const user = await usersCollection.findOne({ email: email });
@@ -1390,7 +1453,7 @@ async function run() {
           status: "following",
           followedAt: new Date(),
         };
-        console.log("Following data", followData);
+        // console.log("Following data", followData);
         const alreadyFollowed = await followingCollection.findOne({
           followerEmail: email,
           sellerEmail,
@@ -1398,10 +1461,10 @@ async function run() {
         if (!alreadyFollowed) {
           await followingCollection.insertOne(followData);
         }
-        console.log("Following data ibgsdjfh", alreadyFollowed);
+        // console.log("Following data ibgsdjfh", alreadyFollowed);
         res.send({ success: true, updatedUser });
       } catch (error) {
-        console.error("Error adding favorite product:", error);
+        // console.error("Error adding favorite product:", error);
         res.status(500).json({ message: "Server error" });
       }
     });

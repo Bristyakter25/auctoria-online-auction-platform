@@ -44,7 +44,7 @@ const AllBidHistory = ({ id }) => {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <thead className="bg-teal-500">
+                  <thead className="bg-blue-400">
                     <tr>
                       <th
                         scope="col"
