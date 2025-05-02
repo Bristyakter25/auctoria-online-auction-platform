@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoMdHeartEmpty } from "react-icons/io";
@@ -7,7 +6,7 @@ import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { motion, AnimatePresence } from "framer-motion";
 import { WishlistContext } from "../../providers/wishListProvider";
 import NotificationBell from "../../Pages/BidTask/NotificationBell";
-import auctionIcon from "../../assets/auction.png";
+import auctionIcon from "../../assets/icon/online-auction (1).png";
 import ThemeToggle from "../HomeComponents/ThemeToggle";
 import { AuthContext } from "../../providers/AuthProvider";
 
@@ -27,25 +26,25 @@ const Navbar = () => {
 
   const navLinks = (
     <>
-      <NavLink to="/" className="hover:text-teal-500 block py-1">
+      <NavLink to="/" className="hover:text-blue-500 block py-1">
         Home
       </NavLink>
-      <NavLink to="/allAuctions" className="hover:text-teal-500 block py-1">
+      <NavLink to="/allAuctions" className="hover:text-blue-500 block py-1">
         Auctions
       </NavLink>
-      <NavLink to="/addProduct" className="hover:text-teal-500 block py-1">
+      <NavLink to="/addProduct" className="hover:text-blue-500 block py-1">
         Add Product
       </NavLink>
-      <NavLink to="/bid-history" className="hover:text-teal-500 block py-1">
+      <NavLink to="/bid-history" className="hover:text-blue-500 block py-1">
         Bid History
       </NavLink>{" "}
-      <NavLink to="contact-home" className="hover:text-teal-500 block py-1">
+      <NavLink to="contact-home" className="hover:text-blue-500 block py-1">
         Contact Us
       </NavLink>
       {user && (
         <NavLink
           to="/dashboard/auctionChart"
-          className="hover:text-teal-500 block py-1"
+          className="hover:text-blue-500 block py-1"
         >
           Dashboard
         </NavLink>
@@ -54,32 +53,41 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="bg-gradient-to-r from-yellow-100 via-lime-100 to-green-20 sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 bg-gradient-to-r from-white to-sky-200 dark:from-[#00072D] dark:to-[#001F54]">
+
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <img src={auctionIcon} alt="logo" className="w-10 h-10" />
-          <span className="text-2xl font-bold text-teal-500">Auctoria</span>
+          <span className="text-2xl font-bold text-blue-600">Auctoria</span>
         </div>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex gap-6 items-center text-gray-700 font-medium">
+        <div className="hidden md:flex gap-6 dark:text-white items-center text-gray-700 font-medium">
           {navLinks}
         </div>
 
         {/* Right Side for Desktop */}
+       
         <div className="hidden md:flex items-center gap-4">
-          <NotificationBell
-            user={user}
-            className="text-gray-700 hover:text-blue-500"
-          />
+
+        <div className=" text-xl">
+                <ThemeToggle></ThemeToggle>
+              </div>
+          <NotificationBell user={user} className="dark:bg-black bg-white dark:text-white text-black"/>
+
+          
+
           <Link
             to="/wishlist"
-            className="relative bg-gray-100 p-2 rounded-full"
+            className="relative dark:bg-black  dark:text-white bg-gray-100 p-2 rounded-full"
           >
             <IoMdHeartEmpty
               size={24}
-              className="text-gray-700 hover:text-blue-500"
+
+              className="text-gray-700 dark:text-white hover:text-blue-500"
+
+              
             />
             {wishlist.length > 0 && (
               <span className="absolute -top-0 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
@@ -115,9 +123,7 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-              <div>
-                <ThemeToggle></ThemeToggle>
-              </div>
+              
             </div>
           ) : (
             <div className="flex items-center gap-2">
@@ -154,7 +160,11 @@ const Navbar = () => {
           >
             {navLinks}
             <div className="flex items-center  gap-3 mt-3">
-              <NotificationBell user={user} className="text-gray-700" />
+
+              <NotificationBell user={user} className="text-gray-600 dark:bg-black bg-white dark:text-white" />
+
+       
+
               <Link
                 to="/wishlist"
                 className="relative bg-gray-100 p-2 rounded-full"

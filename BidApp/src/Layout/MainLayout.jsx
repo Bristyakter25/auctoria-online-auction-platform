@@ -5,8 +5,8 @@ import Navbar from "../components/ShareComponents/Navbar";
 
 const MainLayout = () => {
   return (
-    <div className="">
-      <div className="fixed top-0 left-0 w-full z-50 shadow-md">
+    <div className="dark:bg-[#0a0a23]">
+      <div className="fixed top-0 left-0 w-full z-50 ">
         <Navbar />
       </div>
       <div>

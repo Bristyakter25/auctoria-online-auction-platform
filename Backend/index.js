@@ -273,14 +273,7 @@ async function run() {
         if (!productData) {
           return res.status(400).json({ message: "Missing fields" });
         }
-        // if (productData.auctionStartDate) {
-        //   const startTime = new Date(productData.auctionStartDate);
-
-        //   // const auctionEndTime = new Date(startTime);
-        //   // auctionEndTime.setDate(auctionEndTime.getDate() + 7);
-        //   const auctionEndTime = new Date(startTime.getTime() + 10 * 60 * 1000);
-        //   productData.auctionEndTime = auctionEndTime.toISOString();
-        // }
+        
         productData.endingSoonNotified = false;
         const result = await productsCollection.insertOne(productData);
         const notification = {
@@ -296,15 +289,7 @@ async function run() {
         res.status(500).json({ message: "Error adding product", error: err });
       }
     });
-    //show specific seller products
-    // app.get("/addProducts/:email", async (req, res) => {
-    //   const { email } = req.params;
-    //   const query = { email: email };
-    //   const result = await productsCollection.find(query).toArray();
-    //   res.send(result);
-    // });
-
-    // 🛠 Get Single Product by ID
+    
 
     app.get("/productHistory", async (req, res) => {
       const email = req.query.email;
@@ -348,6 +333,34 @@ async function run() {
         res.status(500).json({ error: "Invalid product ID" });
       }
     });
+// Update product info
+app.put('/updateProduct/:id', async (req, res) => {
+  const { id } = req.params;
+  const updatedProduct = req.body;
+
+  if (!updatedProduct) {
+    return res.status(400).json({ message: "Missing update data" });
+  }
+
+  
+  delete updatedProduct._id;
+
+  try {
+    const result = await productsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updatedProduct }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update product", error });
+  }
+});
+
 
     // Get Popular Product based on bid
 
@@ -639,6 +652,26 @@ async function run() {
         res.status(500).json({ message: "Error fetching payments", error });
       }
     });
+
+    app.get("/payments/:email", async (req, res) => {
+      try {
+        const userEmail = req.params.email;  // Get email from route parameter
+    
+        // Fetch payments based on the provided email
+        const result = await paymentCollection.find({ email: userEmail }).toArray();
+    
+        if (result.length === 0) {
+          return res.status(404).json({ message: "No payments found for this email" });
+        }
+    
+        // Return the filtered payments
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ message: "Error fetching payments", error });
+      }
+    });
+    
+    
 
     // change the status handled by admin
 

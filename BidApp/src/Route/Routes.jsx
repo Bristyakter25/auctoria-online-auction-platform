@@ -11,7 +11,7 @@ import AuctionChart from "../Pages/Dashboard/AuctionChart";
 import Profile from "../components/HomeComponents/profile";
 
 import WishList from "../Pages/WishList";
-import UpdateBid from "../components/sellerComponents/updateBid";
+
 import Bid from "../Pages/BidTask/Bid";
 
 import BidHistory from "../Pages/BidTask/BidHistory";
@@ -27,7 +27,11 @@ import ChatBox from "../Pages/BidTask/ChatBox";
 import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInstruction";
 import ContactHome from "../Pages/Contact/ContactHome";
 import SellerProfile from "../SellerProfile/SellerProfile";
+<<<<<<< HEAD
 import CategoryPage from "../Pages/BidTask/CategoryPage";
+=======
+import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
+>>>>>>> a547fa4d4d4b656e50ca48e14f7ff226a71df19c
 
 export const router = createBrowserRouter([
   {
@@ -93,8 +97,9 @@ export const router = createBrowserRouter([
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "product-history", element: <ProductHistory></ProductHistory> },
+      { path: "paymentHistory", element: <PaymentHistory></PaymentHistory> },
       { path: "profile", element: <Profile /> },
-      { path: "updatedBidInfo", element: <UpdateBid /> },
+    
       {
         path: "pay",
         element: <Payment></Payment>,

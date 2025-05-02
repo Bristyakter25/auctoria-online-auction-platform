@@ -110,11 +110,17 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/addToWishlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: _id, userId }),
-      });
+
+      const response = await fetch(
+        "http://localhost:5000/addToWishlist",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId: _id, userId }),
+        }
+      );
+
+      
 
       if (response.ok) {
         setIsWishlisted(true);

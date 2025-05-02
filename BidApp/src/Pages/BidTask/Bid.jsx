@@ -11,6 +11,7 @@ import AuctionWinner from "./AuctionWinner";
 import { BsFillChatTextFill } from "react-icons/bs";
 import { MdWatchLater } from "react-icons/md";
 
+
 const socket = io("http://localhost:5000", {
   transports: ["polling", "websocket"],
   reconnection: true,
@@ -55,6 +56,8 @@ const Bid = () => {
   const [currentBid, setCurrentBid] = useState(0);
   // console.log("product data", product);
   useEffect(() => {
+
+
     fetch(`http://localhost:5000/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -191,6 +194,9 @@ const Bid = () => {
     };
 
     try {
+
+      // const res = await fetch("http://localhost:5000/messages", {
+
       const res = await fetch("http://localhost:5000/messages", {
         method: "POST",
         headers: {
