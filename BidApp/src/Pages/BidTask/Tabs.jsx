@@ -20,7 +20,8 @@ import AuctionWinner from "./AuctionWinner";
 const tabs = ["History", "Reviews", "Winner", "Share"];
 const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
   console.log("product", product);
-  const [activeTab, setActiveTab] = useState("Item Details");
+  const [activeTab, setActiveTab] = useState("History");
+
   const [studentId, setStudentId] = useState(null);
   //   console.log("student id", studentId);
   //   useEffect(() => {
@@ -33,7 +34,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-3 cursor-pointer text-base lg:text-lg font-semibold transition-all ${
+            className={`px-3 py-3 dark:text-white cursor-pointer text-base lg:text-lg font-semibold transition-all ${
               activeTab === tab
                 ? "border-b-2 border-blue-400 text-blue-500 "
                 : "dark:text-white text-gray-700"

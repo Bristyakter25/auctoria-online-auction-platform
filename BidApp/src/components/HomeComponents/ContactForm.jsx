@@ -41,28 +41,28 @@ const ContactForm = () => {
 
   return (
     <div className="">
-      <h2 className="font-bold text-center  text-5xl pt-10 pb-5">
+      <h2 className="font-bold dark:text-white text-center  text-5xl pt-10 pb-5">
         Get in Touch
       </h2>
       <div className="lg:flex items-center   justify-center p-10">
         <form
           ref={form}
           onSubmit={emailSubmit}
-          className="p-10 rounded-2xl shadow-lg w-full md:w-2/3"
+          className="p-10 rounded-2xl dark:bg-transparent shadow-lg w-full md:w-2/3"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1  md:grid-cols-2 gap-4">
             <input
               type="text"
               name="from_name"
               placeholder="Name"
-              className="input input-bordered w-full rounded-full"
+              className="input dark:bg-gray-800 text-white input-bordered w-full rounded-full"
               required
             />
             <input
               type="email"
               name="from_email"
               placeholder="Email"
-              className="input input-bordered w-full rounded-full"
+              className="input input-bordered dark:bg-gray-800 text-white w-full rounded-full"
               required
             />
           </div>
@@ -70,19 +70,19 @@ const ContactForm = () => {
             type="text"
             name="phone"
             placeholder="Phone"
-            className="input input-bordered w-full rounded-full mt-4"
+            className="input input-bordered dark:bg-gray-800 text-white w-full rounded-full mt-4"
           />
           <textarea
             name="message"
             placeholder="Message"
-            className="textarea textarea-bordered w-full rounded-2xl mt-4"
+            className="textarea textarea-bordered dark:bg-gray-800 text-white w-full rounded-2xl mt-4"
             rows="4"
             required
           ></textarea>
           <div className="flex justify-center mt-4">
             <button
               type="submit"
-              className="px-6 py-2 bg-green-300 text-gray-900 font-semibold rounded-full flex items-center gap-2 hover:bg-green-400 transition"
+              className="px-6 py-2 bg-blue-400 text-gray-900 font-semibold rounded-full flex items-center gap-2 hover:bg-green-400 transition"
             >
               <FaPaperPlane /> Send It!
             </button>
