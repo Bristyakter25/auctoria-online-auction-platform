@@ -28,7 +28,6 @@ const Home = () => {
         <RecentWinner />
 
         <AboutSection></AboutSection>
-        <CategoryCards></CategoryCards>
         <Testimonials></Testimonials>
 
         <AuctionProcess></AuctionProcess>
