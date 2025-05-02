@@ -221,14 +221,15 @@ const AllAuctionCard = ({ auction }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="rounded-3xl relative z-10 cursor-pointer shadow-xl hover:shadow-2xl transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
-    >
+  initial={{ opacity: 0, y: -50 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+  className="rounded-3xl dark:bg-transparent dark:text-white text-black relative z-10 cursor-pointer shadow-md hover:shadow-xl hover:shadow-blue-400 transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
+>
+
       <div className="h-full">
         <img
-          className="object-cover w-full h-[200px] items-center rounded-t-xl relative font-sans"
+          className="object-cover w-full h-[220px] items-center rounded-t-xl relative font-sans"
           src={productImage}
           alt={productName}
         />
@@ -263,8 +264,8 @@ const AllAuctionCard = ({ auction }) => {
         <div className="flex items-center justify-between p-2 ">
           <div>
             {" "}
-            <p>Base Price</p>
-            <p>$ {startingBid}.00</p>
+            <p>Base Price: <span className="text-lg font-semibold">$ {startingBid}.00</span></p>
+            
           </div>
 
           <button
