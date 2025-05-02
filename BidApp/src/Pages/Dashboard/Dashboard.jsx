@@ -66,8 +66,8 @@ const Dashboard = () => {
 
        
 
-        <ul className="menu p-4 w-64 bg-purple-300 dark:bg-[#0C0950] text-black dark:text-white min-h-full space-y-2">
-          <h2 className="text-center font-bold text-2xl text-purple-400  mb-6">
+        <ul className="menu p-4 w-64 bg-[#7886C7] dark:bg-[#0C0950] text-black dark:text-white min-h-full space-y-2">
+          <h2 className="text-center font-bold text-2xl text-[#2D336B]  mb-6">
             Dashboard
           </h2>
 
@@ -123,7 +123,7 @@ const Dashboard = () => {
           {/* Admin Panel */}
           {role === "admin" && (
             <>
-              <h3 className="text-xl text-center font-semibold text-purple-400 pt-4 mb-2">
+              <h3 className="text-xl text-center font-semibold text-[#2D336B] pt-4 mb-2">
                 Admin Panel
               </h3>
               <li>
@@ -192,7 +192,7 @@ const Dashboard = () => {
           {/* Seller Panel */}
           {role === "seller" && (
             <>
-              <h3 className="text-xl text-center pt-4 font-semibold text-purple-400  mb-2">
+              <h3 className="text-xl text-center pt-4 font-semibold text-[#2D336B]  mb-2">
                 Seller Panel
               </h3>
               <li>
@@ -232,7 +232,7 @@ const Dashboard = () => {
           {/* User Panel */}
           {role === "user" && (
             <>
-              <h3 className="text-xl pt-4 font-semibold text-purple-400 text-center mb-2">
+              <h3 className="text-xl pt-4 font-semibold text-[#2D336B] text-center mb-2">
                 User Panel
               </h3>
               <li>
