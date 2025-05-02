@@ -56,10 +56,10 @@ const AddProduct = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="lg:max-w-4xl mx-auto mt-20 p-6 rounded-xl"
+      className="lg:max-w-4xl mx-auto  py-24 rounded-xl"
     >
       <div className="text-center lg:mb-">
-        <h1 className="lg:text-3xl text-2xl font-bold text-gray-600 flex justify-center items-center gap-2">
+        <h1 className="lg:text-3xl text-2xl font-bold dark:text-purple-400 text-gray-600 flex justify-center items-center gap-2">
           <MdAddCircleOutline className="" /> Add New Auction Product
         </h1>
       </div>
@@ -88,7 +88,7 @@ const AddProduct = () => {
             </label>
             <select
               name="category"
-              className="select select-bordered bg-white/10 w-full dark:text-white"
+              className="select select-bordered  bg-white dark:bg-gray-800 w-full dark:text-white"
               required
             >
               <option disabled selected>
@@ -183,7 +183,7 @@ const AddProduct = () => {
             <label className="block font-semibold text-gray-600">Status</label>
             <select
               name="status"
-              className="select select-bordered bg-white/10 w-full dark:text-white"
+              className="select select-bordered bg-white dark:bg-gray-800 w-full dark:text-white"
               required
             >
               <option disabled selected>
