@@ -99,7 +99,7 @@ const FeaturedProductCard = ({ auction }) => {
         </div>
         <div className="card-actions my-12  flex items-center justify-center">
         <button
-  className="btn  w-[260px] bg-blue-300 border-none hover:bg-blue-500 hover:text-white dark:bg-blue-500 dark:hover:bg-blue-700 dark:text-white mt-4 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
+  className="btn  w-[260px] bg-blue-300 border-none hover:bg-blue-600 hover:text-white dark:bg-blue-500 dark:hover:bg-blue-700 dark:text-white mt-4 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
   onClick={() => navigate(`/bid/${_id}`)}
 >
   <span className="mr-2">💰</span> Bid Now!

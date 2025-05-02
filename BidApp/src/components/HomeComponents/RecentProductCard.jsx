@@ -181,7 +181,7 @@ const RecentProductCard = ({ recentProduct }) => {
           </figure>
           <div className="px-2 p-1">
             <div className="h-[170px] my-4  dark:text-white text-gray-700">
-              <h2 className=" text-center my-4 font-bold text-2xl">{productName}</h2>
+              <h2 className=" text-center h-[70px] my-4 font-bold text-2xl">{productName}</h2>
               <p className="mb-3">
                 <span className="font-bold text-lg">Auction Start Date: </span>{" "}
                 {formatDate(auctionStartDate)}

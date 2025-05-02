@@ -76,7 +76,7 @@ const AddProduct = () => {
             <input
               type="text"
               name="productName"
-              className="input input-bordered w-full dark:text-black"
+              className="input input-bordered bg-white/10 dark:text-white  w-full "
               placeholder="Enter product name"
               required
             />
@@ -88,7 +88,7 @@ const AddProduct = () => {
             </label>
             <select
               name="category"
-              className="select select-bordered w-full dark:text-black"
+              className="select select-bordered bg-white/10 w-full dark:text-white"
               required
             >
               <option disabled selected>
@@ -111,7 +111,7 @@ const AddProduct = () => {
             </label>
             <textarea
               name="description"
-              className="textarea textarea-bordered w-full dark:text-black"
+              className="textarea textarea-bordered bg-white/10 w-full dark:text-white"
               placeholder="Enter product description"
               required
             ></textarea>
@@ -124,7 +124,7 @@ const AddProduct = () => {
             <input
               type="number"
               name="startingBid"
-              className="input input-bordered w-full dark:text-black"
+              className="input input-bordered bg-white/10 w-full dark:text-white"
               placeholder="Enter starting bid price"
               required
             />
@@ -137,7 +137,7 @@ const AddProduct = () => {
             <input
               type="datetime-local"
               name="auctionStartDate"
-              className="input input-bordered w-full dark:text-black"
+              className="input input-bordered bg-white/10 w-full dark:text-white"
               required
             />
           </div>
@@ -149,7 +149,7 @@ const AddProduct = () => {
             <input
               type="url"
               name="productImage"
-              className="input input-bordered w-full dark:text-black"
+              className="input input-bordered bg-white/10 w-full dark:text-white"
               placeholder="Enter product image URL"
               required
             />
@@ -161,7 +161,7 @@ const AddProduct = () => {
             <input
               type="datetime-local"
               name="auctionEndTime"
-              className="input input-bordered w-full dark:text-black"
+              className="input input-bordered bg-white/10  w-full dark:text-white"
               required
             />
           </div>
@@ -173,7 +173,7 @@ const AddProduct = () => {
             <input
               type="text"
               name="location"
-              className="input input-bordered w-full dark:text-black"
+              className="input input-bordered bg-white/10 w-full dark:text-white"
               placeholder="Enter auction location"
               required
             />
@@ -183,7 +183,7 @@ const AddProduct = () => {
             <label className="block font-semibold text-gray-600">Status</label>
             <select
               name="status"
-              className="select select-bordered w-full dark:text-black"
+              className="select select-bordered bg-white/10 w-full dark:text-white"
               required
             >
               <option disabled selected>
@@ -207,7 +207,7 @@ const AddProduct = () => {
         <motion.div whileHover={{ scale: 1.02 }} className="mt-6">
           <button
             type="submit"
-            className="btn text-xl bg-teal-400 hover:to-teal-500 text-gray-700 w-full font-semibold"
+            className="btn text-xl dark:bg-blue-500 dark:hover:bg-blue-700 bg-blue-300 hover:to-blue-500 border-none dark:text-white text-gray-700 w-full font-semibold"
           >
             Add to Product
           </button>
