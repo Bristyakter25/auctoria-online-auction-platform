@@ -20,10 +20,10 @@ const Home = () => {
   return (
     <div className="w-full">
       <Banner></Banner>
-      <div className="lg:max-w-7xl mx-auto">
+      <div className="lg:max-w-7xl mx-auto font-sans">
         {/* <EidGreeting /> */}
+        <CategoryCards></CategoryCards>
         <LatestAuctions></LatestAuctions>
-
         <FeaturedProducts></FeaturedProducts>
         <RecentWinner />
 

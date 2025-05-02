@@ -200,12 +200,24 @@ async function run() {
     // });
 
     // Route to get category summary with count & image
+
+    app.get("/products/:categoryName", async (req, res) => {
+      const { categoryName } = req.params;
+      try {
+        const products = await productsCollection
+          .find({ category: categoryName })
+          .toArray();
+        res.send(products);
+      } catch (error) {
+        res.status(500).send({ message: "Error fetching category products" });
+      }
+    });
+
     app.get("/categorySummary", async (req, res) => {
       try {
-        const cursor = productsCollection.find();
-        const products = await cursor.toArray();
+        // const products = await cursor;
 
-        const categories = [
+        const allCategory = [
           "Collectibles",
           "Art",
           "Cars",
@@ -215,17 +227,39 @@ async function run() {
           "Luxury Bags",
           "Electronics",
         ];
-
-        const categorizedData = categories.map((category) => {
-          const items = products.filter((item) => item.category === category);
-          return {
-            category,
-            count: items.length,
-            image: items[0]?.image || null, // assuming each item has an 'image' field
-          };
+        const categoryPipeline = [
+          {
+            $match: {
+              category: { $in: allCategory },
+            },
+          },
+          { $sort: { _id: -1 } },
+          {
+            $group: {
+              _id: "$category",
+              count: { $sum: 1 },
+              image: { $first: "productImage" },
+            },
+          },
+          { $project: { category: "$_id", count: 1, image: 1, _id: 0 } },
+        ];
+        const products = await productsCollection
+          .aggregate(categoryPipeline)
+          .toArray();
+        const finalResult = allCategory.map((category) => {
+          const matchItems = products.find(
+            (item) => item.category === category
+          );
+          return (
+            matchItems || {
+              category: category,
+              count: 0,
+              image: null,
+            }
+          );
         });
 
-        res.send(categorizedData);
+        res.send(finalResult);
       } catch (error) {
         console.error("Error fetching categorized data:", error);
         res.status(500).send({ message: "Server error" });

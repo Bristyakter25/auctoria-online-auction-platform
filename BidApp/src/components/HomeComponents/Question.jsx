@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const faqs = [
   {
-    question: 'How do I place a bid in an auction?',
+    question: "How do I place a bid in an auction?",
     answer:
       'To place a bid, simply log in to your account, go to the auction page, and enter your bid amount. Then, click on the "Place Bid" button.',
   },
   {
-    question: 'Can I cancel a bid after placing it?',
+    question: "Can I cancel a bid after placing it?",
     answer:
-      'No, once a bid is placed, it cannot be cancelled. Please make sure before confirming your bid.',
+      "No, once a bid is placed, it cannot be cancelled. Please make sure before confirming your bid.",
   },
   {
-    question: 'Is there a fee to join an auction?',
+    question: "Is there a fee to join an auction?",
     answer:
-      'Some auctions require a joining fee which will be mentioned on the auction page. Many auctions are free to join.',
+      "Some auctions require a joining fee which will be mentioned on the auction page. Many auctions are free to join.",
   },
   {
-    question: 'How will I know if I’ve won an auction?',
+    question: "How will I know if I’ve won an auction?",
     answer:
-      'If you’re the highest bidder when the auction ends, you’ll receive a notification via email and in your dashboard.',
+      "If you’re the highest bidder when the auction ends, you’ll receive a notification via email and in your dashboard.",
   },
   {
-    question: 'What happens if I win but don’t pay?',
+    question: "What happens if I win but don’t pay?",
     answer:
-      'Failure to pay within the specified time may result in your account being suspended or permanently banned.',
+      "Failure to pay within the specified time may result in your account being suspended or permanently banned.",
   },
 ];
 
@@ -36,13 +36,25 @@ const Question = () => {
   };
 
   return (
-    <section className="bg-white lg:w-[1188px] mt-24 w-[350px] mx-auto dark:bg-transparent">
-      <div className="container px-6 py-12 mx-auto">
-        <h1 className="lg:text-4xl text-3xl  dark:text-[#4D55CC]  font-bold text-center mb-4">
-       Frequently Asked Questions
-        </h1>
+    <div className="max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+      <h1 className="text-4xl font-bold   text-center">
+        Frequently Asked Questions
+      </h1>
+      <h1 className=" mb-20 text-center">
+        Feel free adapt this based on the specific managed services, features
+      </h1>
+      <div className="lg:flex gap-10 items-start">
+        {/* FAQ Image */}
+        <div className="w-full lg:w-1/2 mb-8 lg:mb-0">
+          <img
+            src="https://i.ibb.co.com/nNr8cxL7/cdd20-81-Pk-OTYk-N2-Y-unsplash.jpg"
+            alt="Auction FAQ"
+            className="rounded-lg shadow-md w-full h-96 object-cover"
+          />
+        </div>
 
-        <div className="mt-8 space-y-8 lg:mt-12">
+        {/* FAQ List */}
+        <div className="w-full lg:w-1/2 space-y-4">
           {faqs.map((faq, index) => (
             <div
               key={index}
@@ -59,8 +71,8 @@ const Question = () => {
                 <span
                   className={`rounded-full p-1 ${
                     openIndex === index
-                      ? 'text-gray-400 bg-gray-200'
-                      : 'text-white bg-blue-500'
+                      ? "text-gray-400 bg-gray-200"
+                      : "text-white bg-blue-500"
                   }`}
                 >
                   <svg
@@ -98,7 +110,7 @@ const Question = () => {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

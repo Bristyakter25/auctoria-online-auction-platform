@@ -27,7 +27,11 @@ import ChatBox from "../Pages/BidTask/ChatBox";
 import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInstruction";
 import ContactHome from "../Pages/Contact/ContactHome";
 import SellerProfile from "../SellerProfile/SellerProfile";
+<<<<<<< HEAD
+import CategoryPage from "../Pages/BidTask/CategoryPage";
+=======
 import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
+>>>>>>> a547fa4d4d4b656e50ca48e14f7ff226a71df19c
 
 export const router = createBrowserRouter([
   {
@@ -63,6 +67,10 @@ export const router = createBrowserRouter([
       {
         path: "/sellerProfile/:email",
         element: <SellerProfile />,
+      },
+      {
+        path: "/categoryProduct/:categoryName",
+        element: <CategoryPage />,
       },
     ],
   },
