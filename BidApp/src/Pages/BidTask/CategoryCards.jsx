@@ -33,12 +33,12 @@ const CategoryCards = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl text-center font-bold mb-6">Category Summary</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <h2 className="lg:text-4xl text-3xl mt-24 dark:text-[#4D55CC]  font-bold text-center mb-4">Category Summary</h2>
+      <div className="grid mt-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {categories.map((cat, idx) => (
        <div
        key={idx}
-       className="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-xl hover:bg-green-200 transition duration-300 text-center p-6"
+       className="bg-white dark:bg-[#161179] dark:hover:bg-blue-300 shadow-md rounded-2xl overflow-hidden hover:shadow-xl hover:bg-blue-200 transition duration-300 text-center p-6"
      >
        <div className="mb-4 flex justify-center">
          {categoryIcons[cat.category] || (

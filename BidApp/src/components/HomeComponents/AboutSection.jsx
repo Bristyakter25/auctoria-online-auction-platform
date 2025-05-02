@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const AboutSection = () => {
   return (
-    <section className="w-full px-4 py-20 md:px-20 ">
+    <section className="w-full px-4 py-20 mt-14 md:px-20 ">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
         {/* Left image */}
         <img
@@ -13,7 +13,7 @@ const AboutSection = () => {
         />
 
         {/* Right content */}
-        <div>
+        <div className='dark:text-white'>
           <h2 className="text-4xl font-semibold mb-4">
             Get In <span className="italic text-gray-500">Know</span>
           </h2>
@@ -47,14 +47,14 @@ const AboutSection = () => {
             </div>
           </div>
 
-          <Link to="about-us" className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition">
+          <Link to="about-us" className="bg-blue-400 text-white px-6 py-3 rounded-md hover:bg-green-700 transition">
             About us More →
           </Link>
         </div>
       </div>
 
       {/* Quote/testimonial section */}
-      <div className="max-w-7xl mx-auto mt-20 grid md:grid-cols-2 gap-10 items-center">
+      <div className="max-w-7xl dark:text-white mx-auto mt-20 grid md:grid-cols-2 gap-10 items-center">
         <div className=" p-6 rounded-md border-1-4 border-green-600">
           <p className="italic  mb-2">
             “I work with Alquds John on many projects, he always took aggressive key expectations with his creativity
