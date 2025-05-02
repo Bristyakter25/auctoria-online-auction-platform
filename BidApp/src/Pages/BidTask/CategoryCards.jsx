@@ -43,12 +43,12 @@ const CategoryCards = () => {
   // if (isLoading) return <LoadingSpinner />;
   return (
     <div className="p-6 cursor-pointer">
-      <div className="mb-6">
+      <div className="mb-6 dark:text-[#4D55CC]  text-gray-700">
         {" "}
-        <h2 className="lg:text-4xl text-3xl text-center font-bold mb-3">
+        <h2 className="lg:text-4xl text-3xl text-center font-bold mb-3 ">
           Category Summary
         </h2>
-        <p className=" text-center text-base">
+        <p className=" text-center text-base dark:text-white text-gray-700">
           Discover top picks in this category, place your bids, and win
           limited-time treasures before they’ <br /> re gone. Your next great
           find is just one bid away!
@@ -60,7 +60,7 @@ const CategoryCards = () => {
           <div
             key={idx}
             onClick={() => handleCategoryClick(cat.category)}
-            className="bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-xl hover:bg-blue-200 transition duration-300 text-center p-6"
+            className="bg-white/10 shadow-md rounded-2xl dark:text-white text-gray-700 overflow-hidden hover:shadow-xl hover:bg-blue-200 transition duration-300 text-center p-6"
           >
             <div className="mb-4 flex justify-center">
               {categoryIcons[cat.category] || (
@@ -68,7 +68,7 @@ const CategoryCards = () => {
               )}
             </div>
             <h3 className="text-lg font-semibold">{cat.category}</h3>
-            <p className="text-gray-600">{cat.count} items</p>
+            <p className="">{cat.count} items</p>
           </div>
         ))}
       </div>

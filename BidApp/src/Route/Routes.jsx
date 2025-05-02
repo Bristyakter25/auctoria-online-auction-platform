@@ -80,7 +80,6 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
-
       { path: "manageUsers", element: <ManageUsers></ManageUsers> },
       { path: "analytics", element: <Analytics></Analytics> },
       {
