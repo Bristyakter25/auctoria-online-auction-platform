@@ -34,7 +34,7 @@ const AllAuctions = () => {
   }, [searchTerm, category, allAuctions]);
 
   return (
-    <div >
+    <div>
       <h2 className="lg:text-4xl text-3xl pt-24  dark:text-[#4D55CC]  font-bold text-center mb-4">
         All Auctions
       </h2>
@@ -65,7 +65,7 @@ const AllAuctions = () => {
           <option value="Art">Art</option>
         </select>
       </div>
-      <div className="max-w-7xl dark:bg-transparent gap-x-5 gap-y-10 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ">
+      <div className="max-w-7xl dark:bg-transparent gap-3 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 ">
         <AnimatePresence>
           {filteredAuctions.length > 0 ? (
             filteredAuctions.map((auction, idx) => (
