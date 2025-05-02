@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://bidapp-81c51.web.app", // your frontend on Firebase
-  "http://localhost:5000", // your Render backend itself (needed for self requests)
+  "https://auctoria-online-auction-platform.onrender.com", // your Render backend itself (needed for self requests)
 ];
 
 app.use(

@@ -98,6 +98,9 @@ const FeaturedProductCard = ({ auction }) => {
             {status}
           </p>
         </div>
+        
+
+
         <div className="card-actions mb-3 mt-10 flex items-center justify-center">
           <button
             className="btn  w-[260px] bg-blue-300 border-none hover:bg-blue-500 hover:text-white dark:bg-blue-500 dark:hover:bg-blue-700 dark:text-white rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
@@ -105,6 +108,7 @@ const FeaturedProductCard = ({ auction }) => {
           >
             <span className="mr-2">💰</span> Bid Now!
           </button>
+
         </div>
       </div>
     </div>

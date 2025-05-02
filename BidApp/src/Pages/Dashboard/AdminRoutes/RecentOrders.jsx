@@ -3,12 +3,20 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const fetchOrders = async () => {
+
+ 
+
   const response = await axios.get("http://localhost:5000/payments");
+
   return response.data;
 };
 
 const updateOrderStatus = async ({ orderId, status }) => {
+
+
+
   const response = await axios.patch(`http://localhost:5000/payments/${orderId}`, { status });
+
   return response.data;
 };
 
