@@ -48,44 +48,48 @@ const Banner = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-yellow-100 via-lime-100 to-green-200 h-full border-none py-40 px-16 relative overflow-hidden">
+    <div className="bg-gradient-to-r from-white to-sky-200 dark:from-[#00072D] dark:to-[#001F54] h-full border-none py-40 px-16 relative overflow-hidden">
       {/* Wave bottom */}
       <div className="absolute bottom-0 left-0 w-full h-24">
-        <svg
-          viewBox="0 0 1440 100"
-          className="w-full h-full"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,100 C360,0 1080,0 1440,100 L1440,100 L0,100 Z"
-            fill="white"
-          />
-        </svg>
-      </div>
+  <svg
+    viewBox="0 0 1440 100"
+    className="w-full h-full"
+    preserveAspectRatio="none"
+  >
+    <path
+      d="M0,100 C360,0 1080,0 1440,100 L1440,100 L0,100 Z"
+      className="fill-current text-white dark:text-[#0a0a23] stroke-white dark:stroke-[#0a0a23]"
+    />
+  </svg>
+</div>
+
 
       <div className="lg:w-[1124px] w-[350px] mx-auto gap-x-5 grid grid-cols-1 lg:grid-cols-2 relative z-10">
         {/* Text Content */}
         <div>
-          <h2 className="text-5xl text-black font-extrabold">
+          <h2 className="text-5xl text-black dark:text-white font-extrabold">
             Select Your <br />
-            <span className="text-5xl font-extrabold text-green-600">
+            <span className="text-5xl font-extrabold text-blue-700">
               <span ref={typedRef}></span>
             </span>{" "}
             <br />
             At Our Auction.
           </h2>
-          <p className="mt-10 text-black text-lg">
-            Join us as we carve a path to success, driven by passion, powered by
-            innovation, and we're here to turn them into reality.
-          </p>
-          <div className="flex gap-x-5 mt-36">
+          <p className="mt-10 dark:text-white text-black text-lg">
+  Join us as we carve a path to success — driven by passion, powered by innovation, and fueled by history. 
+  Discover rare collectibles, own a piece of the past, and experience the thrill of bidding in real-time. 
+  Whether you're a seasoned collector or a first-time bidder, our platform brings vintage treasures to your fingertips. 
+  Let every bid bring you closer to something extraordinary.
+</p>
+
+          <div className="flex gap-x-5 mt-10">
             <Link to="/bidInstruction">
-              <button className="btn font-bold bg-green-500 rounded-lg px-8 py-6 hover:bg-green-700 hover:text-white">
+              <button className="btn font-bold bg-[#60B5FF] rounded-lg px-8 py-6 hover:bg-blue-700 hover:text-white">
                 Start A Bid!
               </button>
             </Link>
             <Link to="/allAuctions">
-              <button className="btn font-bold px-8 py-6 bg-green-500 rounded-lg hover:bg-green-700 hover:text-white">
+              <button className="btn font-bold px-8 py-6 bg-[#60B5FF] rounded-lg hover:bg-blue-700 hover:text-white">
                 View All Auction
               </button>
             </Link>

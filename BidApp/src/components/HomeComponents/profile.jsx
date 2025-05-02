@@ -1,208 +1,116 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import { updateProfile } from "firebase/auth";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const { user } = useContext(AuthContext);
-  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.displayName || "",
+    email: user?.email || "",
     photoURL: user?.photoURL || "",
   });
+  const [editMode, setEditMode] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
-    if (!user) return;
-
+  const handleUpdate = async () => {
     try {
-      // Update name and profile picture
       await updateProfile(user, {
         displayName: formData.name,
         photoURL: formData.photoURL,
       });
-
-      console.log("Profile updated successfully");
+      toast.success("Profile updated successfully!");
       setEditMode(false);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      alert(error.message);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update profile.");
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6  shadow-md rounded-lg mt-20">
-      <h2 className="text-xl font-bold mb-4">Profile Settings</h2>
-      <div className="flex flex-col items-center">
-        <img
-          src={formData.photoURL || "/default-profile.png"}
-          alt="Profile"
-          className="w-24 h-24 rounded-full mb-4 object-cover border-2 border-gray-300"
-        />
-        {editMode && (
-          <input
-            type="text"
-            name="photoURL"
-            value={formData.photoURL}
-            onChange={handleChange}
-            placeholder="Profile Picture URL"
-            className="border p-2 w-full mb-2"
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-6">
+      <div className="bg-white dark:bg-gray-900 dark:text-white rounded-xl shadow-md flex w-full max-w-5xl overflow-hidden">
+        {/* Left Panel */}
+        <div className="w-1/3 bg-blue-50 dark:bg-gray-800 p-6 flex flex-col items-center">
+          <img
+            src={formData.photoURL || "/default-profile.png"}
+            alt="User Avatar"
+            className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-md"
           />
-        )}
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700">Name:</label>
-        {editMode ? (
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        ) : (
-          <p className="p-2 border rounded-md">{formData.name}</p>
-        )}
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700">Email:</label>
-        <p className="p-2 border rounded-md ">{user?.email}</p>{" "}
-        {/* Email is non-editable */}
-      </div>
-      <div className="flex justify-end">
-        {editMode ? (
-          <button
-            onClick={handleSave}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-          >
-            Save
-          </button>
-        ) : (
-          <button
-            onClick={() => setEditMode(true)}
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-          >
-            Edit
-          </button>
-        )}
+          {editMode && (
+            <input
+              type="text"
+              name="photoURL"
+              value={formData.photoURL}
+              onChange={handleChange}
+              placeholder="Image URL"
+              className="mt-4 w-full border dark:border-gray-600 p-2 rounded-lg dark:bg-gray-700 dark:text-white"
+            />
+          )}
+          <h2 className="text-xl font-bold mt-4">{formData.name}</h2>
+          <p className="text-gray-500 dark:text-gray-300">{user?.email}</p>
+          <p className="text-sm mt-4 text-gray-600 dark:text-gray-400">
+            Member Since: 01 May 2025
+          </p>
+        </div>
+
+        {/* Right Panel */}
+        <div className="w-2/3 p-8">
+          <h2 className="text-2xl font-bold mb-6">Edit Profile</h2>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Full Name</label>
+              {editMode ? (
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                />
+              ) : (
+                <p className="p-2 border rounded-lg bg-gray-100 dark:bg-gray-700 dark:text-white">
+                  {formData.name}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Email Address</label>
+              <input
+                type="email"
+                value={formData.email}
+                disabled
+                className="w-full bg-gray-100 dark:bg-gray-700 dark:text-white border p-2 rounded-lg cursor-not-allowed"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-end">
+            {editMode ? (
+              <button
+                onClick={handleUpdate}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg"
+              >
+                Update Profile
+              </button>
+            ) : (
+              <button
+                onClick={() => setEditMode(true)}
+                className="bg-gray-700 hover:bg-gray-800 text-white font-semibold px-6 py-2 rounded-lg"
+              >
+                Edit Profile
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Profile;
-
-// import { useContext, useState } from "react";
-// import { AuthContext } from "../../providers/AuthProvider";
-// import { updateProfile, updateEmail } from "firebase/auth";
-
-// const Profile = () => {
-//     const { user } = useContext(AuthContext);
-//     const [editMode, setEditMode] = useState(false);
-//     const [formData, setFormData] = useState({
-//         name: user?.displayName || "",
-//         email: user?.email || "",
-//         photoURL: user?.photoURL || ""
-//     });
-
-//     const handleChange = (e) => {
-//         setFormData({ ...formData, [e.target.name]: e.target.value });
-//     };
-
-//     const handleSave = async () => {
-//         if (!user) return;
-
-//         try {
-//             // Update name and photo URL
-//             await updateProfile(user, {
-//                 displayName: formData.name,
-//                 photoURL: formData.photoURL
-//             });
-
-//             console.log("Profile updated successfully");
-
-//             // Update email separately
-//             if (formData.email !== user.email) {
-//                 await updateEmail(user, formData.email);
-//                 console.log("Email updated successfully");
-//             }
-
-//             setEditMode(false);
-//         } catch (error) {
-//             console.error("Error updating profile:", error);
-//             alert("Failed to update profile. Please try again.");
-//         }
-//     };
-
-//     return (
-//         <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-lg mt-10">
-//             <h2 className="text-xl font-bold mb-4">Profile Settings</h2>
-//             <div className="flex flex-col items-center">
-//                 <img
-//                     src={formData.photoURL || "/default-profile.png"}
-//                     alt="Profile"
-//                     className="w-24 h-24 rounded-full mb-4 object-cover border-2 border-gray-300"
-//                 />
-//                 {editMode && (
-//                     <input
-//                         type="text"
-//                         name="photoURL"
-//                         value={formData.photoURL}
-//                         onChange={handleChange}
-//                         placeholder="Profile Picture URL"
-//                         className="border p-2 w-full mb-2"
-//                     />
-//                 )}
-//             </div>
-//             <div className="mb-4">
-//                 <label className="block text-gray-700">Name:</label>
-//                 {editMode ? (
-//                     <input
-//                         type="text"
-//                         name="name"
-//                         value={formData.name}
-//                         onChange={handleChange}
-//                         className="border p-2 w-full"
-//                     />
-//                 ) : (
-//                     <p className="p-2 border rounded-md">{formData.name}</p>
-//                 )}
-//             </div>
-//             <div className="mb-4">
-//                 <label className="block text-gray-700">Email:</label>
-//                 {editMode ? (
-//                     <input
-//                         type="email"
-//                         name="email"
-//                         value={formData.email}
-//                         onChange={handleChange}
-//                         className="border p-2 w-full"
-//                     />
-//                 ) : (
-//                     <p className="p-2 border rounded-md bg-gray-100">{formData.email}</p>
-//                 )}
-//             </div>
-//             <div className="flex justify-end">
-//                 {editMode ? (
-//                     <button
-//                         onClick={handleSave}
-//                         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-//                     >
-//                         Save
-//                     </button>
-//                 ) : (
-//                     <button
-//                         onClick={() => setEditMode(true)}
-//                         className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-//                     >
-//                         Edit
-//                     </button>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Profile;

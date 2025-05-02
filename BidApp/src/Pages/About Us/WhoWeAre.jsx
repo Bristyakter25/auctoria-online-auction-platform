@@ -8,7 +8,7 @@ function WhoWeAre() {
     <div className="px-4">
      <h2 className="text-4xl font-bold  mb-6">Who We Are</h2>
      <p className=" mb-8">
-      Welcome to Zenfy, where digital innovation meets strategic excellence. As a dynamic force in the realm of digital marketing, we are dedicated to propelling businesses into the spotlight of online success with us for this example.
+      Welcome to Auctoria, where digital innovation meets strategic excellence. As a dynamic force in the realm of digital marketing, we are dedicated to propelling businesses into the spotlight of online success with us for this example.
      </p>
 
      {/* Our Expert Solutions */}

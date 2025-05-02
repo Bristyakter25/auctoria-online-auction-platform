@@ -3,12 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const fetchOrders = async () => {
-  const response = await axios.get("hhttp://localhost:5000/payments");
+  const response = await axios.get("http://localhost:5000/payments");
   return response.data;
 };
 
 const updateOrderStatus = async ({ orderId, status }) => {
-  const response = await axios.patch(`hhttp://localhost:5000/payments/${orderId}`, { status });
+  const response = await axios.patch(`http://localhost:5000/payments/${orderId}`, { status });
   return response.data;
 };
 
@@ -35,32 +35,38 @@ const RecentOrders = () => {
     mutation.mutate({ orderId, status: "cancelled" });
   };
 
-  if (isLoading) return <p>Loading orders...</p>;
-  if (error) return <p>Error fetching orders: {error.message}</p>;
+  if (isLoading) return <p className="text-center dark:text-white">Loading orders...</p>;
+  if (error) return <p className="text-center text-red-500 dark:text-red-400">Error fetching orders: {error.message}</p>;
 
   return (
-    <div>
-      <h2 className="text-3xl mt-5 text-center font-bold mb-4">Recent Orders</h2>
+    <div className="p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">Recent Orders</h2>
+
       {orders.length === 0 ? (
-        <p className="text-center">No recent orders found.</p>
+        <p className="text-center text-gray-700 dark:text-gray-300">No recent orders found.</p>
       ) : (
-        <div className="p-4 overflow-x-auto">
-          <table className="table w-full">
+        <div className="overflow-x-auto">
+          <table className="table w-full text-sm dark:text-white">
             <thead>
-              <tr>
+              <tr className="bg-gray-200 dark:bg-gray-700">
                 <th>#</th>
-                <th className="font-extrabold text-black text-xl">Image</th>
-                <th className="font-extrabold text-black text-xl">Product Name</th>
-                <th className="font-extrabold text-black text-xl">Price</th>
-                <th className="font-extrabold text-black text-xl">Status</th>
-                <th className="font-extrabold text-black text-xl">Date</th>
-                <th className="font-extrabold text-black text-xl">Actions</th>
+                <th className="font-bold text-base">Image</th>
+                <th className="font-bold text-base">Product Name</th>
+                <th className="font-bold text-base">Price</th>
+                <th className="font-bold text-base">Status</th>
+                <th className="font-bold text-base">Date</th>
+                <th className="font-bold text-base">Actions</th>
               </tr>
             </thead>
             <tbody>
               {orders.map((order, index) => (
                 order.products.map((product, productIndex) => (
-                  <tr key={`${order._id}-${product.bidId}`} className={index % 2 === 0 ? "bg-base-200" : ""}>
+                  <tr
+                    key={`${order._id}-${product.bidId}`}
+                    className={`${
+                      index % 2 === 0 ? "bg-gray-100 dark:bg-gray-800" : "bg-white dark:bg-gray-900"
+                    }`}
+                  >
                     <td>{index + 1}.{productIndex + 1}</td>
                     <td>
                       <img
@@ -73,7 +79,9 @@ const RecentOrders = () => {
                     <td className="font-semibold text-[17px]">{product.name}</td>
                     <td className="font-semibold text-[17px]">${order.price}</td>
                     <td className="capitalize font-semibold text-[17px]">{order.status}</td>
-                    <td className="font-semibold text-[17px]">{new Date(order.date).toLocaleString()}</td>
+                    <td className="font-semibold text-[17px]">
+                      {new Date(order.date).toLocaleString()}
+                    </td>
                     <td className="font-semibold text-[17px]">
                       {order.status !== "completed" && order.status !== "cancelled" ? (
                         <>

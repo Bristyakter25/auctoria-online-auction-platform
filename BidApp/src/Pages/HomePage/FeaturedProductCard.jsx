@@ -3,11 +3,17 @@ import { useNavigate } from "react-router-dom";
 
 const FeaturedProductCard = ({ auction }) => {
   const navigate = useNavigate();
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const options = { day: "numeric", month: "long", year: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
   const {
     _id,
     productName,
     productImage,
-    description,
+    auctionStartDate,
     status,
     startingBid,
     auctionEndTime,
@@ -50,14 +56,15 @@ const FeaturedProductCard = ({ auction }) => {
   }, [auctionEndTime]);
 
   return (
-    <div className="card card-compact bg-white shadow-md border rounded-2xl ">
+    <div className="card card-compact border dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]">
       <figure className="relative">
         <img
           src={productImage}
-          className="h-[230px] w-full object-cover relative"
+          className="h-[280px] w-full object-cover relative"
           alt="product"
         />
-        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white text-gray-700 px-2 py-0.5 rounded-full text-sm shadow-md z-10 flex items-center gap-2">
+        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-white  text-gray-700 px-2 py-0.5 rounded-full text-sm shadow-md z-10 flex items-center gap-2">
+          {" "}
           <div className=" px-1 py-0.5 rounded">
             <span className="font-bold">{timeLeft.days}</span> Days
           </div>
@@ -75,12 +82,15 @@ const FeaturedProductCard = ({ auction }) => {
           </div>
         </div>
       </figure>
-      <div className="card-body text-gray-700">
-        <div className="h-[90px] space-y-1">
-          <h2 className="font-bold text-xl h-[80px]">{productName}</h2>
-          {/* <p>{description}</p> */}
-          <p className="flex font-semibold items-center">
-            Starting Bid: 
+      <div className="px-3 dark:text-white text-gray-700">
+        <div className="h-[90px]">
+          <h2 className="font-bold mt-3 text-xl h-[60px]">{productName}</h2>
+          <p className="">
+            <span className="font-semibold text-lg">Auction Start: </span>{" "}
+            {formatDate(auctionStartDate)}
+          </p>
+          <p className="flex font-bold text-lg items-center">
+            Base Price:
             <span className="font-bold text-xl ml-2 "> ${startingBid}</span>
           </p>
           <p className="absolute top-0 right-1 py-0.5 border bg-lime-400 w-20 text-center text-gray-600 dark:text-gray-700 rounded-full">
@@ -88,10 +98,17 @@ const FeaturedProductCard = ({ auction }) => {
             {status}
           </p>
         </div>
-        <div className="card-actions justify-end">
-          <button className="btn bg-green-500 mt-4 text-white rounded-lg hover:bg-green-800" onClick={() => navigate(`/bid/${_id}`)}>
-            Bid Now!
+        
+
+
+        <div className="card-actions mb-3 mt-10 flex items-center justify-center">
+          <button
+            className="btn  w-[260px] bg-blue-300 border-none hover:bg-blue-500 hover:text-white dark:bg-blue-500 dark:hover:bg-blue-700 dark:text-white rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out"
+            onClick={() => navigate(`/bid/${_id}`)}
+          >
+            <span className="mr-2">💰</span> Bid Now!
           </button>
+
         </div>
       </div>
     </div>

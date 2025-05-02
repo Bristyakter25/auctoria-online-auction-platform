@@ -16,7 +16,11 @@ const BidHistory = () => {
     queryKey: ["bidHistory", user?.email],
     queryFn: async () => {
       const res = await axios.get(
-        `hhttp://localhost:5000/bidHistory/${user?.email}`
+
+        
+
+        `http://localhost:5000/bidHistory/${user?.email}`
+
       );
       return res.data;
     },
@@ -25,20 +29,22 @@ const BidHistory = () => {
 
   if (isLoading) return "Loading...";
 
-  // Group bids by productId and keep the latest one
   const latestBidsMap = new Map();
 
   bids.forEach((bid) => {
     const existing = latestBidsMap.get(bid.productId);
     if (!existing || new Date(bid.timestamp) > new Date(existing.timestamp)) {
-      latestBidsMap.set(bid.productId, bid); // keep latest
+      latestBidsMap.set(bid.productId, bid);
     }
   });
 
   const latestBids = Array.from(latestBidsMap.values());
 
   // Calculate total from latest bids only
-  const totalAmountToPay = latestBids.reduce((total, bid) => total + bid.bidAmount, 0);
+  const totalAmountToPay = latestBids.reduce(
+    (total, bid) => total + bid.bidAmount,
+    0
+  );
 
   const handleDelete = async (productId, bidId) => {
     const result = await Swal.fire({
@@ -54,7 +60,7 @@ const BidHistory = () => {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(
-          `hhttp://localhost:5000/deleteBid/${productId}/${bidId}`
+          `hhttps://auctoria-online-auction-platform.onrender.com/deleteBid/${productId}/${bidId}`
         );
         if (res.data.success) {
           Swal.fire({
@@ -75,12 +81,13 @@ const BidHistory = () => {
   };
 
   return (
-    <div className="">
-      <div className="text-center mb-10 py-32 bg-gradient-to-r from-yellow-100 via-white to-yellow-100">
-              <h2 className="text-5xl  font-bold mb-5">Bid History </h2>
+
+    <div className="dark:text-white ">
+      <div className="text-center mb-10  dark:text-white py-32 bg-gradient-to-r from-white to-sky-200 dark:from-[#00072D] dark:to-[#001F54]">
+              <h2 className="text-5xl dark:text-white font-bold mb-5">Bid History </h2>
       
               <div className="flex items-center justify-center gap-x-3 text-center ">
-                <Link to="/" className="text-lg hover:text-green-600">
+                <Link to="/" className="text-lg hover:text-blue-500">
                   Home
                 </Link>
                 <p className="mt-2 ">
@@ -93,13 +100,15 @@ const BidHistory = () => {
       <div className="flex justify-end px-4 items-center mb-6">
         
 
-        <div className="flex items-center gap-4 text-green-700 font-semibold">
+        <div className="flex items-center gap-4 text-blue-500 dark:text-blue-300 font-semibold">
+
+    
           <span>Total Amount to Pay: ${totalAmountToPay.toFixed(2)}</span>
           <Link
             to="/dashboard/pay"
             state={{ totalPrice: totalAmountToPay, cart: latestBids }}
           >
-            <button className="btn bg-green-400 hover:bg-green-700 hover:text-white">
+            <button className="btn bg-blue-400 hover:bg-blue-700 hover:text-white">
               Pay Now!
             </button>
           </Link>
@@ -109,17 +118,17 @@ const BidHistory = () => {
       {latestBids.length === 0 ? (
         <p>No bids found.</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto w-full mx-auto">
           <table className="table-auto w-full border">
-            <thead className="bg-gray-100">
+            <thead className="bg-gray-100 dark:bg-transparent">
               <tr>
-                <th className="border px-4 py-2">Image</th>
-                <th className="border px-4 py-2">Product Name</th>
-                <th className="border px-4 py-2">Name</th>
-                <th className="border px-4 py-2">Email</th>
-                <th className="border px-4 py-2">Amount</th>
-                <th className="border px-4 py-2">Time</th>
-                <th className="border px-4 py-2">Action</th>
+                <th className="border px-4  py-2">Image</th>
+                <th className="border px-4  py-2">Product Name</th>
+                <th className="border px-4  py-2">Name</th>
+                <th className="border px-4  py-2">Email</th>
+                <th className="border px-4  py-2">Amount</th>
+                <th className="border px-4  py-2">Time</th>
+                <th className="border px-4  py-2">Action</th>
               </tr>
             </thead>
             <tbody>

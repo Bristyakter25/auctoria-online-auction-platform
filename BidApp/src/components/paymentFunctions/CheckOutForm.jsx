@@ -104,7 +104,8 @@ const {user} =useContext(AuthContext);
               fontSize: '16px',
               color: '#424770',
               '::placeholder': {
-                color: '#aab7c4',
+                color: '#aab7c4'
+                ,
               },
             },
             invalid: {
@@ -113,11 +114,11 @@ const {user} =useContext(AuthContext);
           },
         }}
       />
-      <button className="btn  bg-green-400 hover:bg-green-700 hover:text-white  my-5" type="submit" disabled={!stripe || !clientSecret}>
+      <button className="btn  bg-blue-400 hover:bg-blue-700 hover:text-white  my-5" type="submit" disabled={!stripe || !clientSecret}>
         Pay
       </button>
       <p className="text-red-600">{error}</p>
-      {transactionId && <p className="text-green-600">Your Transaction Id: {transactionId}</p> }
+      {transactionId && <p className="text-blue-600">Your Transaction Id: {transactionId}</p> }
       {paymentSuccess && (
   <div className="mt-5">
     <h2 className="text-xl font-bold mb-3">Products Paid For:{user.name}</h2>
