@@ -29,20 +29,22 @@ const BidHistory = () => {
 
   if (isLoading) return "Loading...";
 
-  // Group bids by productId and keep the latest one
   const latestBidsMap = new Map();
 
   bids.forEach((bid) => {
     const existing = latestBidsMap.get(bid.productId);
     if (!existing || new Date(bid.timestamp) > new Date(existing.timestamp)) {
-      latestBidsMap.set(bid.productId, bid); // keep latest
+      latestBidsMap.set(bid.productId, bid);
     }
   });
 
   const latestBids = Array.from(latestBidsMap.values());
 
   // Calculate total from latest bids only
-  const totalAmountToPay = latestBids.reduce((total, bid) => total + bid.bidAmount, 0);
+  const totalAmountToPay = latestBids.reduce(
+    (total, bid) => total + bid.bidAmount,
+    0
+  );
 
   const handleDelete = async (productId, bidId) => {
     const result = await Swal.fire({
@@ -81,22 +83,20 @@ const BidHistory = () => {
   return (
     <div className="">
       <div className="text-center mb-10 py-32 bg-gradient-to-r from-yellow-100 via-white to-yellow-100">
-              <h2 className="text-5xl  font-bold mb-5">Bid History </h2>
-      
-              <div className="flex items-center justify-center gap-x-3 text-center ">
-                <Link to="/" className="text-lg hover:text-green-600">
-                  Home
-                </Link>
-                <p className="mt-2 ">
-                  {" "}
-                  <FaLongArrowAltRight />
-                </p>
-                <p className="text-lg ">Bid History</p>
-              </div>
-            </div>
-      <div className="flex justify-end px-4 items-center mb-6">
-        
+        <h2 className="text-5xl  font-bold mb-5">Bid History </h2>
 
+        <div className="flex items-center justify-center gap-x-3 text-center ">
+          <Link to="/" className="text-lg hover:text-green-600">
+            Home
+          </Link>
+          <p className="mt-2 ">
+            {" "}
+            <FaLongArrowAltRight />
+          </p>
+          <p className="text-lg ">Bid History</p>
+        </div>
+      </div>
+      <div className="flex justify-end px-4 items-center mb-6">
         <div className="flex items-center gap-4 text-green-700 font-semibold">
           <span>Total Amount to Pay: ${totalAmountToPay.toFixed(2)}</span>
           <Link

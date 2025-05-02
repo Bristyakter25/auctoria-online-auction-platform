@@ -72,7 +72,7 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
 
   return (
     <div className="w-full lg:flex justify-between gap-4 space-y-3 lg:space-y-0 ">
-      <div className=" lg:w-7/12">
+      <div className=" lg:w-7/12 dark:text-white text-gray-700">
         <h3 className="text-2xl font-semibold mb-4">All Reviews</h3>
         {/* <div className="divider"></div> */}
         {clientReviews.length > 0 ? (
@@ -120,10 +120,10 @@ const SellerReview = ({ sellerEmail, sellerId }) => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500">No reviews yet.</p>
+          <p className="dark:text-white text-gray-700">No reviews yet.</p>
         )}
       </div>
-      <div className="lg:w-5/12 h-[400px] p-6 rounded-xl shadow-lg bg-white/10">
+      <div className="lg:w-5/12 h-[400px] dark:text-white text-gray-700 p-6 rounded-xl shadow-lg bg-white/10">
         <h2 className="text-2xl font-bold mb-4 text-center ">Seller Reviews</h2>
 
         <div className="mb-6">
