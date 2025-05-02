@@ -13,7 +13,7 @@ import { FaHospitalUser } from "react-icons/fa6";
 import { RiAuctionLine } from "react-icons/ri";
 import { BsBox2Heart } from "react-icons/bs";
 import { MdOutlineAddToQueue } from "react-icons/md";
-import { NavLink, Outlet } from "react-router-dom";
+import { Navigate, NavLink, Outlet } from "react-router-dom";
 import useRole from "../../hooks/useRole";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
@@ -26,17 +26,17 @@ const Dashboard = () => {
 
   const handleSignOut = () => {
     signOutUser().then(() => {
-      navigate("/login");
+      Navigate("/login");
     });
   };
 
   return (
-    <div className="drawer lg:drawer-open">
+    <div className="drawer  dark:bg-[#0a0a23] lg:drawer-open">
       {/* Drawer Toggle Checkbox */}
       <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
 
       {/* Main Content */}
-      <div className="drawer-content flex flex-col">
+      <div className="drawer-content  flex flex-col">
         {/* Mobile Toggle Button */}
         <div className="lg:hidden p-4">
           <label htmlFor="dashboard-drawer" className="btn btn-primary">
@@ -45,16 +45,16 @@ const Dashboard = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col ">
+        <div className="flex-1 dark:bg-[#0a0a23] flex flex-col ">
           <div className="p-4 dark:bg-[#0a0a23] bg-white border-b flex justify-between items-center">
             <button className="lg:hidden text-purple-600 text-2xl"></button>
-            <h1 className="text-lg   font-bold dark:text-purple-200">Dashboard</h1>
-            <div className="w-[100px]"> 
+            <h1 className="text-lg font-bold dark:text-purple-200">Dashboard</h1>
+            <div className="w-[100px] "> 
               <ThemeToggle></ThemeToggle>
             </div>
           </div>
 
-          <div className="p-4 dark:bg-[#0a0a23] overflow-auto flex-1">
+          <div className="p-4 dark:bg-[#0a0a23] bg-white overflow-auto flex-1">
             <Outlet />
           </div>
         </div>
@@ -211,9 +211,10 @@ const Dashboard = () => {
                 </NavLink>
               </li>
               
+              
               <li>
                 <NavLink
-                  to="/dashboard/product-history"
+                  to="/dashboard/favoriteSeller"
                   className={({ isActive }) =>
                     `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
                       isActive
@@ -223,7 +224,7 @@ const Dashboard = () => {
                   }
                 >
                   <BsBox2Heart />
-                  <span>Product History</span>
+                  <span>Favorite Seller</span>
                 </NavLink>
               </li>
             </>
@@ -263,6 +264,21 @@ const Dashboard = () => {
                 >
                   <BsBox2Heart />
                   <span>Bid History</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/dashboard/favoriteSeller"
+                  className={({ isActive }) =>
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+                        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+                    }`
+                  }
+                >
+                  <BsBox2Heart />
+                  <span>Favorite Seller</span>
                 </NavLink>
               </li>
               <li>

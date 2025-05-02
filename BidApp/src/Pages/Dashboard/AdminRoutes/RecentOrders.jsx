@@ -3,20 +3,20 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const fetchOrders = async () => {
-<<<<<<< HEAD
-  const response = await axios.get("hhttps://auctoria-online-auction-platform.onrender.com/payments");
-=======
+
+ 
+
   const response = await axios.get("http://localhost:5000/payments");
->>>>>>> 5b9411ef27eb3b90c274432ebd1bc78cd93cd3dd
+
   return response.data;
 };
 
 const updateOrderStatus = async ({ orderId, status }) => {
-<<<<<<< HEAD
-  const response = await axios.patch(`hhttps://auctoria-online-auction-platform.onrender.com/payments/${orderId}`, { status });
-=======
+
+
+
   const response = await axios.patch(`http://localhost:5000/payments/${orderId}`, { status });
->>>>>>> 5b9411ef27eb3b90c274432ebd1bc78cd93cd3dd
+
   return response.data;
 };
 
