@@ -4,7 +4,7 @@ import Marquee from "react-fast-marquee";
 function AuctionProcess() {
   return (
     <div className="py-8  mt-4 dark:bg-transparent">
-      <div className="lg:w-[1224px] w-[350px] mx-auto px-4">
+      <div className="lg:w-[1224px] w-[400px] mx-auto">
         <h2 className="lg:text-4xl text-3xl  dark:text-[#4D55CC]  font-bold text-center mb-4">
           Select Your Product At Our Auction.
         </h2>
