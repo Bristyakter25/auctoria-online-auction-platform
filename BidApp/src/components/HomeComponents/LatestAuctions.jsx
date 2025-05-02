@@ -24,7 +24,7 @@ const LatestAuctions = () => {
           today
         </p>
       </div>
-      <div className="my-5 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-x-6 gap-y-12">
+      <div className="my-5 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-x-6 gap-y-12 mx-3 lg:mx-0">
         {recentProducts.map((recentProduct) => (
           <RecentProductCard
             key={recentProduct._id}

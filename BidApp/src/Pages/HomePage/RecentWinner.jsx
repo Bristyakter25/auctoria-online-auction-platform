@@ -75,40 +75,38 @@ const RecentWinner = () => {
           From bidding to winning – see the latest success stories.
         </p>
       </div>
-      <section className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+      <section className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 mx-3 lg:mx-0">
         {auctionWinner.map((winner) => (
           <article
             key={`${winner.productName}-${winner.winningTime}`}
             className="card card-compact bg-white dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]"
-
           >
             <img
               src={winner.productImage}
               alt={winner.productName}
               className="w-full h-40 object-cover rounded-lg mb-3 transition-transform duration-300 group-hover:scale-105"
-
             />
 
-           <div className="px-4 ">
-           <h3 className="font-semibold my-5 text-center text-2xl dark:text-white text-gray-800 ">
-              {winner.productName}
-            </h3>
+            <div className="px-4 ">
+              <h3 className="font-semibold my-5 text-center text-2xl dark:text-white text-gray-800 ">
+                {winner.productName}
+              </h3>
 
-            <p className="text-lg  text-gray-800 dark:text-white">
-              Winner: <span className="font-medium">{winner.winner}</span>
-            </p>
+              <p className="text-lg  text-gray-800 dark:text-white">
+                Winner: <span className="font-medium">{winner.winner}</span>
+              </p>
 
-            <p className="text-lg text-gray-800 dark:text-white">
-              Winning Bid:{" "}
-              <span className="font-semibold text-blue-500 dark:text-blue-400">
-                ${winner.winningBid}
-              </span>
-            </p>
+              <p className="text-lg text-gray-800 dark:text-white">
+                Winning Bid:{" "}
+                <span className="font-semibold text-blue-500 dark:text-blue-400">
+                  ${winner.winningBid}
+                </span>
+              </p>
 
-            <p className="text-sm my-7 text-white text-center dark:text-black  border px-3 py-1 rounded-full bg-blue-400  dark:bg-blue-300 w-36">
-              {dayjs(winner.winningTime).fromNow()}
-            </p>
-           </div>
+              <p className="text-sm my-7 text-white text-center dark:text-black  border px-3 py-1 rounded-full bg-blue-400  dark:bg-blue-300 w-36">
+                {dayjs(winner.winningTime).fromNow()}
+              </p>
+            </div>
           </article>
         ))}
       </section>
