@@ -254,14 +254,14 @@ const Bid = () => {
   if (!product) return <LoadingSpinner></LoadingSpinner>;
 
   return (
-    <div className="container mx-auto px-4 py-32">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="container dark:bg-transparent mx-auto px-4 py-32">
+      <div className="grid t grid-cols-1 md:grid-cols-2 gap-8">
         {/* Right Side: Images & Thumbnails */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg bg-white/10"
+          className=" p-6 shadow-md  rounded-lg bg-white/10"
         >
           {/* Main Image */}
           <motion.img
@@ -439,12 +439,12 @@ const Bid = () => {
 
               {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                  <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+                  <div className="bg-white dark:bg-black p-6 rounded shadow-md w-full max-w-md">
                     <h3 className="text-xl font-semibold mb-4">
                       Send Message to Seller
                     </h3>
                     <textarea
-                      className="w-full p-2 border rounded mb-4"
+                      className="w-full dark:bg-black p-2 border rounded mb-4"
                       rows={4}
                       placeholder="Write your message..."
                       value={messageText}
