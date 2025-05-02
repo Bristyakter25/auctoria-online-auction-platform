@@ -17,7 +17,7 @@ const PaymentHistory = () => {
       }
 
       try {
-        const res = await fetch(`http://localhost:5000/payments/${userEmail}`);
+        const res = await fetch(`https://auctoria-online-auction-platform.onrender.com/payments/${userEmail}`);
         const data = await res.json();
 
         if (res.ok) {

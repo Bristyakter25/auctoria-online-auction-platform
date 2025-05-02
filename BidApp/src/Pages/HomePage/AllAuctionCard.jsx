@@ -81,7 +81,7 @@ const AllAuctionCard = ({ auction }) => {
     const fetchWishlist = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/wishlist/${userId}`
+          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
         );
 
         const data = await response.json();
@@ -112,7 +112,7 @@ const AllAuctionCard = ({ auction }) => {
     try {
 
       const response = await fetch(
-        "http://localhost:5000/addToWishlist",
+        "https://auctoria-online-auction-platform.onrender.com/addToWishlist",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -134,7 +134,7 @@ const AllAuctionCard = ({ auction }) => {
         refetchWishlist();
 
         const updatedWishlistResponse = await fetch(
-          `http://localhost:5000/wishlist/${userId}`
+          `https://auctoria-online-auction-platform.onrender.com/wishlist/${userId}`
         );
         const updatedData = await updatedWishlistResponse.json();
         const isProductInWishlist = updatedData.wishlist.some(

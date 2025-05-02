@@ -17,7 +17,7 @@ const StatsCards = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:5000/user-stats")
+    fetch("https://auctoria-online-auction-platform.onrender.com/user-stats")
       .then((res) => res.json())
       .then((data) => {
         setStats(data);

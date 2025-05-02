@@ -15,7 +15,7 @@ const UpdateProductInfo = ({ product, onClose, onUpdated }) => {
     e.preventDefault();
 
     fetch(
-      `http://localhost:5000/updateProduct/${product._id}`,
+      `https://auctoria-online-auction-platform.onrender.com/updateProduct/${product._id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

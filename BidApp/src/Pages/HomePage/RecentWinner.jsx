@@ -9,7 +9,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 
 dayjs.extend(relativeTime);
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });

@@ -28,6 +28,8 @@ import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInst
 import ContactHome from "../Pages/Contact/ContactHome";
 import SellerProfile from "../SellerProfile/SellerProfile";
 import AiChat from "../Pages/AiChat/AiChat";
+import CategoryPage from "../Pages/BidTask/CategoryPage";
+import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
 
 export const router = createBrowserRouter([
   {
