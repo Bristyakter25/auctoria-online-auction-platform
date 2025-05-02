@@ -45,10 +45,10 @@ const AllBidHistory = ({ id }) => {
                   transition={{ duration: 0.5 }}
                 >
                   <thead className="bg-blue-400">
-                    <tr>
+                    <tr className="text-gray-700">
                       <th
                         scope="col"
-                        className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-800"
+                        className="py-3.5 px-4 text-sm font-semibold text-left rtl:text-right text-gray-500 dark:text-gray-800"
                       >
                         <button className="flex items-center gap-x-3 focus:outline-none">
                           <span></span>
@@ -56,25 +56,25 @@ const AllBidHistory = ({ id }) => {
                       </th>
                       <th
                         scope="col"
-                        className="px-12 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500 dark:text-gray-800"
+                        className="px-12 py-3.5 text-sm font-normal text-center rtl:text-right "
                       >
                         Bidder Name
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500 dark:text-gray-800"
+                        className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right "
                       >
                         Bid Time
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-800"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right "
                       >
                         Bid Amount
                       </th>
                       <th
                         scope="col"
-                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-800"
+                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right "
                       >
                         License use
                       </th>
@@ -85,9 +85,9 @@ const AllBidHistory = ({ id }) => {
                       <motion.tr
                         key={index}
                         whileHover={{ scale: 1.03 }}
-                        className="hover:bg-gray-100 dark:hover:bg-gray-600 transition-all duration-200"
+                        className="hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white transition-all duration-200"
                       >
-                        <td className="px-4 py-4 text-sm whitespace-nowrap">
+                        <td className="px-4 py-4 text-sm whitespace-nowrap ">
                           <div className="flex items-center">
                             <img
                               className="object-cover w-12 h-12 -mx-1 border-2 border-white rounded-full dark:border-gray-700 shrink-0"
@@ -104,7 +104,7 @@ const AllBidHistory = ({ id }) => {
                           </div>
                         </td>
                         <td className="px-12 py-4 text-sm font-medium whitespace-nowrap text-center">
-                          <div className="inline px-3 py-1 text-sm font-normal text-gray-500 bg-gray-100 rounded-full dark:text-gray-400 gap-x-2 dark:bg-gray-800">
+                          <div className="inline px-3 py-1 text-sm font-normal  bg-gray-100 rounded-full dark:text-gray-400 gap-x-2 dark:bg-gray-800">
                             {formatDate(bid.time)}
                           </div>
                         </td>
