@@ -31,6 +31,7 @@ import AiChat from "../Pages/AiChat/AiChat";
 import CategoryPage from "../Pages/BidTask/CategoryPage";
 import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
 import FavoritePage from "../SellerProfile/FavoriteSeller";
+import ReviewReport from "../Pages/Dashboard/AdminRoutes/ReviewReport";
 
 
 export const router = createBrowserRouter([
@@ -109,6 +110,10 @@ export const router = createBrowserRouter([
         path: "pay",
         element: <Payment></Payment>,
       },
+      {
+        path: "reviewReport",
+        element:<ReviewReport></ReviewReport>
+      }
     ],
   },
 ]);

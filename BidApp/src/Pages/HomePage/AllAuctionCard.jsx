@@ -154,6 +154,21 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
+<<<<<<< HEAD
+      const response = await fetch("http://localhost:5000/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: _id,
+          userEmail: user?.email,
+          userPhoto: user?.photoURL,
+          productImage: productImage,
+          productName: productName,
+      
+          reason: reportReason,
+        }),
+      });
+=======
       const response = await fetch(
         "https://auctoria-online-auction-platform.onrender.com/report",
         {
@@ -166,6 +181,7 @@ const AllAuctionCard = ({ auction }) => {
           }),
         }
       );
+>>>>>>> 8983a9d71b3ac95a5775ade3984b7607c3d25ecf
 
       if (response.ok) {
         Swal.fire({ icon: "success", title: "Reported successfully!" });
@@ -253,16 +269,21 @@ const AllAuctionCard = ({ auction }) => {
           )}
         </div>
 
-        <div className="px-2 h-[80px]">
-          <h2 className="text-lg font-bold mb-1 line-clamp-1">{productName}</h2>
-          <p className="text-sm line-clamp-2">{description}</p>
+        <div className="px-2 h-[150px]">
+          <h2 className="text-lg my-5 text-center font-bold mb-1 line-clamp-1">{productName}</h2>
+          <p className="text-sm line-clamp-2 mt-4 h-[60px] mb-3">{description}</p>
+          <p>Base Price: <span className="text-lg font-semibold">${startingBid}.00</span></p>
         </div>
         <div className="flex items-center justify-between p-2 ">
+<<<<<<< HEAD
+          
+=======
           <div>
             {" "}
             <p>Base Price: </p>
             <p className="text-lg font-semibold">$ {startingBid}.00</p>
           </div>
+>>>>>>> 8983a9d71b3ac95a5775ade3984b7607c3d25ecf
 
           <button
             // onClick={() => navigate(`/SellerProfile/${email}`)}
