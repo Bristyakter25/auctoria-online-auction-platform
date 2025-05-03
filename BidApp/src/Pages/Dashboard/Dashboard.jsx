@@ -13,7 +13,7 @@ import { FaHospitalUser } from "react-icons/fa6";
 import { RiAuctionLine } from "react-icons/ri";
 import { BsBox2Heart } from "react-icons/bs";
 import { MdOutlineAddToQueue } from "react-icons/md";
-import { Navigate, NavLink, Outlet } from "react-router-dom";
+import { Navigate, NavLink, Outlet, useParams } from "react-router-dom";
 import useRole from "../../hooks/useRole";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
@@ -23,6 +23,7 @@ import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
 const Dashboard = () => {
   const [role, isLoading] = useRole();
   const { signOutUser } = useContext(AuthContext);
+  const { sellerId } = useParams();
 
   const handleSignOut = () => {
     signOutUser().then(() => {
@@ -242,6 +243,24 @@ const Dashboard = () => {
                   <span>Product History</span>
                 </NavLink>
               </li>
+
+              <li>
+  <NavLink
+    to={`/dashboard/messages/${sellerId}`}  // Path relative to /dashboard
+    className={({ isActive }) =>
+      `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+        isActive
+          ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+          : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+      }`
+    }
+  >
+    <BsBox2Heart />
+    <span>Messages</span>
+  </NavLink>
+</li>
+
+
             </>
           )}
 

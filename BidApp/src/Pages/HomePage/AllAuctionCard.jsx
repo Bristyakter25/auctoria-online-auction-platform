@@ -154,7 +154,7 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
-<<<<<<< HEAD
+
       const response = await fetch("http://localhost:5000/report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -168,20 +168,9 @@ const AllAuctionCard = ({ auction }) => {
           reason: reportReason,
         }),
       });
-=======
-      const response = await fetch(
-        "https://auctoria-online-auction-platform.onrender.com/report",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            productId: _id,
-            userEmail: user?.email,
-            reason: reportReason,
-          }),
-        }
-      );
->>>>>>> 8983a9d71b3ac95a5775ade3984b7607c3d25ecf
+
+      
+
 
       if (response.ok) {
         Swal.fire({ icon: "success", title: "Reported successfully!" });
@@ -237,7 +226,7 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-3xl dark:bg-transparent dark:text-white text-black relative z-10 cursor-pointer shadow-md hover:shadow-xl hover:shadow-blue-400 transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
+      className="rounded-3xl dark:bg-transparent dark:text-white text-black  z-0 cursor-pointer shadow-md hover:shadow-xl hover:shadow-blue-400 transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
     >
       <div className="h-full">
         <img
@@ -275,16 +264,7 @@ const AllAuctionCard = ({ auction }) => {
           <p>Base Price: <span className="text-lg font-semibold">${startingBid}.00</span></p>
         </div>
         <div className="flex items-center justify-between p-2 ">
-<<<<<<< HEAD
-          
-=======
-          <div>
-            {" "}
-            <p>Base Price: </p>
-            <p className="text-lg font-semibold">$ {startingBid}.00</p>
-          </div>
->>>>>>> 8983a9d71b3ac95a5775ade3984b7607c3d25ecf
-
+ 
           <button
             // onClick={() => navigate(`/SellerProfile/${email}`)}
             onClick={handleFollowing}
@@ -327,19 +307,19 @@ const AllAuctionCard = ({ auction }) => {
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-xl w-80 shadow-lg">
+          <div className="bg-white dark:bg-gray-800 dark:text-white p-6 rounded-xl w-80 shadow-lg">
             <h3 className="text-lg font-semibold mb-2 ">Report this Auction</h3>
             <textarea
               value={reportReason}
               onChange={(e) => setReportReason(e.target.value)}
               placeholder="Enter reason..."
-              className="w-full border rounded-md p-2 text-sm mb-4"
+              className="w-full dark:bg-gray-900  h-[300px] dark:text-white border rounded-md p-2 text-sm mb-4"
               rows={3}
             />
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
+                className="px-3 py-1 text-sm dark:bg-gray-900 dark:text-white bg-gray-200 rounded hover:bg-gray-300"
               >
                 Cancel
               </button>

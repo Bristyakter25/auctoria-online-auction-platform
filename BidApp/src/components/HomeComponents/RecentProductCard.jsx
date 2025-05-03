@@ -183,14 +183,14 @@ const RecentProductCard = ({ recentProduct }) => {
           <div className="px-2 p-1 ">
             <div className="h-[170px] my-2  dark:text-white text-gray-700 px-2 ">
               <h2 className=" h-[60px] font-bold text-2xl">{productName}</h2>
-              <div className="">
+              <div className="my-3">
                 <p className="text-lg font-semibold mb-3">Auction Start:
-                  <span className=""> {formatDate(auctionStartDate)} </span>
+                  <span className="font-normal"> {formatDate(auctionStartDate)} </span>
                  
-                  <p className="text-lg mb-2">Base Price: <span className="text-xl font-semibold"></span>${startingBid}
-                    .00
+                  <p className="text-lg font-medium my-2">Base Price: <span className="text-xl font-bold">${startingBid}
+                  .00</span>
                   </p>
-                  <p className=" text-lg mb-2 font-semibold">Category: <span>{category}</span></p>
+                  <p className=" text-lg mb-2 font-semibold">Category: <span className="font-normal">{category}</span></p>
                 </p>
                 
               </div>
