@@ -115,7 +115,7 @@ const Login = () => {
 
   return (
    
-      <div className="flex-row md:flex w-full  max-w-full min-h-screen   overflow-hidden">
+      <div className="flex-row dark:bg-transparent dark:text-white md:flex w-full  max-w-full min-h-screen   overflow-hidden">
         {/* Left Side Image */}
         <div className="w-full md:w-1/2  mt-16 md:0 ">
           <img
@@ -142,7 +142,7 @@ const Login = () => {
               </label>
               <input
                 type="email"
-                className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-teal-300"
+                className="w-full dark:bg-gray-900 dark:text-white px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-teal-300"
                 placeholder="Enter your email"
                 name="email"
                 required
@@ -154,7 +154,7 @@ const Login = () => {
               </label>
               <input
                 type="password"
-                className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-teal-300"
+                className="w-full px-4 dark:bg-gray-900 dark:text-white py-3 mt-1 border rounded-md focus:outline-none focus:ring-1 focus:ring-teal-300"
                 placeholder="Enter your password"
                 name="password"
                 required
@@ -162,28 +162,28 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className="w-full px-4 py-3 text-black bg-teal-300 rounded-md hover:bg-teal-400 text-lg font-semibold"
+              className="w-full px-4  py-3 text-black bg-sky-400 rounded-md hover:bg-teal-400 text-lg font-semibold"
             >
               Login
             </button>
           </form>
           <div className="flex items-center justify-between mt-4">
             <hr className="w-1/3 border-gray-300" />
-            <span className="text-gray-500">or</span>
+            <span className="text-gray-400">or</span>
             <hr className="w-1/3 border-gray-300" />
           </div>
           <SocialLogin />
-          <p className="mt-4 text-sm text-center text-gray-600">
+          <p className="mt-4 dark:text-white text-sm text-center text-gray-600">
             Don't have an account?{" "}
             <Link
               to="/signup"
-              className="text-teal-600 hover:underline font-semibold"
+              className="text-sky-600 text-lg hover:underline font-semibold"
             >
               Sign up
             </Link>
-            <Link to="/forgot-password">Forget Password?</Link>
+            {/* <Link to="/forgot-password">Forget Password?</Link> */}
           </p>
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex  flex-col items-center justify-center">
             <GoToHomeButton />
           </div>
         </motion.div>

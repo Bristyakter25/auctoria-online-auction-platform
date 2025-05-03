@@ -148,11 +148,11 @@ const Navbar = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <Link to="/login" className="hover:text-indigo-500">
+            <div className="flex dark:text-white  items-center gap-2">
+              <Link to="/login" className="hover:text-indigo-500 dark:hover:text-blue-400">
                 Login
               </Link>
-              <Link to="/signup" className="hover:text-indigo-500">
+              <Link to="/signup" className="hover:text-indigo-500 dark:hover:text-blue-400">
                 Register
               </Link>
             </div>
