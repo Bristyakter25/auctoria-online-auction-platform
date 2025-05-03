@@ -936,109 +936,16 @@ app.delete('/products/:id', async (req, res) => {
       }
     });
 
-    // app.post("/messages", async (req, res) => {
-    //   const { sender, receiver, message, productId } = req.body;
-
-    //   if (!sender || !receiver || !message || !productId) {
-    //     return res.status(400).send({ error: "Missing required fields" });
-    //   }
-
-    //   const chatMessage = {
-    //     sender,
-    //     receiver,
-    //     message,
-    //     productId,
-    //     timestamp: new Date(),
-    //     read: false,
-    //   };
-
-    //   try {
-    //     const result = await messagesCollection.insertOne(chatMessage);
-    //     io.to(receiver).emit("receiveMessage", chatMessage); // Optional socket emit
-    //     res.send(result);
-    //   } catch (error) {
-    //     console.error("Message store error:", error);
-    //     res.status(500).send({ error: "Failed to send message" });
-    //   }
-    // });
-
-    // app.get(
-    //   "/messages/:productId/:userEmail/:otherUserEmail",
-    //   async (req, res) => {
-    //     const { productId, userEmail, otherUserEmail } = req.params;
-
-    //     try {
-    //       const messages = await messagesCollection
-    //         .find({
-    //           productId,
-    //           $or: [
-    //             { sender: userEmail, receiver: otherUserEmail },
-    //             { sender: otherUserEmail, receiver: userEmail },
-    //           ],
-    //         })
-    //         .sort({ timestamp: 1 })
-    //         .toArray();
-
-    //       res.send(messages);
-    //     } catch (error) {
-    //       res.status(500).send({ error: "Failed to fetch messages" });
-    //     }
-    //   }
-    // );
-
-    // about automatic send end time of bid to the bidder Users
-    app.get(
-      "/messages/:productId/:userEmail/:otherUserEmail",
-      async (req, res) => {
-        const { productId, userEmail, otherUserEmail } = req.params;
-
-        try {
-          const messages = await messageCollection
-            .find({
-              productId,
-              $or: [
-                { senderId: userEmail, receiverId: otherUserEmail },
-                { senderId: otherUserEmail, receiverId: userEmail },
-              ],
-            })
-            .sort({ timestamp: 1 })
-            .toArray();
-
-          res.send(messages);
-        } catch (error) {
-          res.status(500).send({ error: "Failed to fetch messages" });
-        }
-      }
-    );
-    // app.get("/messages/:productId/:userEmail/:otherUserEmail", async (req, res) => {
-    //   const { productId, userEmail, otherUserEmail } = req.params;
-
-    //   try {
-    //     const messages = await messagesCollection
-    //       .find({
-    //         productId,
-    //         $or: [
-    //           { sender: userEmail, receiver: otherUserEmail },
-    //           { sender: otherUserEmail, receiver: userEmail },
-    //         ],
-    //       })
-    //       .sort({ timestamp: 1 })
-    //       .toArray();
-
-    //     res.send(messages);
-    //   } catch (error) {
-    //     res.status(500).send({ error: "Failed to fetch messages" });
-    //   }
-    // });
-
     // chat with seller
     app.post("/messages", async (req, res) => {
       const { senderId, receiverId, productId, message } = req.body;
-
+    
+      // Check if all required fields are provided
       if (!senderId || !receiverId || !productId || !message) {
         return res.status(400).send({ error: "Missing fields" });
       }
-
+    
+      // Construct the new message object
       const newMessage = {
         senderId,
         receiverId,
@@ -1046,15 +953,123 @@ app.delete('/products/:id', async (req, res) => {
         message,
         timestamp: new Date(),
       };
-
+    
       try {
+        // Insert the new message into MongoDB
         const result = await messageCollection.insertOne(newMessage);
-        res.send(result);
+    
+        // Send back the inserted message (you could include the inserted ID here as well)
+        res.status(201).send({
+          message: "Message sent successfully",
+          data: { ...newMessage, _id: result.insertedId },
+        });
       } catch (error) {
         console.error("Error inserting message:", error);
         res.status(500).send({ error: "Server error while saving message" });
       }
     });
+
+    // GET /messages?senderId=abc&receiverId=xyz&productId=123
+    // GET /messages?senderId=abc&receiverId=xyz&productId=123
+// app.get("/messages", async (req, res) => {
+//   const { senderId, receiverId, productId } = req.query;
+
+//   try {
+//     // Query for messages based on the senderId, receiverId, and productId
+//     const messages = await messageCollection
+//       .find({
+//         productId,
+//         $or: [
+//           { senderId, receiverId },
+//           { senderId: receiverId, receiverId: senderId }
+//         ]
+//       })
+//       .sort({ timestamp: 1 }) // Ensure the messages are sorted by timestamp
+//       .toArray(); // Convert the cursor to an array
+
+//     res.json(messages);
+//   } catch (err) {
+//     console.error("Error fetching messages:", err);
+//     res.status(500).json({ error: "Error fetching messages" });
+//   }
+// });
+
+    
+    // GET /messages
+app.get("/messages", async (req, res) => {
+  try {
+    // Fetch all messages from the collection
+    const messages = await messageCollection
+      .find({})
+      .sort({ timestamp: 1 }) // Sort by timestamp (ascending)
+      .toArray(); // Convert cursor to array
+
+    res.json(messages);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+    res.status(500).json({ error: "Error fetching messages" });
+  }
+});
+
+app.get("/messages/:sellerId", async (req, res) => {
+  const { sellerId } = req.params; // Capture the sellerId from the URL parameter
+
+  if (!sellerId) {
+    return res.status(400).json({ error: "Seller ID is required" });
+  }
+
+  try {
+    // Fetch messages where the receiverId matches the seller's ID
+    const messages = await messageCollection
+      .find({ receiverId: sellerId }) // Query where receiverId is the seller's ID
+      .sort({ timestamp: 1 }) // Sort messages by timestamp (oldest first)
+      .toArray(); // Convert the cursor to an array
+
+    // Return the fetched messages
+    res.json(messages);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+    res.status(500).json({ error: "Error fetching messages" });
+  }
+});
+
+
+
+
+    // app.get("/messages", async (req, res) => {
+    //   const { senderId, receiverId, productId, sellerId } = req.query; // Get query parameters from the URL
+    
+    //   // Ensure required parameters are provided
+    //   if (!senderId || !receiverId || !productId || !sellerId) {
+    //     return res.status(400).send({ error: "Missing fields" });
+    //   }
+    
+    //   try {
+    //     // Retrieve messages from the database for the seller
+    //     const messages = await messageCollection.find({
+    //       productId,
+    //       $or: [
+    //         { senderId: sellerId, receiverId },
+    //         { senderId: receiverId, receiverId: sellerId }
+    //       ]
+    //     }).toArray(); // Fetch all messages where either senderId or receiverId matches the sellerId
+    
+    //     if (messages.length === 0) {
+    //       return res.status(404).send({ error: "No messages found" });
+    //     }
+    
+    //     // Return the messages
+    //     res.status(200).send({ messages });
+    //   } catch (error) {
+    //     console.error("Error retrieving messages:", error);
+    //     res.status(500).send({ error: "Server error while retrieving messages" });
+    //   }
+    // });
+    
+
+
+    
+
 
     // about automatic send end time of bid to the bidder Users
     const AuctionEndingTimer = async () => {
