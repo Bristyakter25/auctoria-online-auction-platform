@@ -186,6 +186,21 @@ const Dashboard = () => {
                   <span>Review & Feedback</span>
                 </NavLink>
               </li>
+              <li>
+                <NavLink
+                  to="/dashboard/reviewReport"
+                  className={({ isActive }) =>
+                    `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+                        : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+                    }`
+                  }
+                >
+                  <FaCommentDots />
+                  <span>Manage Report</span>
+                </NavLink>
+              </li>
             </>
           )}
 
