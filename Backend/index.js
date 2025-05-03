@@ -95,14 +95,14 @@ async function run() {
     });
     //middleware
     const verifyToken = (req, res, next) => {
-      console.log("inside verify token", req.headers);
+      // console.log("inside verify token", req.headers);
       if (!req.headers.authorization) {
-        return res.status(401).send({ message: "forbidden access" });
+        return res.status(401).send({ message: "unauthorized access" });
       }
       const token = req.headers.authorization.split(" ")[1];
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-          return res.status(401).send({ message: "forbidden access" });
+          return res.status(401).send({ message: "unauthorized access" });
         }
         req.decoded = decoded;
         next();
@@ -153,13 +153,29 @@ async function run() {
       // console.log( user?.role);
       res.send({ role: user?.role });
     });
-    app.get("/users", verifyToken, async (req, res) => {
+    app.get("/users", verifyToken, verifyAdmin, async (req, res) => {
       try {
         const result = await usersCollection.find().toArray();
         res.json(result);
       } catch (error) {
         res.status(500).json({ message: "Error fetching products", error });
       }
+    });
+
+    app.get("/user/admin/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      if (email !== req.decoded.email) {
+        return res.status(403).send({ message: "Forbiddend Access" });
+      }
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      let admin = false;
+      let seller = false;
+      if (user) {
+        admin = user?.role === "admin";
+        seller = user?.role === "seller";
+      }
+      res.send({ admin, seller });
     });
 
     // 🛠 Get Recent Products (Limited to 4)
@@ -268,7 +284,7 @@ async function run() {
     });
 
     // 🛠 Add Product
-    app.post("/addProducts", async (req, res) => {
+    app.post("/addProducts", verifyToken, verifySeller, async (req, res) => {
       const productData = req.body;
       try {
         if (!productData) {
@@ -373,12 +389,10 @@ async function run() {
         }
 
         // Send a success response
-        res
-          .status(200)
-          .json({
-            message: "Product deleted successfully",
-            deletedCount: result.deletedCount,
-          });
+        res.status(200).json({
+          message: "Product deleted successfully",
+          deletedCount: result.deletedCount,
+        });
       } catch (error) {
         console.error("Error deleting product:", error);
         res.status(500).json({ message: "Error deleting product", error });
@@ -1095,7 +1109,7 @@ async function run() {
       }
     });
 
-    app.patch("/reviews/:id", async (req, res) => {
+    app.patch("/reviews/:id", verifyToken, verifyAdmin, async (req, res) => {
       const { id } = req.params;
       const { adminReply } = req.body;
 
