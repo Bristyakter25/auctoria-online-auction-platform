@@ -87,7 +87,7 @@ const BidHistory = () => {
               <h2 className="text-5xl dark:text-white font-bold mb-5">Bid History </h2>
       
               <div className="flex items-center justify-center gap-x-3 text-center ">
-                <Link to="/" className="text-lg hover:text-green-600">
+                <Link to="/" className="text-lg hover:text-blue-500">
                   Home
                 </Link>
                 <p className="mt-2 ">

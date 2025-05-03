@@ -6,13 +6,13 @@ const WishListCard = ({ wishListProduct }) => {
     wishListProduct;
   return (
     <div>
-      <div className="card card-compact bg-base-100 lg:w-[390px] shadow-xl">
+      <div className="card dark:bg-transparent card-compact bg-base-100 lg:w-[390px] shadow-xl">
         <figure>
           <img src={productImage} className="w-full h-[250px]" alt="Shoes" />
         </figure>
-        <div className="card-body">
+        <div className="card-body  dark:text-white">
           <h2 className="text-2xl font-bold h-[70px]">{productName}</h2>
-          <p className="h-[150px]">{description}</p>
+          <p className="h-[100px]">{description}</p>
           <p>
             Starting Bid:{" "}
             <span className="text-2xl font-bold"> {startingBid}</span>

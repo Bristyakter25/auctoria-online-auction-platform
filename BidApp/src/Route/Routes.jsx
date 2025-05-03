@@ -68,7 +68,7 @@ export const router = createBrowserRouter([
       {
         path: "/sellerProfile/:email",
         element: <SellerProfile />,
-      },
+    },
       {
         path: "/categoryProduct/:categoryName",
         element: <CategoryPage></CategoryPage>

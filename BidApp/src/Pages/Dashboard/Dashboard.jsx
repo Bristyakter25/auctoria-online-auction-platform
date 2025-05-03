@@ -214,7 +214,7 @@ const Dashboard = () => {
               
               <li>
                 <NavLink
-                  to="/dashboard/favoriteSeller"
+                  to="/dashboard/product-history"
                   className={({ isActive }) =>
                     `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
                       isActive
@@ -224,7 +224,7 @@ const Dashboard = () => {
                   }
                 >
                   <BsBox2Heart />
-                  <span>Favorite Seller</span>
+                  <span>Product History</span>
                 </NavLink>
               </li>
             </>

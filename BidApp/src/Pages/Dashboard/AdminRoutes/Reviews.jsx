@@ -71,14 +71,14 @@ const Reviews = () => {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-5 dark:bg-gray-800 dark:text-white">
       <h2 className="text-3xl font-bold text-center mb-6">User Reviews</h2>
       {reviews.length === 0 ? (
         <p className="text-center text-lg">No reviews found.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="table w-full">
-            <thead>
+          <table className="table w-full text-black dark:text-white">
+            <thead className="bg-gray-200 dark:text-white dark:bg-gray-700">
               <tr>
                 <th>#</th>
                 <th className="font-bold text-lg">User</th>
@@ -92,7 +92,9 @@ const Reviews = () => {
               {reviews.map((review, index) => (
                 <tr
                   key={review._id}
-                  className={index % 2 === 0 ? "bg-base-200" : ""}
+                  className={
+                    index % 2 === 0 ? "bg-white dark:bg-gray-600" : "bg-gray-100 dark:bg-gray-700"
+                  }
                 >
                   <td>{index + 1}</td>
                   <td>{review.reviewerName || "Anonymous"}</td>
@@ -101,9 +103,7 @@ const Reviews = () => {
                       <span
                         key={i}
                         className={
-                          i < review.rating
-                            ? "text-yellow-400"
-                            : "text-gray-300"
+                          i < review.rating ? "text-yellow-400" : "text-gray-300"
                         }
                       >
                         ★
@@ -149,12 +149,10 @@ const Reviews = () => {
       {/* Modal */}
       {replyModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <h3 className="text-xl font-semibold mb-4">
-              Reply to {replyModal.name || "User"}
-            </h3>
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative dark:bg-gray-800">
+            <h3 className="text-xl font-semibold mb-4">Reply to {replyModal.name || "User"}</h3>
             <textarea
-              className="textarea textarea-bordered w-full mb-4"
+              className="textarea textarea-bordered w-full mb-4 dark:bg-gray-600 dark:text-white"
               rows="4"
               placeholder="Enter your reply here..."
               value={replyMessage}
