@@ -31,7 +31,7 @@ import AiChat from "../Pages/AiChat/AiChat";
 import CategoryPage from "../Pages/BidTask/CategoryPage";
 import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
 import FavoritePage from "../SellerProfile/FavoriteSeller";
-
+import SellerRoutes from "../privateRoutes/SellerRoutes";
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/aiChat", element: <AiChat/> },
+      { path: "/aiChat", element: <AiChat /> },
       { path: "about-us", element: <AboutHome></AboutHome> },
       { path: "contact-home", element: <ContactHome></ContactHome> },
 
@@ -47,7 +47,14 @@ export const router = createBrowserRouter([
 
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Register /> },
-      { path: "/addProduct", element: <AddProduct /> },
+      {
+        path: "/addProduct",
+        element: (
+          <SellerRoutes>
+            <AddProduct />{" "}
+          </SellerRoutes>
+        ),
+      },
       { path: "bid-history", element: <BidHistory></BidHistory> },
 
       { path: "/allAuctions", element: <AllAuctions /> },
@@ -68,10 +75,10 @@ export const router = createBrowserRouter([
       {
         path: "/sellerProfile/:email",
         element: <SellerProfile />,
-    },
+      },
       {
         path: "/categoryProduct/:categoryName",
-        element: <CategoryPage></CategoryPage>
+        element: <CategoryPage></CategoryPage>,
       },
     ],
   },
@@ -96,8 +103,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "favoriteSeller",
-        element: <SellerProfile></SellerProfile>
-
+        element: <SellerProfile></SellerProfile>,
       },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
