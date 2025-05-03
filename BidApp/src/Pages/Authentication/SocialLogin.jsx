@@ -59,7 +59,7 @@ const SocialLogin = () => {
     <div className="w-full mx-auto flex flex-col items-center mt-4">
       <button
         onClick={handleGoogleSignIn}
-        className="w-full px-4 py-3 text-black bg-teal-300 rounded-md hover:bg-teal-400 text-lg font-semibold flex items-center justify-center gap-2"
+        className="w-full px-4 py-3 text-black bg-sky-300 rounded-md hover:bg-sky-400 text-lg font-semibold flex items-center justify-center gap-2"
       >
         <span>
           <FaGoogle />
