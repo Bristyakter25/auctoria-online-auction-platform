@@ -22,13 +22,12 @@ const Home = () => {
       <Banner></Banner>
       <div className="lg:max-w-7xl mx-auto font-sans">
         {/* <EidGreeting /> */}
-        <CategoryCards></CategoryCards>
         <LatestAuctions></LatestAuctions>
+        <CategoryCards></CategoryCards>
         <FeaturedProducts></FeaturedProducts>
         <RecentWinner />
 
         <AboutSection></AboutSection>
-        <CategoryCards></CategoryCards>
         <Testimonials></Testimonials>
 
         <AuctionProcess></AuctionProcess>

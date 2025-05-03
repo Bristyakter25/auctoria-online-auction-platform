@@ -26,25 +26,40 @@ const Navbar = () => {
 
   const navLinks = (
     <>
-      <NavLink to="/" className="hover:text-blue-500 block py-1">
+      <NavLink to="/" className="hover:text-blue-500 block py-1 text-lg">
         Home
       </NavLink>
-      <NavLink to="/allAuctions" className="hover:text-blue-500 block py-1">
+      <NavLink
+        to="/allAuctions"
+        className="hover:text-blue-500 block text-lg py-1"
+      >
         Auctions
       </NavLink>
-      <NavLink to="/addProduct" className="hover:text-blue-500 block py-1">
+      <NavLink
+        to="/addProduct"
+        className="hover:text-blue-500 block text-lg py-1"
+      >
         Add Product
       </NavLink>
-      <NavLink to="/bid-history" className="hover:text-blue-500 block py-1">
+      <NavLink to="/aiChat" className="hover:text-blue-500 block text-lg py-1">
+        Ask Ai
+      </NavLink>
+      <NavLink
+        to="/bid-history"
+        className="hover:text-blue-500 block text-lg py-1"
+      >
         Bid History
       </NavLink>{" "}
-      <NavLink to="contact-home" className="hover:text-blue-500 block py-1">
+      <NavLink
+        to="contact-home"
+        className="hover:text-blue-500 block text-lg py-1"
+      >
         Contact Us
       </NavLink>
       {user && (
         <NavLink
           to="/dashboard/auctionChart"
-          className="hover:text-blue-500 block py-1"
+          className="hover:text-blue-500 block text-lg py-1"
         >
           Dashboard
         </NavLink>
@@ -54,7 +69,6 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-gradient-to-r from-white to-sky-200 dark:from-[#00072D] dark:to-[#001F54]">
-
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-2">
@@ -68,15 +82,15 @@ const Navbar = () => {
         </div>
 
         {/* Right Side for Desktop */}
-       
+
         <div className="hidden md:flex items-center gap-4">
-
-        <div className=" text-xl">
-                <ThemeToggle></ThemeToggle>
-              </div>
-          <NotificationBell user={user} className="dark:bg-black bg-white dark:text-white text-black"/>
-
-          
+          <div className=" text-xl">
+            <ThemeToggle></ThemeToggle>
+          </div>
+          <NotificationBell
+            user={user}
+            className="dark:bg-black bg-white dark:text-white text-black"
+          />
 
           <Link
             to="/wishlist"
@@ -84,10 +98,7 @@ const Navbar = () => {
           >
             <IoMdHeartEmpty
               size={24}
-
               className="text-gray-700 dark:text-white hover:text-blue-500"
-
-              
             />
             {wishlist.length > 0 && (
               <span className="absolute -top-0 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
@@ -123,7 +134,6 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-              
             </div>
           ) : (
             <div className="flex items-center gap-2">
@@ -160,10 +170,10 @@ const Navbar = () => {
           >
             {navLinks}
             <div className="flex items-center  gap-3 mt-3">
-
-              <NotificationBell user={user} className="text-gray-600 dark:bg-black bg-white dark:text-white" />
-
-       
+              <NotificationBell
+                user={user}
+                className="text-gray-600 dark:bg-black bg-white dark:text-white"
+              />
 
               <Link
                 to="/wishlist"

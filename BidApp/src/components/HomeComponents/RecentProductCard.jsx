@@ -145,8 +145,7 @@ const RecentProductCard = ({ recentProduct }) => {
   return (
     <>
       {status === "upcoming" || status === "live" ? (
-        <div className="card card-compact bg-white dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]">
-
+        <div className="card card-compact border dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]">
           <figure className="relative">
             <img
               className="w-full h-[280px]  rounded-xl"
@@ -179,21 +178,27 @@ const RecentProductCard = ({ recentProduct }) => {
               </div>
             </div>
           </figure>
-          <div className="px-2 p-1">
-            <div className="h-[170px] my-4  dark:text-white text-gray-700">
-              <h2 className=" text-center my-4 font-bold text-2xl">{productName}</h2>
-              <p className="mb-3">
-                <span className="font-bold text-lg">Auction Start Date: </span>{" "}
-                {formatDate(auctionStartDate)}
-              </p>
-              <p className="mb-3 text-2xl font-semibold">
-                <span className="font-bold text-lg">Starting Bid: </span>${startingBid}
-              </p>
-              <p className="mb-3">
-                <span className="font-bold text-lg">Category: </span>${category}
-              </p>
+
+          
+          <div className="px-2 p-1 ">
+            <div className="h-[170px] my-2  dark:text-white text-gray-700 px-2 ">
+              <h2 className=" h-[60px] font-bold text-xl">{productName}</h2>
+              <div className="">
+                <p className="mb-2 font-semibold">
+                  <span className=" text-lg">Auction Start: </span>{" "}
+                  {formatDate(auctionStartDate)}
+                </p>
+                <div className="flex justify-between">
+                  <p className="mb-1 text-xl font-semibold flex flex-col">
+                    <span className="text-lg">Base Price: </span>${startingBid}
+                    .00
+                  </p>
+                  <p className="mb-1 text-lg font-semibold">{category}</p>
+                </div>
+              </div>
+
             </div>
-            <div className="flex justify-between p-3">
+            <div className="flex justify-between">
               <button
                 className="text-white w-10 h-10 hover:bg-gray-100 border rounded-full flex items-center justify-center"
                 onClick={handleAddToWishlist}
@@ -210,7 +215,7 @@ const RecentProductCard = ({ recentProduct }) => {
               </button>
               <button
                 className="w-10 h-10 border rounded-full flex items-center justify-center hover:bg-gray-100"
-                onClick={() => navigate(`/bid/${_id}`)}
+                onClick={() => navigate(`/bid/${_id})`)}
               >
                 <IoEye size={20} className="text-gray-600" />
               </button>

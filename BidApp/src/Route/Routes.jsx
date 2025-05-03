@@ -27,8 +27,11 @@ import ChatBox from "../Pages/BidTask/ChatBox";
 import BidInstruction from "../components/HomeComponents/BannerFunctions/BidInstruction";
 import ContactHome from "../Pages/Contact/ContactHome";
 import SellerProfile from "../SellerProfile/SellerProfile";
+import AiChat from "../Pages/AiChat/AiChat";
+import CategoryPage from "../Pages/BidTask/CategoryPage";
 import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
-import CategoryCards from "../Pages/BidTask/CategoryCards";
+import FavoritePage from "../SellerProfile/FavoriteSeller";
+
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +39,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/aiChat", element: <AiChat/> },
       { path: "about-us", element: <AboutHome></AboutHome> },
       { path: "contact-home", element: <ContactHome></ContactHome> },
 
@@ -67,7 +71,7 @@ export const router = createBrowserRouter([
     },
       {
         path: "/categoryProduct/:categoryName",
-        element: <CategoryCards />,
+        element: <CategoryPage></CategoryPage>
       },
     ],
   },
@@ -80,7 +84,6 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "auctionChart", element: <AuctionChart /> },
-
       { path: "manageUsers", element: <ManageUsers></ManageUsers> },
       { path: "analytics", element: <Analytics></Analytics> },
       {
@@ -91,12 +94,17 @@ export const router = createBrowserRouter([
         path: "reviews",
         element: <Reviews></Reviews>,
       },
+      {
+        path: "favoriteSeller",
+        element: <SellerProfile></SellerProfile>
+
+      },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
       { path: "product-history", element: <ProductHistory></ProductHistory> },
       { path: "paymentHistory", element: <PaymentHistory></PaymentHistory> },
       { path: "profile", element: <Profile /> },
-    
+
       {
         path: "pay",
         element: <Payment></Payment>,

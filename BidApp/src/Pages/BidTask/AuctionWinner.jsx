@@ -40,18 +40,16 @@ const AuctionWinner = ({ product }) => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="bg-white rounded-2xl shadow-lg border  p-6 w-full max-w-2xl mx-auto hover:shadow-xl duration-300"
+          className="bg-white/10  rounded-2xl shadow-lg border  p-6 w-full max-w-2xl mx-auto hover:shadow-xl duration-300"
         >
           <div className="flex items-center mb-4 justify-between">
             <div className="flex items-center gap-4">
               {/* <GiQueenCrown size={40} className="text-amber-500" /> */}
-              <div className="flex items-center gap-3">
-                <FaUser size={20} className="text-gray-500" />
+              <div className="flex items-center gap-3 dark:text-white text-gray-700">
+                <FaUser size={20} className="" />
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800">
-                    {product.winner}
-                  </h2>
-                  <p className="text-sm text-gray-500">Winning Auction</p>
+                  <h2 className="text-xl font-bold ">{product.winner}</h2>
+                  <p className="text-sm ">Winning Auction</p>
                 </div>
               </div>
             </div>
@@ -63,26 +61,24 @@ const AuctionWinner = ({ product }) => {
             />
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-gray-700">
+          <div className="space-y-2 dark:text-white text-gray-700">
+            <div className="flex items-center gap-2 ">
               {/* <FaUser size={20} className="text-gray-500" /> */}
-              <AiOutlineProduct size={20} className="text-gray-500" />
+              <AiOutlineProduct size={20} className="" />
               {/* <span className="font-medium">Product </span> */}
-              <span className="text-gray-600 font-bold">
-                {product.productName}
-              </span>
+              <span className="font-bold">{product.productName}</span>
             </div>
 
-            <div className="flex items-center gap-2 text-gray-700">
-              <RiMoneyDollarCircleLine size={24} className="text-gray-500" />
+            <div className="flex items-center gap-2 dark:text-white text-gray-700">
+              <RiMoneyDollarCircleLine size={24} className="" />
               <span className="font-medium">Winning Bid</span>
-              <span className="text-lg font-semibold text-gray-500">
+              <span className="text-lg font-semibold ">
                 $ {product.winningBid}
               </span>
             </div>
 
-            <div className="flex text-sm text-gray-500 gap-2">
-              <IoMdTime size={24} className="text-gray-500" />
+            <div className="flex text-sm dark:text-white text-gray-700 gap-2 ">
+              <IoMdTime size={24} className="" />
               {new Date(product.winningTime).toLocaleString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -95,7 +91,7 @@ const AuctionWinner = ({ product }) => {
 
           <div className="mt-6 flex justify-end">
             <Link to="/bid-history">
-              <button className="btn btn-sm bg-teal-500 hover:bg-teal-600 text-white shadow-md">
+              <button className="btn btn-sm bg-blue-500 hover:bg-blue-600 border-none text-white shadow-md">
                 Payment
               </button>
             </Link>
@@ -103,8 +99,8 @@ const AuctionWinner = ({ product }) => {
         </motion.div>
       ) : (
         <>
-          <p className="text-center text-3xl font-bold">
-            There is no data in my Pocket!!
+          <p className="text-center text-3xl font-bold dark:text-white text-gray-700">
+            There is no Winner data in my Pocket!!
           </p>
 
           {/* <button onClick={handleCheckExpired} className="btn btn-info">

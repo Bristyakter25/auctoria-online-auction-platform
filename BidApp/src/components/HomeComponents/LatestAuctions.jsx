@@ -6,7 +6,7 @@ const LatestAuctions = () => {
   const [recentProducts, setRecentProducts] = useState([]);
   console.log("all recent product", recentProducts);
   useEffect(() => {
-    fetch("http://localhost:5000/recentProducts")
+    fetch("https://auctoria-online-auction-platform.onrender.com/recentProducts")
       .then((res) => res.json())
       .then((data) => {
         setRecentProducts(data);
@@ -24,7 +24,7 @@ const LatestAuctions = () => {
           today
         </p>
       </div>
-      <div className="my-5 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-x-6 gap-y-12">
+      <div className="my-5 grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-x-6 gap-y-12 mx-3 lg:mx-0">
         {recentProducts.map((recentProduct) => (
           <RecentProductCard
             key={recentProduct._id}

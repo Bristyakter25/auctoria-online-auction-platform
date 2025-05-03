@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://bidapp-81c51.web.app", // your frontend on Firebase
-  "http://localhost:5000", // your Render backend itself (needed for self requests)
+  "https://auctoria-online-auction-platform.onrender.com", // your Render backend itself (needed for self requests)
 ];
 
 app.use(
@@ -361,6 +361,24 @@ app.put('/updateProduct/:id', async (req, res) => {
   }
 });
 
+app.delete('/products/:id', async (req, res) => {
+  const productId = req.params.id;
+
+  try {
+    // Find and delete the product by its ID
+    const result = await productsCollection.deleteOne({ _id: new ObjectId(productId) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Send a success response
+    res.status(200).json({ message: 'Product deleted successfully', deletedCount: result.deletedCount });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ message: 'Error deleting product', error });
+  }
+});
 
     // Get Popular Product based on bid
 
