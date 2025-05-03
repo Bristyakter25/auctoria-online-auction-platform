@@ -145,7 +145,9 @@ const RecentProductCard = ({ recentProduct }) => {
   return (
     <>
       {status === "upcoming" || status === "live" ? (
-        <div className="card card-compact border dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]">
+        <div className="card card-compact border dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]"
+        onClick={() => navigate(`/bid/${_id}`)}
+        >
           <figure className="relative">
             <img
               className="w-full h-[280px]  rounded-xl"
@@ -213,7 +215,7 @@ const RecentProductCard = ({ recentProduct }) => {
               </button>
               <button
                 className="w-10 h-10 border rounded-full flex items-center justify-center hover:bg-gray-100"
-                onClick={() => navigate(`/bid/${_id})`)}
+                onClick={() => navigate(`/bid/${_id}`)}
               >
                 <IoEye size={20} className="text-gray-600" />
               </button>

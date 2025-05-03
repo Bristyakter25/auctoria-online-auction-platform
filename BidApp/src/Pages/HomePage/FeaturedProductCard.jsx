@@ -56,7 +56,7 @@ const FeaturedProductCard = ({ auction }) => {
   }, [auctionEndTime]);
 
   return (
-    <div className="card card-compact border dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]">
+    <div className="card card-compact border dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]" onClick={() => navigate(`/bid/${_id}`)}>
       <figure className="relative">
         <img
           src={productImage}
