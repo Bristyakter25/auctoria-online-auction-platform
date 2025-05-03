@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://bidapp-81c51.web.app", // your frontend on Firebase
-  "https://auctoria-online-auction-platform.onrender.com", // your Render backend itself (needed for self requests)
+  "http://localhost:5000", // your Render backend itself (needed for self requests)
 ];
 
 app.use(
@@ -1119,9 +1119,10 @@ app.delete('/products/:id', async (req, res) => {
     // Reports from user functionality
 
     app.post("/report", async (req, res) => {
-      const { productId, userEmail, reason } = req.body;
+      const { productId, userEmail, reason,  productName, productImage, userPhoto } = req.body;
 
-      if (!productId || !userEmail || !reason) {
+
+      if (!productId || !userEmail || !reason  || !productName ||!productImage ||!userPhoto) {
         return res.status(400).json({ error: "Missing required fields" });
       }
 
@@ -1130,6 +1131,7 @@ app.delete('/products/:id', async (req, res) => {
           productId: new ObjectId(productId),
           userEmail,
           reason,
+          productName,productImage,userPhoto,
           reportedAt: new Date(),
         };
 
@@ -1147,6 +1149,25 @@ app.delete('/products/:id', async (req, res) => {
       const result = await reportsCollection.find().toArray();
       res.send(result);
     });
+
+    // Node.js Express route
+app.delete("/report/:id", async (req, res) => {
+  const { id } = req.params;
+  const result = await reportsCollection.deleteOne({ _id: new ObjectId(id) });
+  res.send(result);
+});
+
+// DELETE product by ID
+app.delete('/products/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await productsCollection.deleteOne({ _id: new ObjectId(id) });
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to delete product.' });
+  }
+});
+
 
     // Review related API
 
