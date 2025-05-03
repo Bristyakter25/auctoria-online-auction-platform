@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import { createContext, useState, useEffect } from "react";
 import { auth } from "../firebase/firebase.init";
-import useAxiosPublic from "../useHooks/useAxiosPublic";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 export const AuthContext = createContext(null);
 
@@ -22,9 +22,9 @@ const AuthProvider = ({ children }) => {
   // Listen to auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log(currentUser);
       setUser(currentUser);
-      //setLoading(false); // Stop loading after checking auth state
+      console.log("current user", currentUser);
+      setLoading(false); // Stop loading after checking auth state
       if (currentUser) {
         const userInfo = { email: currentUser?.email };
         axiosPublic
@@ -41,7 +41,7 @@ const AuthProvider = ({ children }) => {
             console.log(err);
           });
       } else {
-        //todo
+        //remove token
         localStorage.removeItem("access-token");
         setUser(currentUser);
         setLoading(false);
@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
 
     // Cleanup the listener when component unmounts
     return () => unsubscribe();
-  }, []);
+  }, [axiosPublic]);
 
   const createUser = (email, password) => {
     setLoading(true);

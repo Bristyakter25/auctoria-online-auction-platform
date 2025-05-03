@@ -6,6 +6,7 @@ const { Server } = require("socket.io");
 const cron = require("node-cron");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
+const { verify } = require("crypto");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
@@ -87,21 +88,21 @@ async function run() {
     //jwt apis rumman's code starts here
     app.post("/jwt", async (req, res) => {
       const user = req.body;
-      const token = jwt.sign(user, process.env.JWT_ACCESS_TOKEN, {
+      const token = jwt.sign(user, process.env.JWT_SECRET, {
         expiresIn: "5h",
       });
       res.send({ token });
     });
     //middleware
     const verifyToken = (req, res, next) => {
-      // console.log("insideVeriyFy", req.headers.authorization);
+      // console.log("inside verify token", req.headers);
       if (!req.headers.authorization) {
-        return res.status(401).send({ message: "forbidden access" });
+        return res.status(401).send({ message: "unauthorized access" });
       }
       const token = req.headers.authorization.split(" ")[1];
-      jwt.verify(token, process.env.JWT_ACCESS_TOKEN, (err, decoded) => {
+      jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-          return res.status(401).send({ message: "forbidden access" });
+          return res.status(401).send({ message: "unauthorized access" });
         }
         req.decoded = decoded;
         next();
@@ -152,13 +153,29 @@ async function run() {
       // console.log( user?.role);
       res.send({ role: user?.role });
     });
-    app.get("/users", async (req, res) => {
+    app.get("/users", verifyToken, verifyAdmin, async (req, res) => {
       try {
         const result = await usersCollection.find().toArray();
         res.json(result);
       } catch (error) {
         res.status(500).json({ message: "Error fetching products", error });
       }
+    });
+
+    app.get("/user/admin/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      if (email !== req.decoded.email) {
+        return res.status(403).send({ message: "Forbiddend Access" });
+      }
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      let admin = false;
+      let seller = false;
+      if (user) {
+        admin = user?.role === "admin";
+        seller = user?.role === "seller";
+      }
+      res.send({ admin, seller });
     });
 
     // 🛠 Get Recent Products (Limited to 4)
@@ -267,13 +284,13 @@ async function run() {
     });
 
     // 🛠 Add Product
-    app.post("/addProducts", async (req, res) => {
+    app.post("/addProducts", verifyToken, verifySeller, async (req, res) => {
       const productData = req.body;
       try {
         if (!productData) {
           return res.status(400).json({ message: "Missing fields" });
         }
-        
+
         productData.endingSoonNotified = false;
         const result = await productsCollection.insertOne(productData);
         const notification = {
@@ -289,7 +306,6 @@ async function run() {
         res.status(500).json({ message: "Error adding product", error: err });
       }
     });
-    
 
     app.get("/productHistory", async (req, res) => {
       const email = req.query.email;
@@ -333,52 +349,55 @@ async function run() {
         res.status(500).json({ error: "Invalid product ID" });
       }
     });
-// Update product info
-app.put('/updateProduct/:id', async (req, res) => {
-  const { id } = req.params;
-  const updatedProduct = req.body;
+    // Update product info
+    app.put("/updateProduct/:id", async (req, res) => {
+      const { id } = req.params;
+      const updatedProduct = req.body;
 
-  if (!updatedProduct) {
-    return res.status(400).json({ message: "Missing update data" });
-  }
+      if (!updatedProduct) {
+        return res.status(400).json({ message: "Missing update data" });
+      }
 
-  
-  delete updatedProduct._id;
+      delete updatedProduct._id;
 
-  try {
-    const result = await productsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updatedProduct }
-    );
+      try {
+        const result = await productsCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: updatedProduct }
+        );
 
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+        if (result.matchedCount === 0) {
+          return res.status(404).json({ message: "Product not found" });
+        }
 
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to update product", error });
-  }
-});
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(500).json({ message: "Failed to update product", error });
+      }
+    });
+    app.delete("/products/:id", async (req, res) => {
+      const productId = req.params.id;
 
-app.delete('/products/:id', async (req, res) => {
-  const productId = req.params.id;
+      try {
+        // Find and delete the product by its ID
+        const result = await productsCollection.deleteOne({
+          _id: new ObjectId(productId),
+        });
 
-  try {
-    // Find and delete the product by its ID
-    const result = await productsCollection.deleteOne({ _id: new ObjectId(productId) });
+        if (result.deletedCount === 0) {
+          return res.status(404).json({ message: "Product not found" });
+        }
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    // Send a success response
-    res.status(200).json({ message: 'Product deleted successfully', deletedCount: result.deletedCount });
-  } catch (error) {
-    console.error('Error deleting product:', error);
-    res.status(500).json({ message: 'Error deleting product', error });
-  }
-});
+        // Send a success response
+        res.status(200).json({
+          message: "Product deleted successfully",
+          deletedCount: result.deletedCount,
+        });
+      } catch (error) {
+        console.error("Error deleting product:", error);
+        res.status(500).json({ message: "Error deleting product", error });
+      }
+    });
 
     // Get Popular Product based on bid
 
@@ -543,17 +562,6 @@ app.delete('/products/:id', async (req, res) => {
       res.json({ isLocked: false });
     });
 
-    // app.get("/debug-user/:email", async (req, res) => {
-    //   const email = req.params.email;
-    //   try {
-    //     const user = await usersCollection.findOne({ email });
-    //     res.json(user);
-    //   } catch (error) {
-    //     console.error("Error fetching user:", error);
-    //     res.status(500).json({ message: "Server error" });
-    //   }
-    // });
-
     app.post("/signup", async (req, res) => {
       const { email, password } = req.body;
       try {
@@ -579,35 +587,6 @@ app.delete('/products/:id', async (req, res) => {
         res.status(500).json({ message: "Server error during registration" });
       }
     });
-
-    // // payment functionalities
-    // app.post("/create-payment-intent", async (req, res) => {
-    //   try {
-    //     let { price } = req.body;
-
-    //     // Force to number
-    //     price = Number(price);
-
-    //     if (isNaN(price)) {
-    //       return res.status(400).json({ error: "Invalid price value" });
-    //     }
-
-    //     const amount = Math.round(price * 100); // always better than parseInt here
-
-    //     const paymentIntent = await stripe.paymentIntents.create({
-    //       amount,
-    //       currency: "usd",
-    //       payment_method_types: ["card"],
-    //     });
-
-    //     res.send({
-    //       clientSecret: paymentIntent.client_secret,
-    //     });
-    //   } catch (error) {
-    //     console.error("Stripe Payment Intent Error:", error.message);
-    //     res.status(500).json({ error: "Failed to create payment intent" });
-    //   }
-    // });
 
     // payment functionalities
     app.post("/create-payment-intent", async (req, res) => {
@@ -673,27 +652,29 @@ app.delete('/products/:id', async (req, res) => {
 
     app.get("/payments/:email", async (req, res) => {
       try {
-        const userEmail = req.params.email;  // Get email from route parameter
-    
+        const userEmail = req.params.email; // Get email from route parameter
+
         // Fetch payments based on the provided email
-        const result = await paymentCollection.find({ email: userEmail }).toArray();
-    
+        const result = await paymentCollection
+          .find({ email: userEmail })
+          .toArray();
+
         if (result.length === 0) {
-          return res.status(404).json({ message: "No payments found for this email" });
+          return res
+            .status(404)
+            .json({ message: "No payments found for this email" });
         }
-    
+
         // Return the filtered payments
         res.json(result);
       } catch (error) {
         res.status(500).json({ message: "Error fetching payments", error });
       }
     });
-    
-    
 
     // change the status handled by admin
 
-    app.patch("/payments/:id", async (req, res) => {
+    app.patch("/payments/:id", verifyToken, verifyAdmin, async (req, res) => {
       const { status } = req.body;
       const { id } = req.params;
 
@@ -716,15 +697,6 @@ app.delete('/products/:id', async (req, res) => {
       }
     });
 
-    app.get("/users", async (req, res) => {
-      try {
-        // Fetch users from the database
-        const result = await usersCollection.find().toArray();
-        res.json(result); // Send the users as JSON response
-      } catch (error) {
-        res.status(500).json({ message: "Error fetching users", error });
-      }
-    });
     app.post("/users", async (req, res) => {
       const { name, email, photoURL, uid, createdAt, role } = req.body;
       // console.log("Received user data:", req.body);
@@ -935,6 +907,33 @@ app.delete('/products/:id', async (req, res) => {
         res.status(500).send({ error: "Failed to place bid" });
       }
     });
+
+
+    // about automatic send end time of bid to the bidder Users
+    app.get(
+      "/messages/:productId/:userEmail/:otherUserEmail",
+      async (req, res) => {
+        const { productId, userEmail, otherUserEmail } = req.params;
+
+        try {
+          const messages = await messageCollection
+            .find({
+              productId,
+              $or: [
+                { senderId: userEmail, receiverId: otherUserEmail },
+                { senderId: otherUserEmail, receiverId: userEmail },
+              ],
+            })
+            .sort({ timestamp: 1 })
+            .toArray();
+
+          res.send(messages);
+        } catch (error) {
+          res.status(500).send({ error: "Failed to fetch messages" });
+        }
+      }
+    );
+
 
     // chat with seller
     app.post("/messages", async (req, res) => {
@@ -1244,7 +1243,7 @@ app.delete('/products/:id', async (req, res) => {
       }
     });
 
-    app.patch("/reviews/:id", async (req, res) => {
+    app.patch("/reviews/:id", verifyToken, verifyAdmin, async (req, res) => {
       const { id } = req.params;
       const { adminReply } = req.body;
 
