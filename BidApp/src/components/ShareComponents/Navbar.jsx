@@ -9,9 +9,11 @@ import NotificationBell from "../../Pages/BidTask/NotificationBell";
 import auctionIcon from "../../assets/icon/online-auction (1).png";
 import ThemeToggle from "../HomeComponents/ThemeToggle";
 import { AuthContext } from "../../providers/AuthProvider";
+import useRole from "../../hooks/useRole";
 
 const Navbar = () => {
   const { user, signOutUser } = useContext(AuthContext);
+  const [role, isLoading] = useRole();
   const { wishlist } = useContext(WishlistContext);
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -35,12 +37,6 @@ const Navbar = () => {
       >
         Auctions
       </NavLink>
-      <NavLink
-        to="/addProduct"
-        className="hover:text-blue-500 block text-lg py-1"
-      >
-        Add Product
-      </NavLink>
       <NavLink to="/aiChat" className="hover:text-blue-500 block text-lg py-1">
         Ask Ai
       </NavLink>
@@ -56,14 +52,13 @@ const Navbar = () => {
       >
         Contact Us
       </NavLink>
-      {user && (
-        <NavLink
-          to="/dashboard/auctionChart"
-          className="hover:text-blue-500 block text-lg py-1"
-        >
-          Dashboard
-        </NavLink>
-      )}
+      <NavLink
+            to="/dashboard/auctionChart"
+            className="hover:text-blue-500 block text-lg py-1"
+          >
+            Dashboard
+          </NavLink>
+
     </>
   );
 
@@ -136,11 +131,11 @@ const Navbar = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <Link to="/login" className="hover:text-indigo-500">
+            <div className="flex dark:text-white  items-center gap-2">
+              <Link to="/login" className="hover:text-indigo-500 dark:hover:text-blue-400">
                 Login
               </Link>
-              <Link to="/signup" className="hover:text-indigo-500">
+              <Link to="/signup" className="hover:text-indigo-500 dark:hover:text-blue-400">
                 Register
               </Link>
             </div>

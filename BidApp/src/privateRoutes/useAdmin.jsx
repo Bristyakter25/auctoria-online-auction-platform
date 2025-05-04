@@ -5,12 +5,13 @@ import useContextHooks from "../useHooks/useContextHooks";
 const useAdmin = () => {
   const { user, loading } = useContextHooks();
   const axiosSecure = useAxiosSecure();
-  const { data: isAdmin=[], isPending: isAdminLoading } = useQuery({
-    queryKey: [ "isAdmin",user?.email],
-    // enabled: !loading,
+  const { data: isAdmin = [], isPending: isAdminLoading } = useQuery({
+    queryKey: ["isAdmin", user?.email],
+    enabled: !loading && !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/user/admin/${user?.email}`);
-      return res.data?.isAdmin;
+      console.log("admin data", res.data);
+      return res.data?.admin;
     },
   });
 

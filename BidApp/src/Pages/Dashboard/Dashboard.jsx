@@ -13,23 +13,27 @@ import { FaHospitalUser } from "react-icons/fa6";
 import { RiAuctionLine } from "react-icons/ri";
 import { BsBox2Heart } from "react-icons/bs";
 import { MdOutlineAddToQueue } from "react-icons/md";
-import { Navigate, NavLink, Outlet } from "react-router-dom";
+import { Navigate, NavLink, Outlet, useParams } from "react-router-dom";
 import useRole from "../../hooks/useRole";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 
 import ThemeToggle from "../../components/HomeComponents/ThemeToggle";
+import useAdmin from "../../privateRoutes/useAdmin";
+import useSeller from "../../privateRoutes/useSeller";
 
 const Dashboard = () => {
   const [role, isLoading] = useRole();
   const { signOutUser } = useContext(AuthContext);
+  const { sellerId } = useParams();
 
   const handleSignOut = () => {
     signOutUser().then(() => {
       Navigate("/login");
     });
   };
-
+  const [isAdmin] = useAdmin();
+  console.log("users", isAdmin);
   return (
     <div className="drawer  dark:bg-[#0a0a23] lg:drawer-open">
       {/* Drawer Toggle Checkbox */}
@@ -48,8 +52,10 @@ const Dashboard = () => {
         <div className="flex-1 dark:bg-[#0a0a23] flex flex-col ">
           <div className="p-4 dark:bg-[#0a0a23] bg-white border-b flex justify-between items-center">
             <button className="lg:hidden text-purple-600 text-2xl"></button>
-            <h1 className="text-lg font-bold dark:text-purple-200">Dashboard</h1>
-            <div className="w-[100px] "> 
+            <h1 className="text-lg font-bold dark:text-purple-200">
+              Dashboard
+            </h1>
+            <div className="w-[100px] ">
               <ThemeToggle></ThemeToggle>
             </div>
           </div>
@@ -64,7 +70,6 @@ const Dashboard = () => {
       <div className="drawer-side">
         <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
 
-       
         {/* bg-[#7886C7] */}
         <ul className="menu p-4 w-64 bg-[#E5D9F2] dark:bg-[#0C0950] text-black dark:text-white min-h-full space-y-2">
           <h2 className="text-center dark:text-purple-300 font-bold text-2xl text-[#2D336B]  mb-6">
@@ -225,8 +230,7 @@ const Dashboard = () => {
                   <span>Add Product</span>
                 </NavLink>
               </li>
-              
-              
+
               <li>
                 <NavLink
                   to="/dashboard/product-history"
@@ -242,6 +246,24 @@ const Dashboard = () => {
                   <span>Product History</span>
                 </NavLink>
               </li>
+
+              <li>
+  <NavLink
+    to={`/dashboard/messages/${sellerId}`}  // Path relative to /dashboard
+    className={({ isActive }) =>
+      `flex items-center space-x-2 text-lg p-2 rounded-lg transition-all duration-300 ${
+        isActive
+          ? "bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-white backdrop-blur-md shadow-md"
+          : "text-black dark:text-white hover:bg-gradient-to-r hover:from-purple-400/20 hover:to-pink-400/20 hover:backdrop-blur-sm"
+      }`
+    }
+  >
+    <BsBox2Heart />
+    <span>Messages</span>
+  </NavLink>
+</li>
+
+
             </>
           )}
 
@@ -316,7 +338,6 @@ const Dashboard = () => {
 
           <div className="border-t border-gray-300 my-4"></div>
 
-          
           <li>
             <NavLink
               to="/"
