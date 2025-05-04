@@ -60,7 +60,7 @@ const CategoryCards = () => {
           <div
             key={idx}
             onClick={() => handleCategoryClick(cat.category)}
-            className="bg-white/10 shadow-md rounded-2xl dark:text-white text-gray-700 overflow-hidden hover:shadow-xl hover:bg-blue-200 transition duration-300 text-center p-6"
+            className="bg-white/10 shadow-md rounded-2xl dark:text-gray-600 text-gray-700 overflow-hidden hover:shadow-xl hover:bg-blue-300 transition duration-300 text-center p-6"
           >
             <div className="mb-4 flex justify-center">
               {categoryIcons[cat.category] || (
