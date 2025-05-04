@@ -86,8 +86,8 @@ const FeaturedProductCard = ({ auction }) => {
         </div>
       </figure>
       <div className="px-3 dark:text-white text-gray-700">
-        <div className="h-[90px]">
-          <h2 className="font-bold mt-3 text-xl h-[60px]">{productName}</h2>
+        <div className="h-[140px]">
+          <h2 className="font-bold mt-3 text-xl h-[100px]">{productName}</h2>
           <p className="">
             <span className="font-semibold text-lg">Auction Start: </span>{" "}
             {formatDate(auctionStartDate)}

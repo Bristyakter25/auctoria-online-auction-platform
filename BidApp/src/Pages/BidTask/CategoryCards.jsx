@@ -30,7 +30,7 @@ const CategoryCards = () => {
   const navigate = useNavigate();
   console.log("category data", categories);
   useEffect(() => {
-    fetch("http://localhost:5000/categorySummary")
+    fetch("https://auctoria-online-auction-platform.onrender.com/categorySummary")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((error) => console.error("Error fetching categories:", error));

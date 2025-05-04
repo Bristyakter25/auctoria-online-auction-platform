@@ -10,7 +10,7 @@ const ProductHistory = () => {
 
   useEffect(() => {
     if (user?.email) {
-      fetch(`http://localhost:5000/productHistory?email=${user.email}`)
+      fetch(`https://auctoria-online-auction-platform.onrender.com/productHistory?email=${user.email}`)
         .then((res) => res.json())
         .then((data) => setProducts(data));
     }
@@ -28,7 +28,7 @@ const ProductHistory = () => {
       reverseButtons: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/products/${productId}`, {
+        fetch(`https://auctoria-online-auction-platform.onrender.com/products/${productId}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
@@ -122,7 +122,7 @@ const ProductHistory = () => {
           onClose={() => setEditingProduct(null)}
           onUpdated={() => {
             // Refetch product list after update
-            fetch(`http://localhost:5000/productHistory?email=${user.email}`)
+            fetch(`https://auctoria-online-auction-platform.onrender.com/productHistory?email=${user.email}`)
               .then((res) => res.json())
               .then((data) => setProducts(data));
           }}

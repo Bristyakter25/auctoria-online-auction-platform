@@ -22,7 +22,7 @@ const SocialLogin = () => {
           createdAt: new Date(),
         };
 
-        fetch("http://localhost:5000/users", {
+        fetch("https://auctoria-online-auction-platform.onrender.com/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(userData),
