@@ -6,7 +6,7 @@ const WishListCard = ({ wishListProduct }) => {
     wishListProduct;
   return (
     <div>
-      <div className="card dark:bg-transparent card-compact bg-base-100 lg:w-[390px] shadow-xl">
+      <div className="card dark:bg-transparent card-compact bg-base-100 lg:w-[390px] shadow-xl" onClick={() => navigate(`/bid/${_id}`)}>
         <figure>
           <img src={productImage} className="w-full h-[250px]" alt="Shoes" />
         </figure>
