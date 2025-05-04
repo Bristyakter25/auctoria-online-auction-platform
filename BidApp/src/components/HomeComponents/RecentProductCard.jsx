@@ -145,8 +145,9 @@ const RecentProductCard = ({ recentProduct }) => {
   return (
     <>
       {status === "upcoming" || status === "live" ? (
-        <div className="card card-compact border dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]"
-        onClick={() => navigate(`/bid/${_id}`)}
+        <div
+          className="card card-compact border cursor-pointer dark:border-none bg-white/10 dark:bg-transparent rounded-2xl transition-all duration-1000 hover:scale-105 hover:shadow-[0_10px_20px_rgba(59,130,246,0.5)]"
+          onClick={() => navigate(`/bid/${_id}`)}
         >
           <figure className="relative">
             <img
@@ -181,22 +182,28 @@ const RecentProductCard = ({ recentProduct }) => {
             </div>
           </figure>
 
-          
           <div className="px-2 p-1 ">
             <div className="h-[170px] my-2  dark:text-white text-gray-700 px-2 ">
               <h2 className=" h-[60px] font-bold text-2xl">{productName}</h2>
               <div className="my-3">
-                <p className="text-lg font-semibold mb-3">Auction Start:
-                  <span className="font-normal"> {formatDate(auctionStartDate)} </span>
-                 
-                  <p className="text-lg font-medium my-2">Base Price: <span className="text-xl font-bold">${startingBid}
-                  .00</span>
+                <p className="text-lg font-semibold mb-3">
+                  Auction Start:
+                  <span className="font-normal">
+                    {" "}
+                    {formatDate(auctionStartDate)}{" "}
+                  </span>
+                  <p className="text-lg font-medium my-2">
+                    Base Price:{" "}
+                    <span className="text-xl font-bold">
+                      ${startingBid}
+                      .00
+                    </span>
                   </p>
-                  <p className=" text-lg mb-2 font-semibold">Category: <span className="font-normal">{category}</span></p>
+                  <p className=" text-lg mb-2 font-semibold">
+                    Category: <span className="font-normal">{category}</span>
+                  </p>
                 </p>
-                
               </div>
-
             </div>
             <div className="flex justify-between">
               <button
