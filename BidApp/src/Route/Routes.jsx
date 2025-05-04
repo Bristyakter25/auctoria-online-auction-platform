@@ -31,12 +31,21 @@ import AiChat from "../Pages/AiChat/AiChat";
 import CategoryPage from "../Pages/BidTask/CategoryPage";
 import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
 import FavoritePage from "../SellerProfile/FavoriteSeller";
+
+import ReviewReport from "../Pages/Dashboard/AdminRoutes/ReviewReport";
+import Message from "../Pages/Message/Message";
+import SellerMessage from "../Pages/Message/SellerMessage";
+import ErrorPage from "./ErrorPage";
+
+
 import SellerRoutes from "../privateRoutes/SellerRoutes";
+
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       { path: "/", element: <Home /> },
       { path: "/aiChat", element: <AiChat /> },
@@ -80,6 +89,10 @@ export const router = createBrowserRouter([
         path: "/categoryProduct/:categoryName",
         element: <CategoryPage></CategoryPage>,
       },
+      {
+        path: "message",
+        element:<Message></Message>
+      }
     ],
   },
   {
@@ -115,6 +128,14 @@ export const router = createBrowserRouter([
         path: "pay",
         element: <Payment></Payment>,
       },
+      {
+        path: "reviewReport",
+        element:<ReviewReport></ReviewReport>
+      },
+      {
+        path: "messages/:sellerId",
+        element: <SellerMessage></SellerMessage>
+      }
     ],
   },
 ]);

@@ -54,14 +54,14 @@ const Navbar = () => {
       </NavLink>
       {role === "seller" && (
         <>
-          <NavLink
+          {/* <NavLink
             to="/addProduct"
             className="hover:text-blue-500 block text-lg py-1"
           >
             Add Product
-          </NavLink>
+          </NavLink> */}
           <NavLink
-            to="/dashboard/profile"
+            to="/dashboard/auctionChart"
             className="hover:text-blue-500 block text-lg py-1"
           >
             Dashboard
@@ -76,6 +76,15 @@ const Navbar = () => {
           Dashboard
         </NavLink>
       )}
+      {role === "admin" && (
+        <NavLink
+          to="/dashboard/auctionChart"
+          className="hover:text-blue-500 block text-lg py-1"
+        >
+          Dashboard
+        </NavLink>
+      )}
+
     </>
   );
 
@@ -148,11 +157,11 @@ const Navbar = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <Link to="/login" className="hover:text-indigo-500">
+            <div className="flex dark:text-white  items-center gap-2">
+              <Link to="/login" className="hover:text-indigo-500 dark:hover:text-blue-400">
                 Login
               </Link>
-              <Link to="/signup" className="hover:text-indigo-500">
+              <Link to="/signup" className="hover:text-indigo-500 dark:hover:text-blue-400">
                 Register
               </Link>
             </div>

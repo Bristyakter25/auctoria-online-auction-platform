@@ -60,7 +60,7 @@ const BidHistory = () => {
     if (result.isConfirmed) {
       try {
         const res = await axios.delete(
-          `hhttps://auctoria-online-auction-platform.onrender.com/deleteBid/${productId}/${bidId}`
+          `hhttp://localhost:5000/deleteBid/${productId}/${bidId}`
         );
         if (res.data.success) {
           Swal.fire({

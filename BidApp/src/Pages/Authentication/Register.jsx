@@ -114,7 +114,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
+    <div className="flex items-center mt-16 dark:bg-gray-900 dark:text-white justify-center min-h-screen ">
       <div className=" flex-row md:flex w-full max-w-full min-h-screen  px-10 overflow-hidden">
         {/* Left Side Image */}
         <div className="w-full md:w-1/2 mt-16 md:mt-0">
@@ -143,7 +143,7 @@ const Register = () => {
               </label>
               <input
                 type="text"
-                className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                className="w-full dark:bg-gray-900 dark:text-white px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Enter your full name"
                 name="name"
                 required
@@ -151,12 +151,12 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600">
+              <label className="block  text-sm font-medium text-gray-600">
                 Email
               </label>
               <input
                 type="email"
-                className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                className="w-full dark:bg-gray-900 dark:text-white px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 ref={emailRef}
                 placeholder="Enter your email"
                 name="email"
@@ -169,7 +169,7 @@ const Register = () => {
               </label>
               <input
                 type="password"
-                className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                className="w-full dark:bg-gray-900 dark:text-white px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Create a password"
                 name="password"
                 required
@@ -177,14 +177,14 @@ const Register = () => {
             </div>
 
             <div className="form-control">
-              <label className="block text-sm font-medium text-gray-600">
+              <label className="block  text-sm font-medium text-gray-600">
                 Photo URL
               </label>
               <input
                 type="url"
                 name="photoURL"
                 placeholder="Enter your PhotoUrl"
-                className="w-full px-4 py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                className="w-full px-4 dark:bg-gray-900 dark:text-white py-3 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
               />
             </div>
             <div>
@@ -192,7 +192,7 @@ const Register = () => {
                 Role
               </label>
               <select
-                class="select mt-1 max-w-xs border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                class="select mt-1 dark:bg-gray-900 dark:text-white max-w-xs border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
                 name="role"
                 required
               >
@@ -205,7 +205,7 @@ const Register = () => {
             </div>
 
             <div onClick={handleForgetPassword}>
-              <a className="link link-hover">Forgot password?</a>
+              <a className="link dark:text-white link-hover">Forgot password?</a>
             </div>
             <button
               type="submit"
@@ -216,15 +216,15 @@ const Register = () => {
           </form>
           <div className="flex items-center justify-between mt-4">
             <hr className="w-1/3 border-gray-300" />
-            <span className="text-gray-500">or</span>
+            <span className="text-gray-400">or</span>
             <hr className="w-1/3 border-gray-300" />
           </div>
           <SocialLogin></SocialLogin>
-          <p className="mt-4 text-sm text-center text-gray-600">
+          <p className="mt-4 text-[17px] dark:text-white text-center text-gray-600">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-teal-600 hover:underline font-semibold"
+              className="text-sky-600 hover:underline font-semibold"
             >
               Login
             </Link>
