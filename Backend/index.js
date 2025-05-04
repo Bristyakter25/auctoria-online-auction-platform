@@ -78,11 +78,9 @@ async function run() {
       .db("Auctoria")
       .collection("notifications");
     const reviewsCollection = client.db("Auctoria").collection("reviews");
-
     const reportsCollection = client.db("Auctoria").collection("reports");
     const paymentCollection = client.db("Auctoria").collection("payments");
     const messageCollection = client.db("Auctoria").collection("messages");
-
     const followingCollection = client.db("Auctoria").collection("followers");
 
     //jwt apis rumman's code starts here
@@ -208,13 +206,6 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
-    // Route to get all products (unchanged)
-    // app.get("/allProducts", async (req, res) => {
-    //   const cursor = productsCollection.find();
-    //   const result = await cursor.toArray();
-    //   res.send(result);
-    // });
 
     // Route to get category summary with count & image
 
@@ -350,32 +341,37 @@ async function run() {
       }
     });
     // Update product info
-    app.put("/updateProduct/:id", async (req, res) => {
-      const { id } = req.params;
-      const updatedProduct = req.body;
+    app.put(
+      "/updateProduct/:id",
+      verifyToken,
+      verifySeller,
+      async (req, res) => {
+        const { id } = req.params;
+        const updatedProduct = req.body;
 
-      if (!updatedProduct) {
-        return res.status(400).json({ message: "Missing update data" });
-      }
-
-      delete updatedProduct._id;
-
-      try {
-        const result = await productsCollection.updateOne(
-          { _id: new ObjectId(id) },
-          { $set: updatedProduct }
-        );
-
-        if (result.matchedCount === 0) {
-          return res.status(404).json({ message: "Product not found" });
+        if (!updatedProduct) {
+          return res.status(400).json({ message: "Missing update data" });
         }
 
-        res.status(200).json(result);
-      } catch (error) {
-        res.status(500).json({ message: "Failed to update product", error });
+        delete updatedProduct._id;
+
+        try {
+          const result = await productsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updatedProduct }
+          );
+
+          if (result.matchedCount === 0) {
+            return res.status(404).json({ message: "Product not found" });
+          }
+
+          res.status(200).json(result);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to update product", error });
+        }
       }
-    });
-    app.delete("/products/:id", async (req, res) => {
+    );
+    app.delete("/products/:id", verifyToken, verifyAdmin, async (req, res) => {
       const productId = req.params.id;
 
       try {
