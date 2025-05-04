@@ -10,7 +10,8 @@ import SuggestedBid from "./SuggestedBid";
 import AuctionWinner from "./AuctionWinner";
 import { BsFillChatTextFill } from "react-icons/bs";
 import { MdWatchLater } from "react-icons/md";
-
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
@@ -38,6 +39,7 @@ const calculateCountdown = (endTime) => {
 
 const Bid = () => {
   const { user, loading } = useContext(AuthContext);
+  const axiosPublic = useAxiosPublic();
   const item = {
     images: [
       // "https://i.ibb.co.com/LXSdnhYY/deniz-demirci-Ftl-G2pnqh-M4-unsplash.jpg",
@@ -55,9 +57,24 @@ const Bid = () => {
   const [selectedImage, setSelectedImage] = useState(item.images[0]);
   const [currentBid, setCurrentBid] = useState(0);
   // console.log("product data", product);
+
+  const {
+    data: usersRole = [],
+    refetch,
+    isLoading: userIsLoading,
+  } = useQuery({
+    queryKey: "usersRole",
+    queryFn: async () => {
+      const res = await axiosPublic.get("/users");
+      return res.data;
+    },
+  });
+  const roleUsers = usersRole[0] || {};
+  const { role } = roleUsers;
+
+  const isAdminOrSeller = user && (role === "admin" || role === "seller");
+
   useEffect(() => {
-
-
     fetch(`https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -123,6 +140,22 @@ const Bid = () => {
 
   console.log("bid id", generateSellerId());
   const handleBid = async () => {
+    if (userIsLoading) {
+      toast.info("Loading user information, please wait.");
+      return;
+    }
+    if (!user) {
+      toast.error("Please log in to place a bid.", { position: "top-right" });
+      return;
+    }
+    // Check if the user is an admin or seller
+    if (isAdminOrSeller) {
+      toast.warning("Admins and Sellers cannot place bids on items.", {
+        position: "top-right",
+      });
+      return; // Stop the function here
+    }
+
     if (!bidAmount || isNaN(bidAmount) || Number(bidAmount) <= 0) {
       toast.error("Please enter a valid bid amount!", {
         position: "top-right",
@@ -194,7 +227,6 @@ const Bid = () => {
     };
 
     try {
-
       // const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
 
       const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
@@ -222,14 +254,14 @@ const Bid = () => {
   if (!product) return <LoadingSpinner></LoadingSpinner>;
 
   return (
-    <div className="container mx-auto px-4 py-32">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="container dark:bg-transparent mx-auto px-4 py-32">
+      <div className="grid t grid-cols-1 md:grid-cols-2 gap-8">
         {/* Right Side: Images & Thumbnails */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg bg-white/10"
+          className=" p-6 shadow-md  rounded-lg bg-white/10"
         >
           {/* Main Image */}
           <motion.img
@@ -262,7 +294,7 @@ const Bid = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className=" p-6 shadow-md rounded-lg relative bg-white/10"
+          className=" p-6 shadow-md rounded-lg relative bg-white/10 dark:text-white text-gray-700"
         >
           <div className="text-2xl font-bold mb-2 flex items-center ">
             {" "}
@@ -407,12 +439,12 @@ const Bid = () => {
 
               {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                  <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+                  <div className="bg-white dark:bg-black p-6 rounded shadow-md w-full max-w-md">
                     <h3 className="text-xl font-semibold mb-4">
                       Send Message to Seller
                     </h3>
                     <textarea
-                      className="w-full p-2 border rounded mb-4"
+                      className="w-full dark:bg-black p-2 border rounded mb-4"
                       rows={4}
                       placeholder="Write your message..."
                       value={messageText}

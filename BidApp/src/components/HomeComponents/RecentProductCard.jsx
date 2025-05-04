@@ -178,6 +178,8 @@ const RecentProductCard = ({ recentProduct }) => {
               </div>
             </div>
           </figure>
+
+          
           <div className="px-2 p-1 ">
             <div className="h-[170px] my-2  dark:text-white text-gray-700 px-2 ">
               <h2 className=" h-[60px] font-bold text-xl">{productName}</h2>
@@ -194,6 +196,7 @@ const RecentProductCard = ({ recentProduct }) => {
                   <p className="mb-1 text-lg font-semibold">{category}</p>
                 </div>
               </div>
+
             </div>
             <div className="flex justify-between">
               <button

@@ -16,11 +16,12 @@ import {
   FaTwitter,
 } from "react-icons/fa";
 import AuctionWinner from "./AuctionWinner";
-
-const tabs = ["Item Details", "History", "Reviews", "Winner", "Share"];
+// "Item Details",
+const tabs = ["History", "Reviews", "Winner", "Share"];
 const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
   console.log("product", product);
-  const [activeTab, setActiveTab] = useState("Item Details");
+  const [activeTab, setActiveTab] = useState("History");
+
   const [studentId, setStudentId] = useState(null);
   //   console.log("student id", studentId);
   //   useEffect(() => {
@@ -33,10 +34,10 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-3 cursor-pointer text-base lg:text-lg font-semibold transition-all ${
+            className={`px-3 py-3 dark:text-white cursor-pointer text-base lg:text-lg font-semibold transition-all ${
               activeTab === tab
                 ? "border-b-2 border-blue-400 text-blue-500 "
-                : " "
+                : "dark:text-white text-gray-700"
             }`}
           >
             {tab}
@@ -54,7 +55,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
         {activeTab === "Item Details" && (
           <>
             {/* <AdmissionForm setStudentId={setStudentId} /> */}
-            <p>Items Details</p>
+            {/* <p>Items Details</p> */}
           </>
         )}
 
@@ -75,43 +76,48 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
         )}
 
         {activeTab === "Share" && (
-          <div className="flex flex-col gap-4">
+          <div className="">
             {/* Facebook Share */}
-            <FacebookShareButton
-              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
-              quote={product?.productName || ""}
-              hashtag="#AuctionItem"
-            >
-              <div className="btn btn-sm btn-outline btn-success flex items-center gap-2">
-                <FaFacebookSquare />
-                Share on Facebook
-              </div>
-            </FacebookShareButton>
+            <div className="lg:flex items-center space-y-4">
+              <FacebookShareButton
+                url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+                quote={product?.productName || ""}
+                hashtag="#AuctionItem"
+                className="w-full flex items-center justify-center"
+              >
+                <div className="btn gap-2 text-base bg-blue-500 hover:bg-blue-600 border-none dark:text-white">
+                  <FaFacebookSquare size={24} className="" />
+                  Share on Facebook
+                </div>
+              </FacebookShareButton>
 
-            {/* Twitter Share */}
-            <TwitterShareButton
-              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
-              title={product?.productName || ""}
-              hashtags={["Auction", "OnlineBidding"]}
-            >
-              <div className="btn btn-sm btn-outline btn-info flex items-center gap-2">
-                <FaTwitter />
-                Share on Twitter
-              </div>
-            </TwitterShareButton>
+              {/* Twitter Share */}
+              <TwitterShareButton
+                url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+                title={product?.productName || ""}
+                hashtags={["Auction", "OnlineBidding"]}
+                className="w-full flex items-center justify-center"
+              >
+                <div className="btn gap-2 text-base bg-blue-500 hover:bg-blue-600 border-none dark:text-white">
+                  <FaTwitter />
+                  Share on Twitter
+                </div>
+              </TwitterShareButton>
 
-            {/* LinkedIn Share */}
-            <LinkedinShareButton
-              url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
-              title={product?.productName || ""}
-              summary={`Check out this item: ${product?.productName}`}
-              source="Auctoria Auction"
-            >
-              <div className="btn btn-sm btn-outline btn-primary flex items-center gap-2">
-                <FaLinkedin />
-                Share on LinkedIn
-              </div>
-            </LinkedinShareButton>
+              {/* LinkedIn Share */}
+              <LinkedinShareButton
+                url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
+                title={product?.productName || ""}
+                summary={`Check out this item: ${product?.productName}`}
+                source="Auctoria Auction"
+                className="w-full flex items-center justify-center"
+              >
+                <div className="btn gap-2 text-base bg-blue-500 hover:bg-blue-600 border-none dark:text-white">
+                  <FaLinkedin />
+                  Share on LinkedIn
+                </div>
+              </LinkedinShareButton>
+            </div>
           </div>
         )}
       </motion.div>

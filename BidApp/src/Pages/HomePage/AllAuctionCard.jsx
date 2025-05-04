@@ -110,17 +110,11 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
-
-      const response = await fetch(
-        "https://auctoria-online-auction-platform.onrender.com/addToWishlist",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productId: _id, userId }),
-        }
-      );
-
-      
+      const response = await fetch("https://auctoria-online-auction-platform.onrender.com/addToWishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: _id, userId }),
+      });
 
       if (response.ok) {
         setIsWishlisted(true);
@@ -160,15 +154,18 @@ const AllAuctionCard = ({ auction }) => {
     }
 
     try {
-      const response = await fetch("https://auctoria-online-auction-platform.onrender.com/report", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: _id,
-          userEmail: user?.email,
-          reason: reportReason,
-        }),
-      });
+      const response = await fetch(
+        "https://auctoria-online-auction-platform.onrender.com/report",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: _id,
+            userEmail: user?.email,
+            reason: reportReason,
+          }),
+        }
+      );
 
       if (response.ok) {
         Swal.fire({ icon: "success", title: "Reported successfully!" });
@@ -224,11 +221,11 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-3xl relative z-10 cursor-pointer shadow-xl hover:shadow-2xl transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
+      className="rounded-3xl dark:bg-transparent dark:text-white text-black relative z-10 cursor-pointer shadow-md hover:shadow-xl hover:shadow-blue-400 transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
     >
       <div className="h-full">
         <img
-          className="object-cover w-full h-[200px] items-center rounded-t-xl relative font-sans"
+          className="object-cover w-full h-[220px] items-center rounded-t-xl relative font-sans"
           src={productImage}
           alt={productName}
         />
@@ -263,8 +260,8 @@ const AllAuctionCard = ({ auction }) => {
         <div className="flex items-center justify-between p-2 ">
           <div>
             {" "}
-            <p>Base Price</p>
-            <p>$ {startingBid}.00</p>
+            <p>Base Price: </p>
+            <p className="text-lg font-semibold">$ {startingBid}.00</p>
           </div>
 
           <button

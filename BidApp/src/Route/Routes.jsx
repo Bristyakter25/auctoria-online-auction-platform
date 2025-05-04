@@ -30,6 +30,8 @@ import SellerProfile from "../SellerProfile/SellerProfile";
 import AiChat from "../Pages/AiChat/AiChat";
 import CategoryPage from "../Pages/BidTask/CategoryPage";
 import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
+import FavoritePage from "../SellerProfile/FavoriteSeller";
+
 
 export const router = createBrowserRouter([
   {
@@ -69,7 +71,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/categoryProduct/:categoryName",
-        element: <CategoryPage />,
+        element: <CategoryPage></CategoryPage>
       },
     ],
   },
@@ -91,6 +93,11 @@ export const router = createBrowserRouter([
       {
         path: "reviews",
         element: <Reviews></Reviews>,
+      },
+      {
+        path: "favoriteSeller",
+        element: <SellerProfile></SellerProfile>
+
       },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
