@@ -24,7 +24,7 @@ const Message = () => {
 
     const fetchMessages = async () => {
       const res = await fetch(
-        `http://localhost:5000/messages?senderId=${senderId}&receiverId=${receiverId}&productId=${productId}`
+        `https://auctoria-online-auction-platform.onrender.com/messages?senderId=${senderId}&receiverId=${receiverId}&productId=${productId}`
       );
       const data = await res.json();
       setMessages(data?.messages || []);
@@ -41,7 +41,7 @@ const Message = () => {
       message: input,
     };
 
-    const res = await fetch("http://localhost:5000/messages", {
+    const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(messageData),

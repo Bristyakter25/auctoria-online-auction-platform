@@ -80,7 +80,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
             {/* Facebook Share */}
             <div className="lg:flex items-center space-y-4">
               <FacebookShareButton
-                url={`http://localhost:5000/bid/${product._id}`}
+                url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
                 quote={product?.productName || ""}
                 hashtag="#AuctionItem"
                 className="w-full flex items-center justify-center"
@@ -93,7 +93,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
 
               {/* Twitter Share */}
               <TwitterShareButton
-                url={`http://localhost:5000/bid/${product._id}`}
+                url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
                 title={product?.productName || ""}
                 hashtags={["Auction", "OnlineBidding"]}
                 className="w-full flex items-center justify-center"
@@ -106,7 +106,7 @@ const Tabs = ({ sellerId, sellerEmail, product, setProduct }) => {
 
               {/* LinkedIn Share */}
               <LinkedinShareButton
-                url={`http://localhost:5000/bid/${product._id}`}
+                url={`https://auctoria-online-auction-platform.onrender.com/bid/${product._id}`}
                 title={product?.productName || ""}
                 summary={`Check out this item: ${product?.productName}`}
                 source="Auctoria Auction"

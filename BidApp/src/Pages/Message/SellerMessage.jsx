@@ -11,7 +11,7 @@ const SellerMessage = () => {
 
   useEffect(() => {
     // Fetch messages where receiverId === decodedEmail
-    fetch(`http://localhost:5000/messages?receiverId=${decodedEmail}`)
+    fetch(`https://auctoria-online-auction-platform.onrender.com/messages?receiverId=${decodedEmail}`)
       .then(res => res.json())
       .then(data => setMessages(data))
       .catch(err => console.error(err));
@@ -27,7 +27,7 @@ const SellerMessage = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/messages", {
+      const res = await fetch("https://auctoria-online-auction-platform.onrender.com/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(messageData),

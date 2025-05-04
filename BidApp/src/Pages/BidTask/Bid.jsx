@@ -13,7 +13,7 @@ import { MdWatchLater } from "react-icons/md";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://auctoria-online-auction-platform.onrender.com", {
   transports: ["polling", "websocket"],
   reconnection: true,
 });
@@ -75,7 +75,7 @@ const Bid = () => {
   const isAdminOrSeller = user && (role === "admin" || role === "seller");
 
   useEffect(() => {
-    fetch(`http://localhost:5000/addProducts/${id}`)
+    fetch(`https://auctoria-online-auction-platform.onrender.com/addProducts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         // console.log("Fetched product data:", data);
@@ -176,7 +176,7 @@ const Bid = () => {
     }
     // const bidId = generateSellerId();
     try {
-      const res = await fetch(`http://localhost:5000/bid/${id}`, {
+      const res = await fetch(`https://auctoria-online-auction-platform.onrender.com/bid/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -209,48 +209,7 @@ const Bid = () => {
     }
   };
 
-  // const handleSendMessage = async () => {
-  //   if (!messageText.trim()) {
-  //     toast.error("Message cannot be empty.");
-  //     return;
-  //   }
-  //   if (!user?.email || !product?.email || !product?._id) {
-  //     toast.error("Some required data is missing.");
-  //     return;
-  //   }
 
-  //   const payload = {
-  //     senderId: user?.email,
-  //     receiverId: product?.email,
-  //     productId: product?._id,
-  //     message: messageText,
-  //   };
-
-  //   try {
-  //     // const res = await fetch("http://localhost:5000/messages", {
-
-  //     const res = await fetch("http://localhost:5000/messages", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(payload),
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (data.insertedId) {
-  //       toast.success("Message sent to seller!");
-  //       setShowModal(false);
-  //       setMessageText("");
-  //     } else {
-  //       toast.error("Failed to send message.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Message send error:", error);
-  //     toast.error("Server error while sending message.");
-  //   }
-  // };
   if (!product) return <LoadingSpinner></LoadingSpinner>;
 
   return (

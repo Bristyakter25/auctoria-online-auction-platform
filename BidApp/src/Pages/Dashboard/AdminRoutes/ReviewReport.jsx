@@ -5,18 +5,18 @@ import Swal from "sweetalert2";
 
 // Fetch reports from the server
 const fetchReports = async () => {
-  const response = await axios.get("http://localhost:5000/report");
+  const response = await axios.get("https://auctoria-online-auction-platform.onrender.com/report");
   return response.data;
 };
 
 // Delete a report by ID
 const deleteReport = async (id) => {
-  await axios.delete(`http://localhost:5000/report/${id}`);
+  await axios.delete(`https://auctoria-online-auction-platform.onrender.com/report/${id}`);
 };
 
 // Delete a product by ID
 const deleteProduct = async (id) => {
-  await axios.delete(`http://localhost:5000/products/${id}`);
+  await axios.delete(`https://auctoria-online-auction-platform.onrender.com/products/${id}`);
 };
 
 const ReviewReport = () => {
