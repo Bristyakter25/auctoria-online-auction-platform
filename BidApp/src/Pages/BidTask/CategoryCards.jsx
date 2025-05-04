@@ -43,7 +43,7 @@ const CategoryCards = () => {
   // if (isLoading) return <LoadingSpinner />;
   return (
     <div className="p-6 cursor-pointer">
-      <div className="mb-6 dark:text-[#4D55CC]  text-gray-700">
+      <div className="mb-6 dark:text-[#4D55CC]">
         {" "}
         <h2 className="lg:text-4xl text-3xl text-center font-bold mb-3 ">
           Category Summary

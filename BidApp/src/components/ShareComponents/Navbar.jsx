@@ -52,38 +52,12 @@ const Navbar = () => {
       >
         Contact Us
       </NavLink>
-      {role === "seller" && (
-        <>
-          {/* <NavLink
-            to="/addProduct"
-            className="hover:text-blue-500 block text-lg py-1"
-          >
-            Add Product
-          </NavLink> */}
-          <NavLink
+      <NavLink
             to="/dashboard/auctionChart"
             className="hover:text-blue-500 block text-lg py-1"
           >
             Dashboard
           </NavLink>
-        </>
-      )}
-      {role === "user" && (
-        <NavLink
-          to="/dashboard/auctionChart"
-          className="hover:text-blue-500 block text-lg py-1"
-        >
-          Dashboard
-        </NavLink>
-      )}
-      {role === "admin" && (
-        <NavLink
-          to="/dashboard/auctionChart"
-          className="hover:text-blue-500 block text-lg py-1"
-        >
-          Dashboard
-        </NavLink>
-      )}
 
     </>
   );
