@@ -226,7 +226,7 @@ const AllAuctionCard = ({ auction }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="rounded-3xl dark:bg-transparent dark:text-white text-black  z-0 cursor-pointer shadow-md hover:shadow-xl hover:shadow-blue-400 transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400"
+      className="rounded-3xl dark:bg-transparent dark:text-white text-black  z-0 cursor-pointer shadow-md hover:shadow-xl hover:shadow-blue-400 transition duration-300 bg-white/10 overflow-hidden hover:border border-blue-400" onClick={() => navigate(`/bid/${_id}`)}
     >
       <div className="h-full">
         <img
