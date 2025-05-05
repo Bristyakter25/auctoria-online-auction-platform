@@ -20,10 +20,18 @@ const Navbar = () => {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleSignOut = () => {
-    signOutUser().then(() => {
+  // const handleSignOut = () => {
+  //   signOutUser().then(() => {});
+  //   navigate("/login");
+  // };
+  const handleSignOut = async () => {
+    try {
+      await signOutUser();
+      localStorage.removeItem("access-token");
       navigate("/login");
-    });
+    } catch (error) {
+      console.error("Problem to signout:", error);
+    }
   };
 
   const navLinks = (
@@ -58,7 +66,28 @@ const Navbar = () => {
           >
             Dashboard
           </NavLink>
+<<<<<<< HEAD
+        </>
+      )}
+      {role === "user" && (
+        <NavLink
+          to="/dashboard/auctionChart"
+          className="hover:text-blue-500 block text-lg py-1"
+        >
+          Dashboard
+        </NavLink>
+      )}
+      {role === "admin" && (
+        <NavLink
+          to="/dashboard/auctionChart"
+          className="hover:text-blue-500 block text-lg py-1"
+        >
+          Dashboard
+        </NavLink>
+      )}
+=======
 
+>>>>>>> 118a08daefcb919ad00cf2e380fa4a526a2a1af7
     </>
   );
 
@@ -132,10 +161,16 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="flex dark:text-white  items-center gap-2">
-              <Link to="/login" className="hover:text-indigo-500 dark:hover:text-blue-400">
+              <Link
+                to="/login"
+                className="hover:text-indigo-500 dark:hover:text-blue-400"
+              >
                 Login
               </Link>
-              <Link to="/signup" className="hover:text-indigo-500 dark:hover:text-blue-400">
+              <Link
+                to="/signup"
+                className="hover:text-indigo-500 dark:hover:text-blue-400"
+              >
                 Register
               </Link>
             </div>

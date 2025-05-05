@@ -65,7 +65,7 @@ const SellerProfile = () => {
       >
         <CardContent className=" md:flex-row items-center md:items-start gap-6 ">
           <div className="flex items-center p-6 gap-2 bg-blue-500">
-            <div className="bg-pink-600 p-3 rounded-xl">
+            <div className="bg-green-500 p-3 rounded-xl">
               <HeartIcon className="text-white w-6 h-6" />
             </div>
             <h1 className=" text-2xl font-bold relative">
@@ -129,7 +129,7 @@ const SellerProfile = () => {
                           onClick={() =>
                             navigate(`/seller-profile/${seller._id}`)
                           }
-                          className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-1.5 rounded-full transition"
+                          className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-1.5 rounded-full transition"
                         >
                           profile
                         </button>

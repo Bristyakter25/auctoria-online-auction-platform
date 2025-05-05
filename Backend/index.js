@@ -111,7 +111,7 @@ async function run() {
       const email = req?.decoded?.email;
       const query = { email: email };
       const user = await usersCollection.findOne(query);
-      const isAdmin = user?.role == "admin";
+      const isAdmin = user?.role === "admin";
       if (!isAdmin) {
         return res.status(403).send({ message: "forbidden access" });
       }
@@ -122,7 +122,7 @@ async function run() {
       const email = req?.decoded?.email;
       const query = { email: email };
       const user = await usersCollection.findOne(query);
-      const isSeller = user?.role == "seller";
+      const isSeller = user?.role === "seller";
       if (!isSeller) {
         return res.status(403).send({ message: "forbidden access" });
       }
@@ -670,7 +670,7 @@ async function run() {
 
     // change the status handled by admin
 
-    app.patch("/payments/:id", verifyToken, verifyAdmin, async (req, res) => {
+    app.patch("/payments/:id", async (req, res) => {
       const { status } = req.body;
       const { id } = req.params;
 
@@ -904,7 +904,6 @@ async function run() {
       }
     });
 
-
     // about automatic send end time of bid to the bidder Users
     app.get(
       "/messages/:productId/:userEmail/:otherUserEmail",
@@ -930,16 +929,15 @@ async function run() {
       }
     );
 
-
     // chat with seller
     app.post("/messages", async (req, res) => {
       const { senderId, receiverId, productId, message } = req.body;
-    
+
       // Check if all required fields are provided
       if (!senderId || !receiverId || !productId || !message) {
         return res.status(400).send({ error: "Missing fields" });
       }
-    
+
       // Construct the new message object
       const newMessage = {
         senderId,
@@ -948,11 +946,11 @@ async function run() {
         message,
         timestamp: new Date(),
       };
-    
+
       try {
         // Insert the new message into MongoDB
         const result = await messageCollection.insertOne(newMessage);
-    
+
         // Send back the inserted message (you could include the inserted ID here as well)
         res.status(201).send({
           message: "Message sent successfully",
@@ -966,79 +964,75 @@ async function run() {
 
     // GET /messages?senderId=abc&receiverId=xyz&productId=123
     // GET /messages?senderId=abc&receiverId=xyz&productId=123
-// app.get("/messages", async (req, res) => {
-//   const { senderId, receiverId, productId } = req.query;
+    // app.get("/messages", async (req, res) => {
+    //   const { senderId, receiverId, productId } = req.query;
 
-//   try {
-//     // Query for messages based on the senderId, receiverId, and productId
-//     const messages = await messageCollection
-//       .find({
-//         productId,
-//         $or: [
-//           { senderId, receiverId },
-//           { senderId: receiverId, receiverId: senderId }
-//         ]
-//       })
-//       .sort({ timestamp: 1 }) // Ensure the messages are sorted by timestamp
-//       .toArray(); // Convert the cursor to an array
+    //   try {
+    //     // Query for messages based on the senderId, receiverId, and productId
+    //     const messages = await messageCollection
+    //       .find({
+    //         productId,
+    //         $or: [
+    //           { senderId, receiverId },
+    //           { senderId: receiverId, receiverId: senderId }
+    //         ]
+    //       })
+    //       .sort({ timestamp: 1 }) // Ensure the messages are sorted by timestamp
+    //       .toArray(); // Convert the cursor to an array
 
-//     res.json(messages);
-//   } catch (err) {
-//     console.error("Error fetching messages:", err);
-//     res.status(500).json({ error: "Error fetching messages" });
-//   }
-// });
+    //     res.json(messages);
+    //   } catch (err) {
+    //     console.error("Error fetching messages:", err);
+    //     res.status(500).json({ error: "Error fetching messages" });
+    //   }
+    // });
 
-    
     // GET /messages
-app.get("/messages", async (req, res) => {
-  try {
-    // Fetch all messages from the collection
-    const messages = await messageCollection
-      .find({})
-      .sort({ timestamp: 1 }) // Sort by timestamp (ascending)
-      .toArray(); // Convert cursor to array
+    app.get("/messages", async (req, res) => {
+      try {
+        // Fetch all messages from the collection
+        const messages = await messageCollection
+          .find({})
+          .sort({ timestamp: 1 }) // Sort by timestamp (ascending)
+          .toArray(); // Convert cursor to array
 
-    res.json(messages);
-  } catch (err) {
-    console.error("Error fetching messages:", err);
-    res.status(500).json({ error: "Error fetching messages" });
-  }
-});
+        res.json(messages);
+      } catch (err) {
+        console.error("Error fetching messages:", err);
+        res.status(500).json({ error: "Error fetching messages" });
+      }
+    });
 
-app.get("/messages/:sellerId", async (req, res) => {
-  const { sellerId } = req.params; // Capture the sellerId from the URL parameter
+    app.get("/messages/:sellerId", async (req, res) => {
+      const { sellerId } = req.params; // Capture the sellerId from the URL parameter
 
-  if (!sellerId) {
-    return res.status(400).json({ error: "Seller ID is required" });
-  }
+      if (!sellerId) {
+        return res.status(400).json({ error: "Seller ID is required" });
+      }
 
-  try {
-    // Fetch messages where the receiverId matches the seller's ID
-    const messages = await messageCollection
-      .find({ receiverId: sellerId }) // Query where receiverId is the seller's ID
-      .sort({ timestamp: 1 }) // Sort messages by timestamp (oldest first)
-      .toArray(); // Convert the cursor to an array
+      try {
+        // Fetch messages where the receiverId matches the seller's ID
+        const messages = await messageCollection
+          .find({ receiverId: sellerId }) // Query where receiverId is the seller's ID
+          .sort({ timestamp: 1 }) // Sort messages by timestamp (oldest first)
+          .toArray(); // Convert the cursor to an array
 
-    // Return the fetched messages
-    res.json(messages);
-  } catch (err) {
-    console.error("Error fetching messages:", err);
-    res.status(500).json({ error: "Error fetching messages" });
-  }
-});
-
-
-
+        // Return the fetched messages
+        res.json(messages);
+      } catch (err) {
+        console.error("Error fetching messages:", err);
+        res.status(500).json({ error: "Error fetching messages" });
+      }
+    });
 
     // app.get("/messages", async (req, res) => {
     //   const { senderId, receiverId, productId, sellerId } = req.query; // Get query parameters from the URL
-    
+
     //   // Ensure required parameters are provided
     //   if (!senderId || !receiverId || !productId || !sellerId) {
     //     return res.status(400).send({ error: "Missing fields" });
     //   }
-    
+
     //   try {
     //     // Retrieve messages from the database for the seller
     //     const messages = await messageCollection.find({
@@ -1048,11 +1042,11 @@ app.get("/messages/:sellerId", async (req, res) => {
     //         { senderId: receiverId, receiverId: sellerId }
     //       ]
     //     }).toArray(); // Fetch all messages where either senderId or receiverId matches the sellerId
-    
+
     //     if (messages.length === 0) {
     //       return res.status(404).send({ error: "No messages found" });
     //     }
-    
+
     //     // Return the messages
     //     res.status(200).send({ messages });
     //   } catch (error) {
@@ -1060,11 +1054,6 @@ app.get("/messages/:sellerId", async (req, res) => {
     //     res.status(500).send({ error: "Server error while retrieving messages" });
     //   }
     // });
-    
-
-
-    
-
 
     // about automatic send end time of bid to the bidder Users
     const AuctionEndingTimer = async () => {
@@ -1129,10 +1118,23 @@ app.get("/messages/:sellerId", async (req, res) => {
     // Reports from user functionality
 
     app.post("/report", async (req, res) => {
-      const { productId, userEmail, reason,  productName, productImage, userPhoto } = req.body;
+      const {
+        productId,
+        userEmail,
+        reason,
+        productName,
+        productImage,
+        userPhoto,
+      } = req.body;
 
-
-      if (!productId || !userEmail || !reason  || !productName ||!productImage ||!userPhoto) {
+      if (
+        !productId ||
+        !userEmail ||
+        !reason ||
+        !productName ||
+        !productImage ||
+        !userPhoto
+      ) {
         return res.status(400).json({ error: "Missing required fields" });
       }
 
@@ -1141,7 +1143,9 @@ app.get("/messages/:sellerId", async (req, res) => {
           productId: new ObjectId(productId),
           userEmail,
           reason,
-          productName,productImage,userPhoto,
+          productName,
+          productImage,
+          userPhoto,
           reportedAt: new Date(),
         };
 
@@ -1161,23 +1165,26 @@ app.get("/messages/:sellerId", async (req, res) => {
     });
 
     // Node.js Express route
-app.delete("/report/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await reportsCollection.deleteOne({ _id: new ObjectId(id) });
-  res.send(result);
-});
+    app.delete("/report/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await reportsCollection.deleteOne({
+        _id: new ObjectId(id),
+      });
+      res.send(result);
+    });
 
-// DELETE product by ID
-app.delete('/products/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await productsCollection.deleteOne({ _id: new ObjectId(id) });
-    res.send(result);
-  } catch (error) {
-    res.status(500).send({ error: 'Failed to delete product.' });
-  }
-});
-
+    // DELETE product by ID
+    app.delete("/products/:id", async (req, res) => {
+      const { id } = req.params;
+      try {
+        const result = await productsCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to delete product." });
+      }
+    });
 
     // Review related API
 
