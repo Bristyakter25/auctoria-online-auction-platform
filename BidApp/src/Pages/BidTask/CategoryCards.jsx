@@ -18,7 +18,7 @@ const categoryIcons = {
   Art: <FaPaintBrush size={40} className="text-pink-500" />,
   Cars: <FaCar size={40} className="text-blue-500" />,
   Jewelry: <FaGem size={40} className="text-purple-500" />,
-  Watches: <FaClock size={40} className="text-green-500" />,
+  Watches: <FaClock size={40} className="text-green-500 " />,
   Antiques: <FaLandmark size={40} className="text-red-500" />,
   "Luxury Bags": <FaShoppingBag size={40} className="text-orange-500" />,
   Electronics: <FaLaptop size={40} className="text-gray-600" />,
@@ -42,8 +42,11 @@ const CategoryCards = () => {
   };
   // if (isLoading) return <LoadingSpinner />;
   return (
+
     <div className="p-6 cursor-pointer">
-      <div className="mb-6 dark:text-[#4D55CC]  text-gray-700">
+      <div className="mb-6 dark:text-[#4D55CC]">
+
+
         {" "}
         <h2 className="lg:text-4xl text-3xl text-center font-bold mb-3 ">
           Category Summary
@@ -55,14 +58,14 @@ const CategoryCards = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
         {categories?.map((cat, idx) => (
           <div
             key={idx}
             onClick={() => handleCategoryClick(cat.category)}
-            className="bg-white/10 shadow-md rounded-2xl dark:text-white text-gray-700 overflow-hidden hover:shadow-xl hover:bg-blue-200 transition duration-300 text-center p-6"
+            className="bg-white/10 shadow-md rounded-2xl dark:text-white dark:hover:text-gray-700 text-gray-700 overflow-hidden hover:shadow-xl hover:bg-blue-300 transition duration-300 text-center p-6  "
           >
-            <div className="mb-4 flex justify-center">
+            <div className="mb-4 flex justify-center transition-all duration-700 hover:scale-110 ">
               {categoryIcons[cat.category] || (
                 <div className="text-gray-400">No Icon</div>
               )}

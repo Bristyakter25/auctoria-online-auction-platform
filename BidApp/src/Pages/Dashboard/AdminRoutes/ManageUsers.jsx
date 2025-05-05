@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../../hooks/useAxiosPublic";
+import { AuthContext } from "../../../providers/AuthProvider";
+import useAxiosSecure from "../../../useHooks/useAxiosSecure";
 
 const ManageUsers = () => {
-  const [users, setUsers] = useState([]);
-
-  const fetchUsers = () => {
-    fetch("https://auctoria-online-auction-platform.onrender.com/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Error fetching users:", error));
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const { user, loading } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+  const {
+    data: users = [],
+    refetch,
+    isLoading: userIsLoading,
+  } = useQuery({
+    queryKey: "users",
+    queryFn: async () => {
+      const res = await axiosSecure.get("/users");
+      return res.data;
+    },
+  });
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -58,7 +63,7 @@ const ManageUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {users?.map((user) => (
               <tr key={user._id}>
                 <td className="border border-gray-400 px-4 py-2">
                   {user.name}

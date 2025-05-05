@@ -32,14 +32,23 @@ import CategoryPage from "../Pages/BidTask/CategoryPage";
 import PaymentHistory from "../Pages/Dashboard/UserRoutes/PaymentHistory";
 import FavoritePage from "../SellerProfile/FavoriteSeller";
 
+import ReviewReport from "../Pages/Dashboard/AdminRoutes/ReviewReport";
+import Message from "../Pages/Message/Message";
+import SellerMessage from "../Pages/Message/SellerMessage";
+import ErrorPage from "./ErrorPage";
+
+
+import SellerRoutes from "../privateRoutes/SellerRoutes";
+
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/aiChat", element: <AiChat/> },
+      { path: "/aiChat", element: <AiChat /> },
       { path: "about-us", element: <AboutHome></AboutHome> },
       { path: "contact-home", element: <ContactHome></ContactHome> },
 
@@ -47,7 +56,14 @@ export const router = createBrowserRouter([
 
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <Register /> },
-      { path: "/addProduct", element: <AddProduct /> },
+      {
+        path: "/addProduct",
+        element: (
+          <SellerRoutes>
+            <AddProduct />{" "}
+          </SellerRoutes>
+        ),
+      },
       { path: "bid-history", element: <BidHistory></BidHistory> },
 
       { path: "/allAuctions", element: <AllAuctions /> },
@@ -71,8 +87,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "/categoryProduct/:categoryName",
-        element: <CategoryPage></CategoryPage>
+        element: <CategoryPage></CategoryPage>,
       },
+      {
+        path: "message",
+        element:<Message></Message>
+      }
     ],
   },
   {
@@ -96,8 +116,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "favoriteSeller",
-        element: <SellerProfile></SellerProfile>
-
+        element: <SellerProfile></SellerProfile>,
       },
       { path: "wishList", element: <WishList /> },
       { path: "bid-history", element: <BidHistory></BidHistory> },
@@ -109,6 +128,14 @@ export const router = createBrowserRouter([
         path: "pay",
         element: <Payment></Payment>,
       },
+      {
+        path: "reviewReport",
+        element:<ReviewReport></ReviewReport>
+      },
+      {
+        path: "messages/:sellerId",
+        element: <SellerMessage></SellerMessage>
+      }
     ],
   },
 ]);
