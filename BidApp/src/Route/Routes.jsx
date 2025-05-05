@@ -37,9 +37,8 @@ import Message from "../Pages/Message/Message";
 import SellerMessage from "../Pages/Message/SellerMessage";
 import ErrorPage from "./ErrorPage";
 
-
 import SellerRoutes from "../privateRoutes/SellerRoutes";
-
+import AdminRoutes from "../privateRoutes/AdminRoutes";
 
 export const router = createBrowserRouter([
   {
@@ -91,8 +90,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "message",
-        element:<Message></Message>
-      }
+        element: <Message></Message>,
+      },
     ],
   },
   {
@@ -108,7 +107,7 @@ export const router = createBrowserRouter([
       { path: "analytics", element: <Analytics></Analytics> },
       {
         path: "recentOrders",
-        element: <RecentOrders></RecentOrders>,
+        element: <RecentOrders />,
       },
       {
         path: "reviews",
@@ -130,12 +129,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "reviewReport",
-        element:<ReviewReport></ReviewReport>
+        element: <ReviewReport></ReviewReport>,
       },
       {
         path: "messages/:sellerId",
-        element: <SellerMessage></SellerMessage>
-      }
+        element: <SellerMessage></SellerMessage>,
+      },
     ],
   },
 ]);

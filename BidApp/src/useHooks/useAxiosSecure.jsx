@@ -1,13 +1,14 @@
 import axios from "axios";
-import useContextHooks from "./useContextHooks";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../providers/AuthProvider";
 
 const axiosSecure = axios.create({
   baseURL: "http://localhost:5000",
 });
 const useAxiosSecure = () => {
   const navigate = useNavigate();
-  const { signOutUser } = useContextHooks();
+  const { signOutUser } = useContext(AuthContext);
 
   // requrest interceptor too add authorization header for every secure call to the api
   axiosSecure.interceptors.request.use(
@@ -33,10 +34,25 @@ const useAxiosSecure = () => {
       // console.log("status error in the interceptors", status);
       if (status === 401 || status === 403) {
         await signOutUser();
+        localStorage.removeItem("access-token");
         navigate("/login");
       }
       return Promise.reject(err);
     }
+
+    // async (err) => {
+    //   if ([401, 403].includes(error.response?.status)) {
+    //     try {
+    //       console.log("Interceptor triggering logout...");
+    //       await signOutUser();
+    //       localStorage.removeItem("access-token");
+    //       navigate("/login", { replace: true });
+    //     } catch (e) {
+    //       console.error("Interceptor logout failed:", e);
+    //     }
+    //   }
+    //   return Promise.reject(error);
+    // }
   );
   return axiosSecure;
 };

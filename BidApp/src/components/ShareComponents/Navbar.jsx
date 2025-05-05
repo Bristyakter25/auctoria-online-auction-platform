@@ -20,10 +20,18 @@ const Navbar = () => {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleSignOut = () => {
-    signOutUser().then(() => {
+  // const handleSignOut = () => {
+  //   signOutUser().then(() => {});
+  //   navigate("/login");
+  // };
+  const handleSignOut = async () => {
+    try {
+      await signOutUser();
+      localStorage.removeItem("access-token");
       navigate("/login");
-    });
+    } catch (error) {
+      console.error("Problem to signout:", error);
+    }
   };
 
   const navLinks = (
@@ -84,7 +92,6 @@ const Navbar = () => {
           Dashboard
         </NavLink>
       )}
-
     </>
   );
 
@@ -158,10 +165,16 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="flex dark:text-white  items-center gap-2">
-              <Link to="/login" className="hover:text-indigo-500 dark:hover:text-blue-400">
+              <Link
+                to="/login"
+                className="hover:text-indigo-500 dark:hover:text-blue-400"
+              >
                 Login
               </Link>
-              <Link to="/signup" className="hover:text-indigo-500 dark:hover:text-blue-400">
+              <Link
+                to="/signup"
+                className="hover:text-indigo-500 dark:hover:text-blue-400"
+              >
                 Register
               </Link>
             </div>
